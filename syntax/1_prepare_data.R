@@ -55,14 +55,89 @@ if(current_R_version != script_R_version) {
 library(groundhog)
 groundhog_day <- "2021-04-01"
 
+groundhog.library(haven, groundhog_day)
+
 # ---------------------------------------------------------------------------- #
-# Define functions used throughout script ----
+# Import clean SAV data files ----
 # ---------------------------------------------------------------------------- #
+
+# Obtain file names of SAV data files
+
+clean_data_dir <- paste0(wd_dir, "/data/clean")
+sav_filenames <- list.files(paste0(clean_data_dir, "/sav"), 
+                        pattern = "*.sav", 
+                        full.names = FALSE)
+
+# Import data files and store them in list, keeping user-defined missing values
+
+spss_data <- lapply(paste0(clean_data_dir, "/sav/", sav_filenames),
+               read_sav, user_na = TRUE)
+
+# Name each data file in list
+
+split_char <- ".sav"
+names(spss_data) <- unlist(lapply(sav_filenames,
+                                  function(f) {
+                                    unlist(strsplit(f,
+                                                    split = split_char,
+                                                    fixed = FALSE))[1]
+                                  }))
+
+# Report the names of the imported tables
+
+cat("Imported tables: ")
+names(spss_data)
+
+# ---------------------------------------------------------------------------- #
+# Convert SAV data files to CSV data files ----
+# ---------------------------------------------------------------------------- #
+
+# Write CSV data files retaining user-defined missing values
+
+dir.create(paste0(clean_data_dir, "/csv/with_user-defined_missing_values"),
+           recursive = TRUE)
+
+csv_filenames <- paste0(names(spss_data), "_user-defined_missings.csv")
+
+for (i in 1:length(spss_data)) {
+  readr::write_csv(
+    spss_data[[i]],
+    file = paste0(clean_data_dir, 
+                  "/csv/with_user-defined_missing_values/",
+                  csv_filenames[i]))
+}
+
+# Write CSV data files with user-defined missing values converted to NA
+
+data <- lapply(spss_data, zap_missing)
+
+dir.create(paste0(clean_data_dir, "/csv/without_user-defined_missing_values"))
+
+csv_filenames <- paste0(names(data), "_missings_as_NA.csv")
+
+for (i in 1:length(data)) {
+  readr::write_csv(data[[i]],
+                   file = paste0(clean_data_dir,
+                                 "/csv/without_user-defined_missing_values/",
+                                 csv_filenames[i]))
+}
+
+# ---------------------------------------------------------------------------- #
+# Confirm CSV data files do not contain other user-defined missing values ----
+# ---------------------------------------------------------------------------- #
+
+data <- lapply(data, zap_label)
+data <- lapply(data, zap_labels)
+data <- lapply(data, zap_formats)
+data <- lapply(data, zap_widths)
 
 # TODO
 
-# ---------------------------------------------------------------------------- #
-# Import data ----
-# ---------------------------------------------------------------------------- #
 
-# TODO
+
+
+
+
+
+
+
