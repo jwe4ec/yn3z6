@@ -14,11 +14,16 @@
 # Notes ----
 # ---------------------------------------------------------------------------- #
 
-# TODO
+# The present script reads selected clean SPSS (SAV) data files obtained for the 
+# Emotion Regulation Treatment Study. Given that SAV files are proprietary, this
+# script converts them to two sets of CSV files: one set retaining user-defined 
+# missing values from SPSS, and another set in which these missing values have
+# been converted to NA (for analysis in R). These two sets of CSV files, written
+# to the "clean" folder, simply represent CSV versions of the original SAV files.
 
-
-
-
+# After converting the user-defined missing values to NA, this script conducts
+# additional data cleaning to generate a third set of CSV files, written to the
+# "clean_further" folder, that are analyzed in the present manuscript.
 
 # ---------------------------------------------------------------------------- #
 # Store working directory, install correct R version, load packages ----
@@ -136,7 +141,6 @@ for (i in 1:length(data)) {
 # ---------------------------------------------------------------------------- #
 
 # TODO: Confirm data are deidentified
-
 
 
 
