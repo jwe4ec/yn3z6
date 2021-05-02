@@ -16,6 +16,10 @@
 
 # TODO
 
+
+
+
+
 # ---------------------------------------------------------------------------- #
 # Store working directory, install correct R version, load packages ----
 # ---------------------------------------------------------------------------- #
@@ -83,10 +87,15 @@ names(spss_data) <- unlist(lapply(sav_filenames,
                                                     fixed = FALSE))[1]
                                   }))
 
-# Report the names of the imported tables
+# ---------------------------------------------------------------------------- #
+# Create code book for SAV data files ----
+# ---------------------------------------------------------------------------- #
 
-cat("Imported tables: ")
-names(spss_data)
+# TODO (consider this: https://libguides.library.kent.edu/spss/codebooks)
+
+
+
+
 
 # ---------------------------------------------------------------------------- #
 # Convert SAV data files to CSV data files ----
@@ -123,21 +132,77 @@ for (i in 1:length(data)) {
 }
 
 # ---------------------------------------------------------------------------- #
-# Confirm CSV data files do not contain other user-defined missing values ----
+# Further prepare data ----
 # ---------------------------------------------------------------------------- #
+
+# TODO: Confirm data are deidentified
+
+
+
+
+
+
+# Strip data of other attributes from SPSS
 
 data <- lapply(data, zap_label)
 data <- lapply(data, zap_labels)
 data <- lapply(data, zap_formats)
 data <- lapply(data, zap_widths)
 
-# TODO
+# Convert empty character values to NA
 
+for (i in 1:length(data)) {
+  for (j in 1:length(data[[i]])) {
+    if (is.character(data[[i]][[j]])) {
+      data[[i]][[j]] <- zap_empty(data[[i]][[j]])
+    }
+  }
+}
 
+# Remove irrelevant time and filter variables
 
+data$`dbt-wccl data file`$time1 <- NULL
+data$`dbt-wccl data file`$time2 <- NULL
+data$`dbt-wccl data file`$time3 <- NULL
+data$`dbt-wccl data file`$time4 <- NULL
+data$`dbt-wccl data file`$time5 <- NULL
+data$`dbt-wccl data file`$`filter_$` <- NULL
 
+# Confirm numeric columns do not contain other user-defined missing values. The
+# "whymiss" columns can be ignored; they represent reasons for missingness. We
+# will not check character or POSIXct columns at this time.
 
+for (i in 1:length(data)) {
+  for (j in 1:length(data[[i]])) {
+    table_i_name <- names(data[i])
+    column_j_name <- names(data[[i]][j])
+    table_i_column_j_name <- paste0(table_i_name, "$", column_j_name)
+    
+    if (is.numeric(data[[i]][[j]])) {
+      if (any(data[[i]][j] < 0, na.rm = TRUE)) {
+        print(table_i_column_j_name)
+      }
+    }
+  }
+}
 
+# Shorten table names
 
+names(data) <- strsplit(names(data), split = " data file", fixed = FALSE)
+names(data)[names(data) == "demographic"] <- "demog"
+names(data)[names(data) == "dimensions of stress"] <- "dss"
+names(data)[names(data) == "scid i brief"] <- "scid1"
 
+# Write further cleaned CSV data files
 
+further_clean_data_dir <- paste0(wd_dir, "/data/clean_further")
+dir.create(further_clean_data_dir)
+
+csv_filenames <- paste0(names(data), ".csv")
+
+for (i in 1:length(data)) {
+  readr::write_csv(data[[i]],
+                   file = paste0(further_clean_data_dir, 
+                                 "/",
+                                 csv_filenames[i]))
+}
