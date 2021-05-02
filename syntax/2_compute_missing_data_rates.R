@@ -124,11 +124,11 @@ report_AIN_Period(data2)
 
 # Confirm ResearchIDs are consistent across tables
 
-all(setequal(unique(data2$`dbt-wccl`$ResearchID), unique(data2$demog$ResearchID)),
-    setequal(unique(data2$`dbt-wccl`$ResearchID), unique(data2$ders$ResearchID)),
-    setequal(unique(data2$`dbt-wccl`$ResearchID), unique(data2$dss$ResearchID)),
-    setequal(unique(data2$`dbt-wccl`$ResearchID), unique(data2$kims$ResearchID)),
-    setequal(unique(data2$`dbt-wccl`$ResearchID), unique(data2$scid1$ResearchID)))
+all(setequal(unique(data2$dbt-wccl$ResearchID), unique(data2$demog$ResearchID)),
+    setequal(unique(data2$dbt-wccl$ResearchID), unique(data2$ders$ResearchID)),
+    setequal(unique(data2$dbt-wccl$ResearchID), unique(data2$dss$ResearchID)),
+    setequal(unique(data2$dbt-wccl$ResearchID), unique(data2$kims$ResearchID)),
+    setequal(unique(data2$dbt-wccl$ResearchID), unique(data2$scid1$ResearchID)))
 
 # Exclude DERS pretreatment data (use DERS screening data instead)
 
@@ -162,7 +162,7 @@ for (i in 1:length(data2)) {
 
 # TODO: Define items that comprise each scale
 
-names(data2$`dbt-wccl`)
+names(data2$dbt_wccl)
 names(data2$ders)
 names(data2$dss)
 names(data2$kims)

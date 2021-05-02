@@ -172,6 +172,7 @@ for (i in 1:length(data)) {
 # Shorten table names
 
 names(data) <- strsplit(names(data), split = " data file", fixed = FALSE)
+names(data)[names(data) == "dbt-wccl"] <- "dbt_wccl"
 names(data)[names(data) == "demographic"] <- "demog"
 names(data)[names(data) == "dimensions of stress"] <- "dss"
 names(data)[names(data) == "scid i brief"] <- "scid1"
