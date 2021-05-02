@@ -122,6 +122,14 @@ names(data2) <- names(data)
 
 report_AIN_Period(data2)
 
+# Confirm ResearchIDs are consistent across tables
+
+all(setequal(unique(data2$`dbt-wccl`$ResearchID), unique(data2$demog$ResearchID)),
+    setequal(unique(data2$`dbt-wccl`$ResearchID), unique(data2$ders$ResearchID)),
+    setequal(unique(data2$`dbt-wccl`$ResearchID), unique(data2$dss$ResearchID)),
+    setequal(unique(data2$`dbt-wccl`$ResearchID), unique(data2$kims$ResearchID)),
+    setequal(unique(data2$`dbt-wccl`$ResearchID), unique(data2$scid1$ResearchID)))
+
 # Exclude DERS pretreatment data (use DERS screening data instead)
 
 table(data2$ders$Period)
@@ -134,17 +142,17 @@ report_AIN_Period(data2)
 
 for (i in 1:length(data2)) {
   if (names(data2[i]) %in% c("dbt-wccl", "dss", "kims")) {
-    output[[i]]$time0 <- NA
-    output[[i]]$time0[output[[i]]$Period == 2] <- 0
-    output[[i]]$time0[output[[i]]$Period == 3] <- 1
-    output[[i]]$time0[output[[i]]$Period == 4] <- 2
-    output[[i]]$time0[output[[i]]$Period == 5] <- 3
+    data2[[i]]$time0 <- NA
+    data2[[i]]$time0[data2[[i]]$Period == 2] <- 0
+    data2[[i]]$time0[data2[[i]]$Period == 3] <- 1
+    data2[[i]]$time0[data2[[i]]$Period == 4] <- 2
+    data2[[i]]$time0[data2[[i]]$Period == 5] <- 3
   } else if (names(data2[i]) == "ders") {
-    output[[i]]$time0 <- NA
-    output[[i]]$time0[output[[i]]$Period == 0] <- 0
-    output[[i]]$time0[output[[i]]$Period == 3] <- 1
-    output[[i]]$time0[output[[i]]$Period == 4] <- 2
-    output[[i]]$time0[output[[i]]$Period == 5] <- 3
+    data2[[i]]$time0 <- NA
+    data2[[i]]$time0[data2[[i]]$Period == 0] <- 0
+    data2[[i]]$time0[data2[[i]]$Period == 3] <- 1
+    data2[[i]]$time0[data2[[i]]$Period == 4] <- 2
+    data2[[i]]$time0[data2[[i]]$Period == 5] <- 3
   }
 }
 
@@ -152,7 +160,12 @@ for (i in 1:length(data2)) {
 # Compute item-level missingness ----
 # ---------------------------------------------------------------------------- #
 
-# TODO
+# TODO: Define items that comprise each scale
+
+names(data2$`dbt-wccl`)
+names(data2$ders)
+names(data2$dss)
+names(data2$kims)
 
 
 
