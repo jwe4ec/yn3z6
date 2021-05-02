@@ -38,6 +38,37 @@ library(groundhog)
 groundhog_day <- "2021-04-01"
 
 # ---------------------------------------------------------------------------- #
+# Define functions used throughout script ----
+# ---------------------------------------------------------------------------- #
+
+# Define function to report AIN and Period for each df in a list of dfs
+
+report_AIN_Period <- function(dfs) {
+  for (i in 1:length(dfs)) {
+    print(names(dfs[i]))
+    cat("\n")
+    
+    cat("AIN:")
+    if ("AIN" %in% names(dfs[[i]])) {
+      print(table(dfs[[i]]["AIN"], useNA = "always"))
+      cat("\n")
+    } else {
+      cat("No such column")
+      cat("\n")
+    }
+    
+    cat("Period:")
+    if ("Period" %in% names(dfs[[i]])) {
+      print(table(dfs[[i]]["Period"], useNA = "always"))
+      cat("\n")
+    } else {
+      cat("No such column")
+      cat("\n")
+    }
+  }
+}
+
+# ---------------------------------------------------------------------------- #
 # Import further cleaned CSV data files ----
 # ---------------------------------------------------------------------------- #
 
@@ -62,6 +93,43 @@ names(data) <- unlist(lapply(filenames,
                                                split = split_char,
                                                fixed = FALSE))[1]
                              }))
+
+# ---------------------------------------------------------------------------- #
+# Restrict to ITT sample and desired periods and define time variable ----
+# ---------------------------------------------------------------------------- #
+
+# Investigate AIN and Period for each table
+
+report_AIN_Period(data)
+
+# Restrict to ITT sample (AIN = 1)
+
+data2 <- vector("list", length(data))
+
+for (i in 1:length(data)) {
+  data2[[i]] <- data[[i]]
+  
+  data2[[i]] <- data2[[i]][data2[[i]]$AIN == 1 & !is.na(data2[[i]]$AIN), ]
+}
+
+names(data2) <- names(data)
+
+report_AIN_Period(data2)
+
+# Exclude DERS pretreatment data (use DERS screening data instead)
+
+table(data2$ders$Period)
+data2$ders <- data2$ders[data2$ders$Period != 2, ]
+
+report_AIN_Period(data2)
+
+# Define time variable
+
+# TODO
+
+
+
+
 
 # ---------------------------------------------------------------------------- #
 # Compute item-level missingness ----
