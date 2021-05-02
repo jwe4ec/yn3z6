@@ -21,21 +21,28 @@
 
 
 # ---------------------------------------------------------------------------- #
-# Store working directory, install correct R version, load packages ----
+# Store working directory, check correct R version, load packages ----
 # ---------------------------------------------------------------------------- #
+
+# Store working directory
 
 wd_dir <- getwd()
 
-script_R_version <- "R version 4.0.3 (2020-10-10)"
-current_R_version <- R.Version()$version.string
+# Load custom functions
 
-if(current_R_version != script_R_version) {
-  warning(paste0("This script is based on ", script_R_version,
-                 ". You are running ", current_R_version, "."))
-}
+source("./GitHub Repo/yn3z6/syntax/0_define_functions.R")
 
-library(groundhog)
-groundhog_day <- "2021-04-01"
+# Check correct R version, load groundhog package, and specify groundhog_day
+
+groundhog_day <- version_control()
+
+# Load packages with groundhog
+
+# TODO
+
+
+
+
 
 # ---------------------------------------------------------------------------- #
 # Import further cleaned CSV data files ----
