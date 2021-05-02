@@ -124,11 +124,11 @@ report_AIN_Period(data2)
 
 # Confirm ResearchIDs are consistent across tables
 
-all(setequal(unique(data2$dbt-wccl$ResearchID), unique(data2$demog$ResearchID)),
-    setequal(unique(data2$dbt-wccl$ResearchID), unique(data2$ders$ResearchID)),
-    setequal(unique(data2$dbt-wccl$ResearchID), unique(data2$dss$ResearchID)),
-    setequal(unique(data2$dbt-wccl$ResearchID), unique(data2$kims$ResearchID)),
-    setequal(unique(data2$dbt-wccl$ResearchID), unique(data2$scid1$ResearchID)))
+all(setequal(unique(data2$dbt_wccl$ResearchID), unique(data2$demog$ResearchID)),
+    setequal(unique(data2$dbt_wccl$ResearchID), unique(data2$ders$ResearchID)),
+    setequal(unique(data2$dbt_wccl$ResearchID), unique(data2$doss$ResearchID)),
+    setequal(unique(data2$dbt_wccl$ResearchID), unique(data2$kims$ResearchID)),
+    setequal(unique(data2$dbt_wccl$ResearchID), unique(data2$scid1$ResearchID)))
 
 # Exclude DERS pretreatment data (use DERS screening data instead)
 
@@ -138,10 +138,10 @@ data2$ders <- data2$ders[data2$ders$Period != 2, ]
 report_AIN_Period(data2)
 
 # Define time0 for each repeated-measures table (note that time0 is already
-# defined in dbt-wccl table; the code below yields the same values)
+# defined in dbt_wccl table; the code below yields the same values)
 
 for (i in 1:length(data2)) {
-  if (names(data2[i]) %in% c("dbt-wccl", "dss", "kims")) {
+  if (names(data2[i]) %in% c("dbt_wccl", "doss", "kims")) {
     data2[[i]]$time0 <- NA
     data2[[i]]$time0[data2[[i]]$Period == 2] <- 0
     data2[[i]]$time0[data2[[i]]$Period == 3] <- 1
@@ -157,15 +157,54 @@ for (i in 1:length(data2)) {
 }
 
 # ---------------------------------------------------------------------------- #
+# Define items that comprise each scale ----
+# ---------------------------------------------------------------------------- #
+
+# For DBT Skills Subscale (DSS) of DBT-WCCL, main outcomes paper analyzed the 
+# mean of available items if at least 30 out of 38 items were not missing
+
+meanDSS_items <- c("RWC01", "RWC02", "RWC04", "RWC06", "RWC11", "RWC12", 
+                          "RWC13", "RWC15", "RWC18", "RWC21", "RWC22", "RWC24", 
+                          "RWC25", "RWC27", "RWC34", "RWC35", "RWC38", "RWC43", 
+                          "RWC45", "RWC46", "RWC47", "RWC48", "RWC50", "RWC51", 
+                          "RWC52", "RWC54", "RWC56", "RWC57", "RWC60", "RWC63", 
+                          "RWC65", "RWC66", "RWC68", "RWC69", "RWC71", "RWC73", 
+                          "RWC74", "RWC75")
+length(meanDSS_items)
+
+# For Total Score of DERS, main outcomes paper analyzed the sum of available 
+# items if at least 30 out of 36 items were not missing
+
+drtotl_items <- c("rdr01", "rdr02", "DR03", "DR04", "DR05", "rdr06", "rdr07", 
+                  "rdr08", "DR09", "rdr10", "DR11", "DR12", "DR13", "DR14", 
+                  "DR15", "DR16", "rdr17", "DR18", "DR19", "rdr20", "DR21", 
+                  "rdr22", "DR23", "rdr24", "DR25", "DR26", "DR27", "DR28", 
+                  "DR29", "DR30", "DR31", "DR32", "DR33", "rdr34", "DR35", 
+                  "DR36")
+length(drtotl_items)
+
+# For Control Subscale of DoSS, previous analyses analyzed the mean of available
+# items if at least 3 out of 4 items were not missing
+
+cnDoSS_items <- c("DoSS01", "rDoSS12", "DoSS16", "rDoSS23")
+length(cnDoSS_items)
+
+# For Total Score of KIMS, previous analyses analyzed the mean of available
+# items if at least 35 of 39 items were not missing
+
+KMTOT_items <- c("KM01", "KM02", "KM03r", "KM04r", "KM05", "KM06", "KM07", 
+                 "KM08r", "KM09", "KM10", "KM11r", "KM12r", "KM13", "KM14r", 
+                 "KM15", "KM16r", "KM17", "KM18r", "KM19", "KM20r", "KM21", 
+                 "KM22r", "KM23r", "KM24r", "KM25", "KM26", "KM27r", "KM28r", 
+                 "KM29", "KM30", "KM31r", "KM32r", "KM33", "KM34", "KM35r", 
+                 "KM36r", "KM37", "KM38", "KM39")
+length(KMTOT_items)
+
+# ---------------------------------------------------------------------------- #
 # Compute item-level missingness ----
 # ---------------------------------------------------------------------------- #
 
-# TODO: Define items that comprise each scale
-
-names(data2$dbt_wccl)
-names(data2$ders)
-names(data2$dss)
-names(data2$kims)
+# TODO
 
 
 
