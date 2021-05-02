@@ -50,13 +50,22 @@ filenames <- list.files(paste0(further_clean_data_dir),
 
 # Import data files and store them in list
 
-# TODO
-
-
-
-
+data <- lapply(paste0(further_clean_data_dir, "/", filenames),
+               read.csv)
 
 # Name each data file in list
+
+split_char <- ".csv"
+names(data) <- unlist(lapply(filenames,
+                             function(f) {
+                               unlist(strsplit(f,
+                                               split = split_char,
+                                               fixed = FALSE))[1]
+                             }))
+
+# ---------------------------------------------------------------------------- #
+# Check MCAR ----
+# ---------------------------------------------------------------------------- #
 
 # TODO
 
