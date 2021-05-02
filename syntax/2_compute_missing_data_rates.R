@@ -52,13 +52,12 @@ groundhog_day <- version_control()
 
 report_AIN_Period <- function(dfs) {
   for (i in 1:length(dfs)) {
-    print(names(dfs[i]))
-    cat("\n")
+    cat(names(dfs[i]))
+    cat("\n", "\n")
     
     cat("AIN:")
     if ("AIN" %in% names(dfs[[i]])) {
       print(table(dfs[[i]]["AIN"], useNA = "always"))
-      cat("\n")
     } else {
       cat("No such column")
       cat("\n")
@@ -102,7 +101,7 @@ names(data) <- unlist(lapply(filenames,
                              }))
 
 # ---------------------------------------------------------------------------- #
-# Restrict to ITT sample and desired periods and define time variable ----
+# Restrict to ITT sample and desired periods and define time0 ----
 # ---------------------------------------------------------------------------- #
 
 # Investigate AIN and Period for each table
@@ -130,13 +129,24 @@ data2$ders <- data2$ders[data2$ders$Period != 2, ]
 
 report_AIN_Period(data2)
 
-# Define time variable
+# Define time0 for each repeated-measures table (note that time0 is already
+# defined in dbt-wccl table; the code below yields the same values)
 
-# TODO
-
-
-
-
+for (i in 1:length(data2)) {
+  if (names(data2[i]) %in% c("dbt-wccl", "dss", "kims")) {
+    output[[i]]$time0 <- NA
+    output[[i]]$time0[output[[i]]$Period == 2] <- 0
+    output[[i]]$time0[output[[i]]$Period == 3] <- 1
+    output[[i]]$time0[output[[i]]$Period == 4] <- 2
+    output[[i]]$time0[output[[i]]$Period == 5] <- 3
+  } else if (names(data2[i]) == "ders") {
+    output[[i]]$time0 <- NA
+    output[[i]]$time0[output[[i]]$Period == 0] <- 0
+    output[[i]]$time0[output[[i]]$Period == 3] <- 1
+    output[[i]]$time0[output[[i]]$Period == 4] <- 2
+    output[[i]]$time0[output[[i]]$Period == 5] <- 3
+  }
+}
 
 # ---------------------------------------------------------------------------- #
 # Compute item-level missingness ----
