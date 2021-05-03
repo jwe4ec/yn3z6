@@ -159,8 +159,8 @@ data2$ders <- data2$ders[data2$ders$Period != 2, ]
 
 report_AIN_Period(data2)
 
-# Define time0 for each repeated-measures table (note that time0 is already
-# defined in dbt_wccl table; the code below yields the same values)
+# Define time0 and time0_lag for each repeated-measures table (note that time0 
+# is already defined in dbt_wccl table; the code below yields the same values)
 
 for (i in 1:length(data2)) {
   if (names(data2[i]) %in% c("dbt_wccl", "doss", "kims")) {
@@ -169,12 +169,24 @@ for (i in 1:length(data2)) {
     data2[[i]]$time0[data2[[i]]$Period == 3] <- 1
     data2[[i]]$time0[data2[[i]]$Period == 4] <- 2
     data2[[i]]$time0[data2[[i]]$Period == 5] <- 3
+    
+    data2[[i]]$time0_lag <- NA
+    data2[[i]]$time0_lag[data2[[i]]$Period == 2] <- 0
+    data2[[i]]$time0_lag[data2[[i]]$Period == 3] <- 1
+    data2[[i]]$time0_lag[data2[[i]]$Period == 4] <- 2
+    data2[[i]]$time0_lag[data2[[i]]$Period == 5] <- NA
   } else if (names(data2[i]) == "ders") {
     data2[[i]]$time0 <- NA
     data2[[i]]$time0[data2[[i]]$Period == 0] <- 0
     data2[[i]]$time0[data2[[i]]$Period == 3] <- 1
     data2[[i]]$time0[data2[[i]]$Period == 4] <- 2
     data2[[i]]$time0[data2[[i]]$Period == 5] <- 3
+    
+    data2[[i]]$time0_lag <- NA
+    data2[[i]]$time0_lag[data2[[i]]$Period == 2] <- NA
+    data2[[i]]$time0_lag[data2[[i]]$Period == 3] <- 0
+    data2[[i]]$time0_lag[data2[[i]]$Period == 4] <- 1
+    data2[[i]]$time0_lag[data2[[i]]$Period == 5] <- 2
   }
 }
 
