@@ -178,6 +178,11 @@ for (i in 1:length(data2)) {
   }
 }
 
+# Save data as R object
+
+dir.create("./data/intermediate")
+save(data2, file = "./data/intermediate/data2.Rdata")
+
 # ---------------------------------------------------------------------------- #
 # Define items that comprise each scale ----
 # ---------------------------------------------------------------------------- #

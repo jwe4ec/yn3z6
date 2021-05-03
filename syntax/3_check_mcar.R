@@ -45,30 +45,10 @@ groundhog_day <- version_control()
 
 
 # ---------------------------------------------------------------------------- #
-# Import further cleaned CSV data files ----
+# Import data ----
 # ---------------------------------------------------------------------------- #
 
-# Obtain file names of CSV data files
-
-further_clean_data_dir <- paste0(wd_dir, "/data/clean_further")
-filenames <- list.files(paste0(further_clean_data_dir),
-                        pattern = "*.csv",
-                        full.names = FALSE)
-
-# Import data files and store them in list
-
-data <- lapply(paste0(further_clean_data_dir, "/", filenames),
-               read.csv)
-
-# Name each data file in list
-
-split_char <- ".csv"
-names(data) <- unlist(lapply(filenames,
-                             function(f) {
-                               unlist(strsplit(f,
-                                               split = split_char,
-                                               fixed = FALSE))[1]
-                             }))
+load("./data/intermediate/data2.Rdata")
 
 # ---------------------------------------------------------------------------- #
 # Check MCAR ----
