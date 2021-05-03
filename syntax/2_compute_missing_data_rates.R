@@ -74,6 +74,28 @@ report_AIN_Period <- function(dfs) {
   }
 }
 
+# Define function to report proportion of scale scores computed with at least
+# one item missing
+
+item_level <- function(df, scale, scale_items) {
+  cat("Scale:", deparse(substitute(scale)), "\n")
+  
+  scale_obs <- df[!is.na(scale), ]
+  
+  num <- sum(apply(scale_obs[, scale_items],
+                   MARGIN = 1,
+                   FUN = function(x) { any(is.na(x)) }))
+  cat("Computed scale scores with >= 1 item missing:", num, "\n")
+  
+  denom <- nrow(scale_obs)
+  cat("Computed scale scores:", denom, "\n")
+  
+  prop <- num / denom
+  cat("Proportion:", round(prop, 2), "\n")
+  percent <- prop*100
+  cat(paste0("Percent: ", round(percent, 2), "%"), "\n")
+}
+
 # ---------------------------------------------------------------------------- #
 # Import further cleaned CSV data files ----
 # ---------------------------------------------------------------------------- #
@@ -271,11 +293,10 @@ all(data$kims$KMTOT == KMTOT_test, na.rm = TRUE)
 # Compute item-level missingness ----
 # ---------------------------------------------------------------------------- #
 
-# TODO
-
-
-
-
+item_level(data2$dbt_wccl, data2$dbt_wccl$meanDSS, meanDSS_items)
+item_level(data2$ders, data2$ders$drtotl, drtotl_items)
+item_level(data2$doss, data2$doss$cnDoSS, cnDoSS_items)
+item_level(data2$kims, data2$kims$KMTOT, KMTOT_items)
 
 # ---------------------------------------------------------------------------- #
 # Compute scale-level missingness ----
