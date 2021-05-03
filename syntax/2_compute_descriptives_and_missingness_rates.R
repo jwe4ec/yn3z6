@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------------- #
-# Compute Missing Data Rates
+# Compute Descriptives and Missingness Rates
 # Author: Jeremy W. Eberle
 # ---------------------------------------------------------------------------- #
 
@@ -299,15 +299,24 @@ item_level(data2$doss, data2$doss$cnDoSS, cnDoSS_items)
 item_level(data2$kims, data2$kims$KMTOT, KMTOT_items)
 
 # ---------------------------------------------------------------------------- #
+# Compute n, M, and SD for each outcome at each time point ----
+# ---------------------------------------------------------------------------- #
+
+# TODO
+
+
+
+
+# ---------------------------------------------------------------------------- #
 # Compute scale-level missingness ----
 # ---------------------------------------------------------------------------- #
 
 # TODO
 
-sum(is.na(data$dbt_wccl$meanDSS))
-sum(is.na(data$ders$drtotl))
-sum(is.na(data$doss$cnDoSS))
-sum(is.na(data$kims$KMTOT))
+sum(is.na(data2$dbt_wccl$meanDSS))
+sum(is.na(data2$ders$drtotl))
+sum(is.na(data2$doss$cnDoSS))
+sum(is.na(data2$kims$KMTOT))
 
 
 
