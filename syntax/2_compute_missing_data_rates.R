@@ -196,18 +196,18 @@ length(meanDSS_items)
 
 # No meanDSS scale scores were not computed on account of too few items
 
-meanDSS_items_missing <- apply(data$dbt_wccl[, meanDSS_items],
+meanDSS_items_missing <- apply(data2$dbt_wccl[, meanDSS_items],
                                MARGIN = 1, 
                                FUN = function(x) { sum(is.na(x)) })
 sum((meanDSS_items_missing > (38 - 30)) & (meanDSS_items_missing != 38))
 
 # Try to reproduce meanDSS scale scores
 
-meanDSS_test <- rowMeans(data$dbt_wccl[, meanDSS_items], na.rm = TRUE)
+meanDSS_test <- rowMeans(data2$dbt_wccl[, meanDSS_items], na.rm = TRUE)
 meanDSS_test[is.nan(meanDSS_test)] <- NA
 
-all(is.na(data$dbt_wccl$meanDSS) == is.na(meanDSS_test))
-all(data$dbt_wccl$meanDSS == meanDSS_test, na.rm = TRUE)
+all(is.na(data2$dbt_wccl$meanDSS) == is.na(meanDSS_test))
+all(data2$dbt_wccl$meanDSS == meanDSS_test, na.rm = TRUE)
 
 # For Total Score of DERS, main outcomes paper analyzed the sum of available 
 # items if at least 30 out of 36 items were not missing. Moreover, for each
@@ -223,14 +223,14 @@ length(drtotl_items)
 
 # No drtotl scale scores were not computed on account of too few items
 
-drtotl_items_missing <- apply(data$ders[, drtotl_items],
+drtotl_items_missing <- apply(data2$ders[, drtotl_items],
                                MARGIN = 1, 
                                FUN = function(x) { sum(is.na(x)) })
 sum((drtotl_items_missing > (36 - 30)) & (drtotl_items_missing != 36))
 
 # Try to reproduce drtotl scale scores
 
-drtotl_test <- rowSums(data$ders[, drtotl_items], na.rm = TRUE)
+drtotl_test <- rowSums(data2$ders[, drtotl_items], na.rm = TRUE)
 drtotl_test[drtotl_items_missing == 36] <- NA
 
 for (i in 1:length(drtotl_test)) {
@@ -239,8 +239,8 @@ for (i in 1:length(drtotl_test)) {
   }
 }
 
-all(is.na(data$ders$drtotl) == is.na(drtotl_test))
-all(data$ders$drtotl == drtotl_test, na.rm = TRUE)
+all(is.na(data2$ders$drtotl) == is.na(drtotl_test))
+all(data2$ders$drtotl == drtotl_test, na.rm = TRUE)
 
 # For Control Subscale of DoSS, previous analyses analyzed the mean of available
 # items if at least 3 out of 4 items were not missing
@@ -250,18 +250,18 @@ length(cnDoSS_items)
 
 # No cnDoSS scale scores were not computed on account of too few items
 
-cnDoSS_items_missing <- apply(data$doss[, cnDoSS_items],
+cnDoSS_items_missing <- apply(data2$doss[, cnDoSS_items],
                               MARGIN = 1, 
                               FUN = function(x) { sum(is.na(x)) })
 sum((cnDoSS_items_missing > (4 - 3)) & (cnDoSS_items_missing != 4))
 
 # Try to reproduce cnDoSS scale scores
 
-cnDoSS_test <- rowMeans(data$doss[, cnDoSS_items], na.rm = TRUE)
+cnDoSS_test <- rowMeans(data2$doss[, cnDoSS_items], na.rm = TRUE)
 cnDoSS_test[is.nan(cnDoSS_test)] <- NA
 
-all(is.na(data$doss$cnDoSS) == is.na(cnDoSS_test))
-all(data$doss$cnDoSS == cnDoSS_test, na.rm = TRUE)
+all(is.na(data2$doss$cnDoSS) == is.na(cnDoSS_test))
+all(data2$doss$cnDoSS == cnDoSS_test, na.rm = TRUE)
 
 # For Total Score of KIMS, previous analyses analyzed the mean of available
 # items if at least 35 of 39 items were not missing
@@ -276,18 +276,18 @@ length(KMTOT_items)
 
 # No KMTOT scale scores were not computed on account of too few items
 
-KMTOT_items_missing <- apply(data$kims[, KMTOT_items],
+KMTOT_items_missing <- apply(data2$kims[, KMTOT_items],
                               MARGIN = 1, 
                               FUN = function(x) { sum(is.na(x)) })
 sum((KMTOT_items_missing > (39 - 35)) & (KMTOT_items_missing != 39))
 
 # Try to reproduce KMTOT scale scores
 
-KMTOT_test <- rowMeans(data$kims[, KMTOT_items], na.rm = TRUE)
+KMTOT_test <- rowMeans(data2$kims[, KMTOT_items], na.rm = TRUE)
 KMTOT_test[is.nan(KMTOT_test)] <- NA
 
-all(is.na(data$kims$KMTOT) == is.na(KMTOT_test))
-all(data$kims$KMTOT == KMTOT_test, na.rm = TRUE)
+all(is.na(data2$kims$KMTOT) == is.na(KMTOT_test))
+all(data2$kims$KMTOT == KMTOT_test, na.rm = TRUE)
 
 # ---------------------------------------------------------------------------- #
 # Compute item-level missingness ----
