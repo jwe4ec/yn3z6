@@ -38,8 +38,7 @@ groundhog_day <- version_control()
 
 # Load packages with groundhog
 
-# TODO
-
+groundhog.library(nlme, groundhog_day)
 
 
 
