@@ -251,6 +251,21 @@ all(data2$ders$drtotl == drtotl_test, na.rm = TRUE)
 View(data2$ders[!is.na(data2$ders$drtotl) &
                   rowSums(is.na(data2$ders[, drtotl_items])) > 0, ])
 
+# Compute drtotl_mean_imp based on mean of available items rather than adding
+# value of 1 to the total score for each missing item. View discrepant values.
+# drtotl_mean_imp, not drtotl, will be used in analyses in present manuscript.
+
+data2$ders$drtotl_m_imp <- rowMeans(data2$ders[, drtotl_items], na.rm = TRUE)*36
+data2$ders$drtotl_m_imp[is.nan(data2$ders$drtotl_m_imp)] <- NA
+
+all(is.na(data2$ders$drtotl_m_imp) == is.na(drtotl_test))
+sum(data2$ders[!is.na(data2$ders$drtotl_m_imp), "drtotl_m_imp"] != 
+      drtotl_test[!is.na(drtotl_test)])
+
+View(data2$ders[(!is.na(data2$ders$drtotl_m_imp) & !is.na(data2$ders$drtotl)) &
+                  (data2$ders$drtotl_m_imp != data2$ders$drtotl), 
+                c("drtotl", "drtotl_m_imp")])
+
 # For DBT Skills Subscale (DSS) of DBT-WCCL, main outcomes paper analyzed the 
 # mean of available items if at least 30 out of 38 items were not missing
 
@@ -334,7 +349,7 @@ View(data2$kims[!is.na(data2$kims$KMTOT) &
 # Compute item-level missingness ----
 # ---------------------------------------------------------------------------- #
 
-item_level(data2$ders, data2$ders$drtotl, drtotl_items)
+item_level(data2$ders, data2$ders$drtotl_m_imp, drtotl_items)
 item_level(data2$dbt_wccl, data2$dbt_wccl$meanDSS, meanDSS_items)
 item_level(data2$doss, data2$doss$cnDoSS, cnDoSS_items)
 item_level(data2$kims, data2$kims$KMTOT, KMTOT_items)
@@ -345,14 +360,14 @@ item_level(data2$kims, data2$kims$KMTOT, KMTOT_items)
 
 # Run function for each scale
 
-ag.drtotl <- describe_by_time(data2$ders, "drtotl")
+ag.drtotl_m_imp <- describe_by_time(data2$ders, "drtotl_m_imp")
 ag.meanDSS <- describe_by_time(data2$dbt_wccl, "meanDSS")
 ag.cnDoSS <- describe_by_time(data2$doss, "cnDoSS")
 ag.KMTOT <- describe_by_time(data2$kims, "KMTOT")
 
 # Build table
 
-ag.all <- rbind(ag.drtotl, ag.meanDSS, ag.cnDoSS, ag.KMTOT)
+ag.all <- rbind(ag.drtotl_m_imp, ag.meanDSS, ag.cnDoSS, ag.KMTOT)
 
 # Round to two decimal places and recode and rename period
 
@@ -377,14 +392,14 @@ write.csv(table, "./results/table_s1.csv", row.names = FALSE)
 
 # Proportions
 
-prop_drtotl <- sum(is.na(data2$ders$drtotl))/(44*4)
+prop_drtotl_m_imp <- sum(is.na(data2$ders$drtotl_m_imp))/(44*4)
 prop_meanDSS <- sum(is.na(data2$dbt_wccl$meanDSS))/(44*4)
 prop_cnDoSS <- sum(is.na(data2$doss$cnDoSS))/(44*4)
 prop_KMTOT <- sum(is.na(data2$kims$KMTOT))/(44*4)
 
 # Percentages
 
-round(prop_drtotl*100, 2)
+round(prop_drtotl_m_imp*100, 2)
 round(prop_meanDSS*100, 2)
 round(prop_cnDoSS*100, 2)
 round(prop_KMTOT*100, 2)
