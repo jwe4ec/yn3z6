@@ -204,14 +204,8 @@ for (i in 1:length(data2)) {
   }
 }
 
-# Save data as R object
-
-dir.create("./data/intermediate")
-save(data2, file = "./data/intermediate/data2.Rdata")
-
-
 # ---------------------------------------------------------------------------- #
-# Define items that comprise each scale and investigate scoring ----
+# Investigate and compute average item scores ----
 # ---------------------------------------------------------------------------- #
 
 # For Total Score of DERS, main outcomes paper analyzed the sum of available 
@@ -347,6 +341,15 @@ all(data2$kims$KMTOT == KMTOT_test, na.rm = TRUE)
 
 View(data2$kims[!is.na(data2$kims$KMTOT) &
                   rowSums(is.na(data2$kims[, KMTOT_items])) > 0, ])
+
+# ---------------------------------------------------------------------------- #
+# Save intermediate data ----
+# ---------------------------------------------------------------------------- #
+
+# Save data as R object
+
+dir.create("./data/intermediate")
+save(data2, file = "./data/intermediate/data2.Rdata")
 
 # ---------------------------------------------------------------------------- #
 # Compute item-level missingness ----
