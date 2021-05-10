@@ -209,8 +209,9 @@ for (i in 1:length(data2)) {
 dir.create("./data/intermediate")
 save(data2, file = "./data/intermediate/data2.Rdata")
 
+
 # ---------------------------------------------------------------------------- #
-# Define items that comprise each scale ----
+# Define items that comprise each scale and investigate scoring ----
 # ---------------------------------------------------------------------------- #
 
 # For Total Score of DERS, main outcomes paper analyzed the sum of available 
@@ -255,16 +256,18 @@ View(data2$ders[!is.na(data2$ders$drtotl) &
 # value of 1 to the total score for each missing item. View discrepant values.
 # drtotl_mean_imp, not drtotl, will be used in analyses in present manuscript.
 
-data2$ders$drtotl_m_imp <- rowMeans(data2$ders[, drtotl_items], na.rm = TRUE)*36
+data2$ders$drtotl_m_imp <- rowMeans(data2$ders[, drtotl_items], na.rm = TRUE)
 data2$ders$drtotl_m_imp[is.nan(data2$ders$drtotl_m_imp)] <- NA
 
-all(is.na(data2$ders$drtotl_m_imp) == is.na(drtotl_test))
-sum(data2$ders[!is.na(data2$ders$drtotl_m_imp), "drtotl_m_imp"] != 
+data2$ders$drtotl_m_imp_sum <- data2$ders$drtotl_m_imp*36
+
+all(is.na(data2$ders$drtotl_m_imp_sum) == is.na(drtotl_test))
+sum(data2$ders[!is.na(data2$ders$drtotl_m_imp_sum), "drtotl_m_imp_sum"] != 
       drtotl_test[!is.na(drtotl_test)])
 
-View(data2$ders[(!is.na(data2$ders$drtotl_m_imp) & !is.na(data2$ders$drtotl)) &
-                  (data2$ders$drtotl_m_imp != data2$ders$drtotl), 
-                c("drtotl", "drtotl_m_imp")])
+View(data2$ders[(!is.na(data2$ders$drtotl_m_imp_sum) & !is.na(data2$ders$drtotl)) &
+                  (data2$ders$drtotl_m_imp_sum != data2$ders$drtotl), 
+                c("drtotl", "drtotl_m_imp_sum")])
 
 # For DBT Skills Subscale (DSS) of DBT-WCCL, main outcomes paper analyzed the 
 # mean of available items if at least 30 out of 38 items were not missing
@@ -355,7 +358,7 @@ item_level(data2$doss, data2$doss$cnDoSS, cnDoSS_items)
 item_level(data2$kims, data2$kims$KMTOT, KMTOT_items)
 
 # ---------------------------------------------------------------------------- #
-# Compute n, M, and SD for each scale at each time point ----
+# Compute n, M, and SD for each average item scores at each time point ----
 # ---------------------------------------------------------------------------- #
 
 # Run function for each scale
