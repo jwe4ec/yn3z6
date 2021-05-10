@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------------- #
-# Compute Descriptives and Missingness Rates
+# Compute Scores, Descriptives, and Missingness Rates
 # Author: Jeremy W. Eberle
 # ---------------------------------------------------------------------------- #
 
@@ -72,6 +72,12 @@ report_AIN_Period <- function(dfs) {
       cat("\n")
     }
   }
+}
+
+# Define function to compute POMP scores
+
+compute_pomp <- function(item_sum_scores, scale_min, scale_max) {
+  output <- ((item_sum_scores - scale_min)/(scale_max - scale_min))*100
 }
 
 # Define function to report proportion of scale scores computed with at least
@@ -341,6 +347,41 @@ all(data2$kims$KMTOT == KMTOT_test, na.rm = TRUE)
 
 View(data2$kims[!is.na(data2$kims$KMTOT) &
                   rowSums(is.na(data2$kims[, KMTOT_items])) > 0, ])
+
+# ---------------------------------------------------------------------------- #
+# Compute item sum scores ----
+# ---------------------------------------------------------------------------- #
+
+# Note: For DERS, drtotl_m_imp_sum already exists (see above)
+
+data2$dbt_wccl$meanDSS_sum <- data2$dbt_wccl$meanDSS*length(meanDSS_items)
+data2$doss$cnDoSS_sum <- data2$doss$cnDoSS*length(cnDoSS_items)
+data2$kims$KMTOT_sum <- data2$kims$KMTOT*length(KMTOT_items)
+
+# ---------------------------------------------------------------------------- #
+# Compute POMP scores ----
+# ---------------------------------------------------------------------------- #
+
+# Compute percent-of-maximum-possible (POMP) scores (Cohen et al., 1999, p. 323)
+# from item sum scores
+
+drtotl_min <- 1*length(drtotl_items)
+drtotl_max <- 5*length(drtotl_items)
+meanDSS_min <- 0*length(meanDSS_items)
+meanDSS_max <- 3*length(meanDSS_items)
+cnDoSS_min <- 0*length(cnDoSS_items)
+cnDoSS_max <- 4*length(cnDoSS_items)
+KMTOT_min <- 1*length(KMTOT_items)
+KMTOT_max <- 5*length(KMTOT_items)
+
+data2$ders$drtotl_m_imp_pomp <- 
+  compute_pomp(data2$ders$drtotl_m_imp_sum, drtotl_min, drtotl_max)
+data2$dbt_wccl$meanDSS_pomp <- 
+  compute_pomp(data2$dbt_wccl$meanDSS_sum, meanDSS_min, meanDSS_max)
+data2$doss$cnDoSS_pomp <- 
+  compute_pomp(data2$doss$cnDoSS_sum, cnDoSS_min, cnDoSS_max)
+data2$kims$KMTOT_pomp <- 
+  compute_pomp(data2$kims$KMTOT_sum, KMTOT_min, KMTOT_max)
 
 # ---------------------------------------------------------------------------- #
 # Save intermediate data ----
