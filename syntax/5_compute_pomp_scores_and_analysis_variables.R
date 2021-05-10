@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------------- #
-# Run Analyses
+# Compute POMP Scores and Analysis Variables
 # Author: Jeremy W. Eberle
 # ---------------------------------------------------------------------------- #
 
@@ -38,7 +38,8 @@ groundhog_day <- version_control()
 
 # Load packages with groundhog
 
-groundhog.library(nlme, groundhog_day)
+# TODO
+
 
 
 
@@ -50,50 +51,22 @@ groundhog.library(nlme, groundhog_day)
 load("./data/intermediate/data2.Rdata")
 
 # ---------------------------------------------------------------------------- #
-# Prepare data for analysis ----
+# Compute POMP Scores ----
 # ---------------------------------------------------------------------------- #
 
-# Create table for contemporaneous model
-
-contemp <- data2$dbt_wccl[, c("ResearchID", "Condition", "AIN", "Period",
-                              "time0", "meanDSS")]
-contemp <- merge(contemp,
-                 data2$ders[, c("ResearchID", "time0", "drtotl")],
-                 by = c("ResearchID", "time0"),
-                 all.x = TRUE)
-contemp <- merge(contemp,
-                 data2$doss[, c("ResearchID", "time0", "cnDoSS")],
-                 by = c("ResearchID", "time0"),
-                 all.x = TRUE)
-contemp <- merge(contemp,
-                 data2$kims[, c("ResearchID", "time0", "KMTOT")],
-                 by = c("ResearchID", "time0"),
-                 all.x = TRUE)
-
-# Create table for lagged model
-
-lagged <- data2$dbt_wccl[, c("ResearchID", "Condition", "AIN", "Period",
-                             "time0_lag", "meanDSS")]
-lagged <- merge(lagged,
-                data2$ders[, c("ResearchID", "time0_lag", "drtotl")],
-                by = c("ResearchID", "time0_lag"),
-                all.x = TRUE)
-lagged <- merge(lagged,
-                data2$doss[, c("ResearchID", "time0_lag", "cnDoSS")],
-                by = c("ResearchID", "time0_lag"),
-                all.x = TRUE)
-lagged <- merge(lagged,
-                data2$kims[, c("ResearchID", "time0_lag", "KMTOT")],
-                by = c("ResearchID", "time0_lag"),
-                all.x = TRUE)
-lagged <- lagged[!is.na(lagged$time0_lag), ]
-
-# ---------------------------------------------------------------------------- #
-# Run analyses ----
-# ---------------------------------------------------------------------------- #
+# Compute percent-of-maximum-possible (POMP) scores (Cohen et al., 1999, p. 323)
 
 # TODO
 
+
+
+
+
+# ---------------------------------------------------------------------------- #
+# Compute Analysis Variables ----
+# ---------------------------------------------------------------------------- #
+
+# TODO
 
 
 
