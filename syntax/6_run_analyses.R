@@ -53,37 +53,43 @@ load("./data/intermediate/data3.Rdata")
 # Prepare data for analysis ----
 # ---------------------------------------------------------------------------- #
 
+# TODO: Add other key analysis variables in each table below
+
+
+
+
+
 # Create table for contemporaneous model
 
-contemp <- data2$dbt_wccl[, c("ResearchID", "Condition", "AIN", "Period",
+contemp <- data3$dbt_wccl[, c("ResearchID", "Condition", "AIN", "Period",
                               "time0", "meanDSS")]
 contemp <- merge(contemp,
-                 data2$ders[, c("ResearchID", "time0", "drtotl")],
+                 data3$ders[, c("ResearchID", "time0", "drtotl")],
                  by = c("ResearchID", "time0"),
                  all.x = TRUE)
 contemp <- merge(contemp,
-                 data2$doss[, c("ResearchID", "time0", "cnDoSS")],
+                 data3$doss[, c("ResearchID", "time0", "cnDoSS")],
                  by = c("ResearchID", "time0"),
                  all.x = TRUE)
 contemp <- merge(contemp,
-                 data2$kims[, c("ResearchID", "time0", "KMTOT")],
+                 data3$kims[, c("ResearchID", "time0", "KMTOT")],
                  by = c("ResearchID", "time0"),
                  all.x = TRUE)
 
 # Create table for lagged model
 
-lagged <- data2$dbt_wccl[, c("ResearchID", "Condition", "AIN", "Period",
+lagged <- data3$dbt_wccl[, c("ResearchID", "Condition", "AIN", "Period",
                              "time0_lag", "meanDSS")]
 lagged <- merge(lagged,
-                data2$ders[, c("ResearchID", "time0_lag", "drtotl")],
+                data3$ders[, c("ResearchID", "time0_lag", "drtotl")],
                 by = c("ResearchID", "time0_lag"),
                 all.x = TRUE)
 lagged <- merge(lagged,
-                data2$doss[, c("ResearchID", "time0_lag", "cnDoSS")],
+                data3$doss[, c("ResearchID", "time0_lag", "cnDoSS")],
                 by = c("ResearchID", "time0_lag"),
                 all.x = TRUE)
 lagged <- merge(lagged,
-                data2$kims[, c("ResearchID", "time0_lag", "KMTOT")],
+                data3$kims[, c("ResearchID", "time0_lag", "KMTOT")],
                 by = c("ResearchID", "time0_lag"),
                 all.x = TRUE)
 lagged <- lagged[!is.na(lagged$time0_lag), ]

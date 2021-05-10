@@ -48,9 +48,14 @@ groundhog_day <- version_control()
 # Define functions used throughout script ----
 # ---------------------------------------------------------------------------- #
 
-# Define function to compute between-person effects (i.e., person mean)
+# Define function to compute variables for between-person effects (i.e., person
+# means) and within-person effects (i.e., person-mean centered scores) for both
+# average item scores and POMP scores
 
-compute_btw <- function(df, avg_item_colname, pomp_colname) {
+disaggregate <- function(df, avg_item_colname, pomp_colname) {
+  
+  # Compute between-person effects
+  
   avg_item_btw_colname <- paste0(avg_item_colname, "_btw")
   pomp_btw_colname <- paste0(pomp_colname, "_btw")
   
@@ -64,6 +69,17 @@ compute_btw <- function(df, avg_item_colname, pomp_colname) {
   output <- merge(df, person_means, by = "ResearchID", all.x = TRUE)
   output[is.na(output[, avg_item_colname]), 
          c(avg_item_btw_colname, pomp_btw_colname)] <- NA
+  
+  # Compute within-person effects
+  
+  avg_item_wth_colname <- paste0(avg_item_colname, "_wth")
+  pomp_wth_colname <- paste0(pomp_colname, "_wth")
+  
+  output[, avg_item_wth_colname] <- 
+    output[, avg_item_colname] - output[, avg_item_btw_colname]
+  output[, pomp_wth_colname] <- 
+    output[, pomp_colname] - output[, pomp_btw_colname]
+  
   return(output)
 }
 
@@ -76,20 +92,18 @@ load("./data/intermediate/data2.Rdata")
 data3 <- data2
 
 # ---------------------------------------------------------------------------- #
-# Compute between-person effects (i.e., person mean) ----
+# Compute variables for between- and within-person effects ----
 # ---------------------------------------------------------------------------- #
 
-data3$ders <- compute_btw(data2$ders, "drtotl_m_imp", "drtotl_m_imp_pomp")
-data3$dbt_wccl <- compute_btw(data2$dbt_wccl, "meanDSS", "meanDSS_pomp")
-data3$doss <- compute_btw(data2$doss, "cnDoSS", "cnDoSS_pomp")
-data3$kims <- compute_btw(data2$kims, "KMTOT", "KMTOT_pomp")
+data3$ders <- disaggregate(data2$ders, "drtotl_m_imp", "drtotl_m_imp_pomp")
+data3$dbt_wccl <- disaggregate(data2$dbt_wccl, "meanDSS", "meanDSS_pomp")
+data3$doss <- disaggregate(data2$doss, "cnDoSS", "cnDoSS_pomp")
+data3$kims <- disaggregate(data2$kims, "KMTOT", "KMTOT_pomp")
 
 # ---------------------------------------------------------------------------- #
-# Compute within-person effects (i.e., person-mean centered scores) ----
+# Save intermediate data ----
 # ---------------------------------------------------------------------------- #
 
-# TODO
+# Save data as R object
 
-
-
-
+save(data3, file = "./data/intermediate/data3.Rdata")
