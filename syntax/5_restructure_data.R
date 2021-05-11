@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------------- #
-# Run Analyses
+# Restructure Data
 # Author: Jeremy W. Eberle
 # ---------------------------------------------------------------------------- #
 
@@ -38,7 +38,11 @@ groundhog_day <- version_control()
 
 # Load packages with groundhog
 
-groundhog.library(nlme, groundhog_day)
+# TODO
+
+
+
+
 
 # ---------------------------------------------------------------------------- #
 # Import data ----
@@ -47,10 +51,14 @@ groundhog.library(nlme, groundhog_day)
 load("./data/intermediate/data3.Rdata")
 
 # ---------------------------------------------------------------------------- #
-# Prepare data for analysis ----
+# Create tables for analysis ----
 # ---------------------------------------------------------------------------- #
 
-# TODO: Add other key analysis variables in each table below
+# TODO: Add potential auxiliary variables below
+
+
+
+
 
 # Identify key analysis variables
 
@@ -58,7 +66,7 @@ meanDSS_vars <- c("meanDSS", "meanDSS_btw", "meanDSS_wth",
                   "meanDSS_pomp", "meanDSS_pomp_btw", "meanDSS_pomp_wth")
 drtotl_m_imp_vars <- c("drtotl_m_imp", "drtotl_m_imp_btw", "drtotl_m_imp_wth",
                        "drtotl_m_imp_pomp", "drtotl_m_imp_pomp_btw", 
-                         "drtotl_m_imp_pomp_wth")
+                       "drtotl_m_imp_pomp_wth")
 cnDoSS_vars <- c("cnDoSS", "cnDoSS_btw", "cnDoSS_wth",
                  "cnDoSS_pomp", "cnDoSS_pomp_btw", "cnDoSS_pomp_wth")
 KMTOT_vars <- c("KMTOT", "KMTOT_btw", "KMTOT_wth",
@@ -100,70 +108,10 @@ lagged <- merge(lagged,
 lagged <- lagged[!is.na(lagged$time0_lag), ]
 
 # ---------------------------------------------------------------------------- #
-# Run analyses for intent-to-treat sample ----
+# Save intermediate data ----
 # ---------------------------------------------------------------------------- #
 
-# Contemporaneous models using POMP scores
-
-# TODO
-
-
-
-
-
-# Contemporaneous models using average item scores
-
-# TODO
-
-
-
-
-
-# Lagged models using POMP scores
-
-# TODO
-
-
-
-
-
-# Lagged models using average item scores
-
-# TODO
-
-
-
-
-
-# ---------------------------------------------------------------------------- #
-# Run analyses for completer sample ----
-# ---------------------------------------------------------------------------- #
-
-# Contemporaneous models using POMP scores
-
-# TODO
-
-
-
-
-
-# Contemporaneous models using average item scores
-
-# TODO
-
-
-
-
-
-# Lagged models using POMP scores
-
-# TODO
-
-
-
-
-
-# Lagged models using average item scores
+# Save data as R object
 
 # TODO
 
