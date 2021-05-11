@@ -174,8 +174,11 @@ for (i in 1:length(data)) {
 names(data) <- strsplit(names(data), split = " data file", fixed = FALSE)
 names(data)[names(data) == "dbt-wccl"] <- "dbt_wccl"
 names(data)[names(data) == "demographic"] <- "demog"
+names(data)[names(data) == "depression (phq-9)"] <- "phq"
 names(data)[names(data) == "dimensions of stress"] <- "doss"
+names(data)[names(data) == "experience of shame"] <- "ess"
 names(data)[names(data) == "scid i brief"] <- "scid1"
+names(data)[names(data) == "staxi anger"] <- "staxi"
 
 # Write further cleaned CSV data files
 

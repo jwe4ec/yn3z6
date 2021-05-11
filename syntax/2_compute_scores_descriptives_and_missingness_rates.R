@@ -183,7 +183,8 @@ report_AIN_Period(data2)
 # is already defined in dbt_wccl table; the code below yields the same values)
 
 for (i in 1:length(data2)) {
-  if (names(data2[i]) %in% c("dbt_wccl", "doss", "kims")) {
+  if (names(data2[i]) %in% c("dbt_wccl", "doss", "ess", "kims", "oasis", "oq",
+                             "phq", "staxi")) {
     data2[[i]]$time0 <- NA
     data2[[i]]$time0[data2[[i]]$Period == 2] <- 0
     data2[[i]]$time0[data2[[i]]$Period == 3] <- 1
@@ -211,7 +212,7 @@ for (i in 1:length(data2)) {
 }
 
 # ---------------------------------------------------------------------------- #
-# Investigate and compute average item scores ----
+# Investigate and compute average item scores for analysis variables ----
 # ---------------------------------------------------------------------------- #
 
 # For Total Score of DERS, main outcomes paper analyzed the sum of available 
