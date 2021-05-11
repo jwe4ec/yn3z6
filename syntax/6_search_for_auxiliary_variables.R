@@ -48,18 +48,13 @@ groundhog_day <- version_control()
 # Import data ----
 # ---------------------------------------------------------------------------- #
 
-# TODO
+load("./data/intermediate/data4.Rdata")
 
-
-
-
+data5 <- data4
 
 # ---------------------------------------------------------------------------- #
-# Create scale-level missing data indicators ----
+# Recode potential demographic auxiliary variables ----
 # ---------------------------------------------------------------------------- #
-
-# Create binary missing data indicators (0 = not missing, 1 = missing) for each
-# analysis variable at each time point
 
 # TODO
 
@@ -71,7 +66,8 @@ groundhog_day <- version_control()
 # Identify correlates with missing data indicators ----
 # ---------------------------------------------------------------------------- #
 
-# TODO
+# TODO: Change data to wide format
+
 
 
 

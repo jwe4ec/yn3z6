@@ -50,6 +50,8 @@ groundhog_day <- version_control()
 
 load("./data/intermediate/data3.Rdata")
 
+data4 <- data3
+
 # ---------------------------------------------------------------------------- #
 # Create tables for analysis ----
 # ---------------------------------------------------------------------------- #
@@ -65,6 +67,8 @@ cnDoSS_vars <- c("cnDoSS", "cnDoSS_btw", "cnDoSS_wth",
                  "cnDoSS_pomp", "cnDoSS_pomp_btw", "cnDoSS_pomp_wth")
 KMTOT_vars <- c("KMTOT", "KMTOT_btw", "KMTOT_wth",
                 "KMTOT_pomp", "KMTOT_pomp_btw", "KMTOT_pomp_wth")
+
+analysis_vars <- c(meanDSS_vars, drtotl_m_imp_vars, cnDoSS_vars, KMTOT_vars)
 
 # Identify potential auxiliary variables (other than "Condition", which already
 # will be included in tables for analysis)
@@ -87,85 +91,105 @@ oq_aux <- c("oq_sd", "oq_ir", "oq_sr", "oqsum")
 
 # Create table for contemporaneous model (without potential auxiliary variables)
 
-contemp <- data3$dbt_wccl[, c("ResearchID", "Condition", "AIN", "Period", 
+contemp <- data4$dbt_wccl[, c("ResearchID", "Condition", "AIN", "Period", 
                               "time0", meanDSS_vars)]
 contemp <- merge(contemp, 
-                 data3$ders[, c("ResearchID", "time0", drtotl_m_imp_vars)],
+                 data4$ders[, c("ResearchID", "time0", drtotl_m_imp_vars)],
                  by = c("ResearchID", "time0"),
                  all.x = TRUE)
 contemp <- merge(contemp, 
-                 data3$doss[, c("ResearchID", "time0", cnDoSS_vars)],
+                 data4$doss[, c("ResearchID", "time0", cnDoSS_vars)],
                  by = c("ResearchID", "time0"),
                  all.x = TRUE)
 contemp <- merge(contemp,
-                 data3$kims[, c("ResearchID", "time0", KMTOT_vars)],
+                 data4$kims[, c("ResearchID", "time0", KMTOT_vars)],
                  by = c("ResearchID", "time0"),
                  all.x = TRUE)
+
+data4$contemp <- contemp
 
 # Create table for contemporaneous model (with potential auxiliary variables)
 
 contemp_aux <- merge(contemp, 
-                     data3$demog[, c("ResearchID", demog_aux)],
+                     data4$demog[, c("ResearchID", demog_aux)],
                      by = c("ResearchID"),
                      all.x = TRUE)
 contemp_aux <- merge(contemp_aux, 
-                     data3$scid1[, c("ResearchID", scid1_aux)],
+                     data4$scid1[, c("ResearchID", scid1_aux)],
                      by = c("ResearchID"),
                      all.x = TRUE)
 contemp_aux <- merge(contemp_aux, 
-                     data3$dbt_wccl[, c("ResearchID", "time0", dbt_wccl_aux)],
+                     data4$dbt_wccl[, c("ResearchID", "time0", dbt_wccl_aux)],
                      by = c("ResearchID", "time0"),
                      all.x = TRUE)
 contemp_aux <- merge(contemp_aux,
-                     data3$ders[, c("ResearchID", "time0", ders_aux)],
+                     data4$ders[, c("ResearchID", "time0", ders_aux)],
                      by = c("ResearchID", "time0"),
                      all.x = TRUE)
 contemp_aux <- merge(contemp_aux,
-                     data3$doss[, c("ResearchID", "time0", doss_aux)],
+                     data4$doss[, c("ResearchID", "time0", doss_aux)],
                      by = c("ResearchID", "time0"),
                      all.x = TRUE)
 contemp_aux <- merge(contemp_aux,
-                     data3$kims[, c("ResearchID", "time0", kims_aux)],
+                     data4$kims[, c("ResearchID", "time0", kims_aux)],
                      by = c("ResearchID", "time0"),
                      all.x = TRUE)
 contemp_aux <- merge(contemp_aux,
-                     data3$oasis[, c("ResearchID", "time0", oasis_aux)],
+                     data4$oasis[, c("ResearchID", "time0", oasis_aux)],
                      by = c("ResearchID", "time0"),
                      all.x = TRUE)
 contemp_aux <- merge(contemp_aux,
-                     data3$phq[, c("ResearchID", "time0", phq_aux)],
+                     data4$phq[, c("ResearchID", "time0", phq_aux)],
                      by = c("ResearchID", "time0"),
                      all.x = TRUE)
 contemp_aux <- merge(contemp_aux,
-                     data3$ess[, c("ResearchID", "time0", ess_aux)],
+                     data4$ess[, c("ResearchID", "time0", ess_aux)],
                      by = c("ResearchID", "time0"),
                      all.x = TRUE)
 contemp_aux <- merge(contemp_aux,
-                     data3$staxi[, c("ResearchID", "time0", staxi_aux)],
+                     data4$staxi[, c("ResearchID", "time0", staxi_aux)],
                      by = c("ResearchID", "time0"),
                      all.x = TRUE)
 contemp_aux <- merge(contemp_aux,
-                     data3$oq[, c("ResearchID", "time0", oq_aux)],
+                     data4$oq[, c("ResearchID", "time0", oq_aux)],
                      by = c("ResearchID", "time0"),
                      all.x = TRUE)
+
+data4$contemp_aux <- contemp_aux
 
 # Create table for lagged model (without potential auxiliary variables)
 
-lagged <- data3$dbt_wccl[, c("ResearchID", "Condition", "AIN", "Period",
+lagged <- data4$dbt_wccl[, c("ResearchID", "Condition", "AIN", "Period",
                              "time0_lag", meanDSS_vars)]
 lagged <- merge(lagged,
-                data3$ders[, c("ResearchID", "time0_lag", drtotl_m_imp_vars)],
+                data4$ders[, c("ResearchID", "time0_lag", drtotl_m_imp_vars)],
                 by = c("ResearchID", "time0_lag"),
                 all.x = TRUE)
 lagged <- merge(lagged,
-                data3$doss[, c("ResearchID", "time0_lag", cnDoSS_vars)],
+                data4$doss[, c("ResearchID", "time0_lag", cnDoSS_vars)],
                 by = c("ResearchID", "time0_lag"),
                 all.x = TRUE)
 lagged <- merge(lagged,
-                data3$kims[, c("ResearchID", "time0_lag", KMTOT_vars)],
+                data4$kims[, c("ResearchID", "time0_lag", KMTOT_vars)],
                 by = c("ResearchID", "time0_lag"),
                 all.x = TRUE)
 lagged <- lagged[!is.na(lagged$time0_lag), ]
+
+data4$lagged <- lagged
+
+# ---------------------------------------------------------------------------- #
+# Create missing data indicators ----
+# ---------------------------------------------------------------------------- #
+
+# Create binary missing data indicators (0 = not missing, 1 = missing) for each
+# analysis variable at each time point
+
+for (i in 1:length(names(data4$contemp_aux))) {
+  if (names(data4$contemp_aux)[i] %in% analysis_vars) {
+    data4$contemp_aux[, paste0(names(data4$contemp_aux)[i], "_ind")] <- 
+      is.na(data4$contemp_aux[, names(data4$contemp_aux)[i]])
+  }
+}
 
 # ---------------------------------------------------------------------------- #
 # Save intermediate data ----
@@ -173,8 +197,4 @@ lagged <- lagged[!is.na(lagged$time0_lag), ]
 
 # Save data as R object
 
-# TODO
-
-
-
-
+save(data4, file = "./data/intermediate/data4.Rdata")
