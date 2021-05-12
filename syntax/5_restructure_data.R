@@ -74,8 +74,7 @@ analysis_vars <- c(meanDSS_vars, drtotl_m_imp_vars, cnDoSS_vars, KMTOT_vars)
 # will be included in tables for analysis)
 
 demog_aux <- c("SH132", "DDS04", "DDS06", "DDS06b", "DDS06c", "DDS10", 
-               "DDS14", "DDS15a", "DDS16a", "DDS17a2", "DDS18", "DDS19", 
-               "DDS25", "DDS26")
+               "DDS14", "DDS15a", "DDS16a", "DDS17a2", "DDS25", "DDS26")
 scid1_aux <- c("SCPN120", "evanxdx", "evdep", "eveatdx", "evsubab", "nowanxdx", 
                "nowdep", "noweatdx", "nowsomat", "nowsubab", "primaryDX")
 dbt_wccl_aux <- c("meanDCS1", "meanDCS2", "meanDCS")

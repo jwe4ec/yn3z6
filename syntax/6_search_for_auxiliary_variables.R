@@ -60,13 +60,71 @@ data5 <- data4
 
 
 
+# CATEGORICAL
 
+# Sexual orientation
+
+table(data5$contemp_aux$SH132, useNA = "always")
+
+# Race
+
+table(data5$contemp_aux$DDS06, useNA = "always")
+table(data5$contemp_aux$DDS06c, useNA = "always")
+
+# Ethnicity
+
+table(data5$contemp_aux$DDS06b, useNA = "always")
+
+# Adopted
+
+table(data5$contemp_aux$DDS10, useNA = "always")
+
+# Marital status
+
+table(data5$contemp_aux$DDS14, useNA = "always")
+
+# Occupation
+
+table(data5$contemp_aux$DDS17a2, useNA = "always")
+
+# Learning disability
+
+table(data5$contemp_aux$DDS25, useNA = "always")
+
+# Physical disability
+
+table(data5$contemp_aux$DDS26, useNA = "always")
+
+# ORDINAL
+
+# Education
+
+table(data5$contemp_aux$DDS15a, useNA = "always")
+
+# Gross annual income
+
+table(data5$contemp_aux$DDS16a, useNA = "always")
+
+# CONTINUOUS
+
+# Age
+
+table(data5$contemp_aux$DDS04, useNA = "always")
 
 # ---------------------------------------------------------------------------- #
 # Identify correlates with missing data indicators ----
 # ---------------------------------------------------------------------------- #
 
 # TODO: Change data to wide format
+
+
+
+
+
+# TODO: Use point-biserial correlation coefficient for continuous variables
+# (cor.test function of stats package), rank-biserial correlation coefficient
+# for ordinal variables (wilcoxonRG function of rcompanion package), and
+# Cramer's V for categorical variables (CramerV function of DescTools package)
 
 
 
