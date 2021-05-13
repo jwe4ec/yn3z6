@@ -169,16 +169,27 @@ for (i in 1:length(data)) {
   }
 }
 
-# Shorten table names
+# Make table names lowercase, shorten them, and alphabetize them
+
+names(data) <- tolower(names(data))
 
 names(data) <- strsplit(names(data), split = " data file", fixed = FALSE)
+names(data)[names(data) == "compliance with research protocol"] <- "thi"
 names(data)[names(data) == "dbt-wccl"] <- "dbt_wccl"
+names(data)[names(data) == "c(\"eis\", \" with credibility and expectancy je\")"] <- "eis"
 names(data)[names(data) == "demographic"] <- "demog"
 names(data)[names(data) == "depression (phq-9)"] <- "phq"
 names(data)[names(data) == "dimensions of stress"] <- "doss"
 names(data)[names(data) == "experience of shame"] <- "ess"
 names(data)[names(data) == "scid i brief"] <- "scid1"
+names(data)[names(data) == "scid ii bpd"] <- "scid2_bpd"
 names(data)[names(data) == "staxi anger"] <- "staxi"
+
+data <- data[order(names(data))]
+
+# Rename "ResearchId" to "ResearchID" in "thi" table
+
+names(data$thi)[names(data$thi) == "ResearchId"] <- "ResearchID"
 
 # Write further cleaned CSV data files
 

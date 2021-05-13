@@ -157,7 +157,11 @@ data2 <- vector("list", length(data))
 for (i in 1:length(data)) {
   data2[[i]] <- data[[i]]
   
-  data2[[i]] <- data2[[i]][data2[[i]]$AIN == 1 & !is.na(data2[[i]]$AIN), ]
+  if ("AIN" %in% names(data[[i]])) {
+    data2[[i]] <- data2[[i]][data2[[i]]$AIN == 1 & !is.na(data2[[i]]$AIN), ]
+  } else {
+    print(paste0("AIN is not in ", names(data[i])))
+  }
 }
 
 names(data2) <- names(data)
@@ -166,11 +170,23 @@ report_AIN_Period(data2)
 
 # Confirm ResearchIDs are consistent across tables
 
-all(setequal(unique(data2$dbt_wccl$ResearchID), unique(data2$demog$ResearchID)),
-    setequal(unique(data2$dbt_wccl$ResearchID), unique(data2$ders$ResearchID)),
-    setequal(unique(data2$dbt_wccl$ResearchID), unique(data2$doss$ResearchID)),
-    setequal(unique(data2$dbt_wccl$ResearchID), unique(data2$kims$ResearchID)),
-    setequal(unique(data2$dbt_wccl$ResearchID), unique(data2$scid1$ResearchID)))
+for (i in 1:length(data2)) {
+  if ("ResearchID" %in% names(data2[[i]])) {
+    if (!setequal(unique(data2[["dbt_wccl"]][, "ResearchID"]), 
+                 unique(data2[[i]][, "ResearchID"]))) {
+      warning(paste0("ResearchIDs in ", names(data2[i]), " are different"))
+    }
+  } else {
+    print(paste0("ResearchID not in ", names(data2[i])))
+  }
+}
+
+# Add AIN to "thi" table
+
+data2$thi <- merge(data2$thi, 
+                   data2$dbt_wccl[, c("ResearchID", "AIN")],
+                   by = c("ResearchID"),
+                   all.x = TRUE)
 
 # Exclude DERS pretreatment data (use DERS screening data instead)
 
