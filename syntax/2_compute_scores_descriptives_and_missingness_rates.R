@@ -60,7 +60,7 @@ report_AIN_Period <- function(dfs) {
       print(table(dfs[[i]]["AIN"], useNA = "always"))
     } else {
       cat("No such column")
-      cat("\n")
+      cat("\n", "\n")
     }
     
     cat("Period:")
@@ -69,7 +69,7 @@ report_AIN_Period <- function(dfs) {
       cat("\n")
     } else {
       cat("No such column")
-      cat("\n")
+      cat("\n", "\n")
     }
   }
 }
@@ -168,7 +168,7 @@ names(data2) <- names(data)
 
 report_AIN_Period(data2)
 
-# Confirm ResearchIDs are consistent across tables
+# Confirm ResearchIDs are identical across tables
 
 for (i in 1:length(data2)) {
   if ("ResearchID" %in% names(data2[[i]])) {
@@ -184,8 +184,8 @@ for (i in 1:length(data2)) {
 # Add AIN to "thi" table
 
 data2$thi <- merge(data2$thi, 
-                   data2$dbt_wccl[, c("ResearchID", "AIN")],
-                   by = c("ResearchID"),
+                   data2$dbt_wccl[, c("ResearchID", "Period", "AIN")],
+                   by = c("ResearchID", "Period"),
                    all.x = TRUE)
 
 # Exclude DERS pretreatment data (use DERS screening data instead)
@@ -199,8 +199,9 @@ report_AIN_Period(data2)
 # is already defined in dbt_wccl table; the code below yields the same values)
 
 for (i in 1:length(data2)) {
-  if (names(data2[i]) %in% c("dbt_wccl", "doss", "ess", "kims", "oasis", "oq",
-                             "phq", "staxi")) {
+  if (names(data2[i]) %in% c("acs", "asi", "dbt_wccl", "doss", "dpss", "eis", 
+                             "ess", "kims", "oasis", "oq", "phq", "staxi", 
+                             "tas", "thi")) {
     data2[[i]]$time0 <- NA
     data2[[i]]$time0[data2[[i]]$Period == 2] <- 0
     data2[[i]]$time0[data2[[i]]$Period == 3] <- 1
@@ -220,7 +221,7 @@ for (i in 1:length(data2)) {
     data2[[i]]$time0[data2[[i]]$Period == 5] <- 3
     
     data2[[i]]$time0_lag <- NA
-    data2[[i]]$time0_lag[data2[[i]]$Period == 2] <- NA
+    data2[[i]]$time0_lag[data2[[i]]$Period == 0] <- NA
     data2[[i]]$time0_lag[data2[[i]]$Period == 3] <- 0
     data2[[i]]$time0_lag[data2[[i]]$Period == 4] <- 1
     data2[[i]]$time0_lag[data2[[i]]$Period == 5] <- 2

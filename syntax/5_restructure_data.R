@@ -73,6 +73,12 @@ analysis_vars <- c(meanDSS_vars, drtotl_m_imp_vars, cnDoSS_vars, KMTOT_vars)
 # Identify potential auxiliary variables (other than "Condition", which already
 # will be included in tables for analysis)
 
+# TODO: Add potential auxiliary variables from added tables
+
+
+
+
+
 demog_aux <- c("SH132", "DDS04", "DDS06", "DDS06b", "DDS06c", "DDS10", 
                "DDS14", "DDS15a", "DDS16a", "DDS17a2", "DDS25", "DDS26")
 scid1_aux <- c("SCPN120", "evanxdx", "evdep", "eveatdx", "evsubab", "nowanxdx", 
