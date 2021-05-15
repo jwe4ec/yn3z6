@@ -76,8 +76,8 @@ analysis_vars <- c(meanDSS_vars, drtotl_m_imp_vars, cnDoSS_vars, KMTOT_vars)
 acs_aux <- c("ACSmean", "ACS_AG", "ACS_PA", "ACS_DM", "ACS_AX")
 asi_aux <- "anyDrugs"
 dbt_wccl_aux <- c("meanDCS1", "meanDCS2", "meanDCS")
-demog_aux <- c("SH132", "DDS04", "DDS06", "DDS06b", "DDS06c", "DDS10", 
-               "DDS14", "DDS15a", "DDS16a", "DDS17a2", "DDS25", "DDS26")
+demog_aux <- c("SH132", "DDS04", "DDS06b", "DDS10", "DDS14", "DDS15a", "DDS16a", 
+               "DDS17a2", "DDS25", "DDS26", "race")
 ders_aux <- c("dracce", "drawar", "drclar", "drcingr", "drgoal", "drimp", 
               "drstra")
 doss_aux <- c("nvDoSS", "drDoSS", "csDoSS", "prDoSS", "slDoSS")

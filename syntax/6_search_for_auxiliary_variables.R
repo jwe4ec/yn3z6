@@ -38,7 +38,6 @@ groundhog_day <- version_control()
 
 # Load packages with groundhog
 
-groundhog.library(car, groundhog_day)
 groundhog.library(rcompanion, groundhog_day)
 groundhog.library(DescTools, groundhog_day)
 
@@ -54,83 +53,37 @@ data5 <- data4
 # Recode potential demographic auxiliary variables ----
 # ---------------------------------------------------------------------------- #
 
-# TODO: Tasks below and consider doing earlier in pipeline
+# TODO: Recode nominal vars as characters (note: "race" is already character)
 
 
 
 
 
-# Sexual orientation (change to factor)
+class(data5$contemp_aux$race)
 
 table(data5$contemp_aux$SH132, useNA = "always")
-
-# Race (recode then change to factor)
-
-table(data5$contemp_aux$DDS06, useNA = "always")
-table(data5$contemp_aux$DDS06c, useNA = "always")
-
-# test <- recode(data5$contemp_aux$DDS06,
-#                "1 = 'White/Caucasian';
-#                 2 = 'Native American, American Indian or Alaska Native';
-#                 3 = 'Black or African American';
-#                 4 = 'Chinese or Chinese American';
-#                 5 = 'Japanese or Japanese American';
-#                 6 = 'Korean or Korean American';
-#                 7 = 'Other Asian or Asian American (India, Malaysia, Pakistan, ...';
-#                 11 = 'East Indian (counted as Asian)';
-#                 12 = 'Middle Eastern/Arab';
-#                 13 = 'Other';
-#                 14 = 'Native Hawaiian or Pacific Islander'")
-# 
-# test2 <- recode(data5$contemp_aux$DDS06c,
-#                 "1 = 'White/Caucasian';
-#                 2 = 'Native American, American Indian or Alaska Native';
-#                 3 = 'Black or African American';
-#                 4 = 'Chinese or Chinese American';
-#                 5 = 'Japanese or Japanese American';
-#                 6 = 'Korean or Korean American';
-#                 7 = 'Other Asian or Asian American (India, Malaysia, Pakistan, ...';
-#                 11 = 'East Indian';
-#                 12 = 'Middle Eastern/Arab';
-#                 13 = 'Other';
-#                 14 = 'Native Hawaiian or Pacific Islander';
-#                 15 = 'More than one other racial group'")
-
-# Ethnicity (change to factor)
-
 table(data5$contemp_aux$DDS06b, useNA = "always")
-
-# Adopted (change to factor)
-
 table(data5$contemp_aux$DDS10, useNA = "always")
-
-# Marital status (change to factor)
-
 table(data5$contemp_aux$DDS14, useNA = "always")
-
-# Occupation (change to factor)
-
 table(data5$contemp_aux$DDS17a2, useNA = "always")
-
-# Learning disability (change to factor)
-
 table(data5$contemp_aux$DDS25, useNA = "always")
-
-# Physical disability (change to factor)
-
 table(data5$contemp_aux$DDS26, useNA = "always")
 
-# ORDINAL
+# TODO: Recode ordered vars as ordered factors
 
-# Education (make ordered factor)
+
+
+
+
+# Education
 
 table(data5$contemp_aux$DDS15a, useNA = "always")
 
-# Gross annual income (make ordered factor)
+# Gross annual income
 
 table(data5$contemp_aux$DDS16a, useNA = "always")
 
-# CONTINUOUS
+# TODO: Keep age as integer
 
 # Age (keep as integer)
 

@@ -38,11 +38,7 @@ groundhog_day <- version_control()
 
 # Load packages with groundhog
 
-# TODO
-
-
-
-
+groundhog.library(car, groundhog_day)
 
 # ---------------------------------------------------------------------------- #
 # Define functions used throughout script ----
@@ -225,6 +221,52 @@ for (i in 1:length(data2)) {
     data2[[i]]$time0_lag[data2[[i]]$Period == 3] <- 0
     data2[[i]]$time0_lag[data2[[i]]$Period == 4] <- 1
     data2[[i]]$time0_lag[data2[[i]]$Period == 5] <- 2
+  }
+}
+
+# ---------------------------------------------------------------------------- #
+# Compute "race" column in "demog" table ----
+# ---------------------------------------------------------------------------- #
+
+# Recode original race columns as characters
+
+data2$demog$DDS06 <- 
+  recode(data2$demog$DDS06,
+         "1 = 'White/Caucasian';
+         2 = 'Native American, American Indian or Alaska Native';
+         3 = 'Black or African American';
+         4 = 'Chinese or Chinese American';
+         5 = 'Japanese or Japanese American';
+         6 = 'Korean or Korean American';
+         7 = 'Other Asian or Asian American (India, Malaysia, Pakistan, ...';
+         11 = 'East Indian (counted as Asian)';
+         12 = 'Middle Eastern/Arab';
+         13 = 'Other';
+         14 = 'Native Hawaiian or Pacific Islander'")
+
+data2$demog$DDS06c <- 
+  recode(data2$demog$DDS06c,
+         "1 = 'White/Caucasian';
+         2 = 'Native American, American Indian or Alaska Native';
+         3 = 'Black or African American';
+         4 = 'Chinese or Chinese American';
+         5 = 'Japanese or Japanese American';
+         6 = 'Korean or Korean American';
+         7 = 'Other Asian or Asian American (India, Malaysia, Pakistan, ...';
+         11 = 'East Indian';
+         12 = 'Middle Eastern/Arab';
+         13 = 'Other';
+         14 = 'Native Hawaiian or Pacific Islander';
+         15 = 'More than one other racial group'")
+
+# Compute single "race" column
+
+for (i in 1:nrow(data2$demog)) {
+    data2$demog$race[i] <- data2$demog$DDS06[i]
+  
+  if (!is.na(data2$demog$DDS06c[i]) & 
+      (data2$demog$DDS06[i] != data2$demog$DDS06c[i])) {
+    data2$demog$race[i] <- "More than one race"
   }
 }
 
