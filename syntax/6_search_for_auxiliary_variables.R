@@ -50,50 +50,11 @@ load("./data/intermediate/data4.Rdata")
 data5 <- data4
 
 # ---------------------------------------------------------------------------- #
-# Recode potential demographic auxiliary variables ----
-# ---------------------------------------------------------------------------- #
-
-# TODO: Recode nominal vars as characters (note: "race" is already character)
-
-
-
-
-
-class(data5$contemp_aux$race)
-
-table(data5$contemp_aux$SH132, useNA = "always")
-table(data5$contemp_aux$DDS06b, useNA = "always")
-table(data5$contemp_aux$DDS10, useNA = "always")
-table(data5$contemp_aux$DDS14, useNA = "always")
-table(data5$contemp_aux$DDS17a2, useNA = "always")
-table(data5$contemp_aux$DDS25, useNA = "always")
-table(data5$contemp_aux$DDS26, useNA = "always")
-
-# TODO: Recode ordered vars as ordered factors
-
-
-
-
-
-# Education
-
-table(data5$contemp_aux$DDS15a, useNA = "always")
-
-# Gross annual income
-
-table(data5$contemp_aux$DDS16a, useNA = "always")
-
-# TODO: Keep age as integer
-
-# Age (keep as integer)
-
-table(data5$contemp_aux$DDS04, useNA = "always")
-
-# ---------------------------------------------------------------------------- #
 # Identify correlates with missing data indicators ----
 # ---------------------------------------------------------------------------- #
 
 # TODO: Change data to wide format
+
 
 
 

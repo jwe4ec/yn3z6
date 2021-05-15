@@ -225,50 +225,147 @@ for (i in 1:length(data2)) {
 }
 
 # ---------------------------------------------------------------------------- #
-# Compute "race" column in "demog" table ----
+# Create factors for demographic auxiliary variables and compute race ----
 # ---------------------------------------------------------------------------- #
 
-# Recode original race columns as characters
+# Create factors for nominal variables
 
-data2$demog$DDS06 <- 
-  recode(data2$demog$DDS06,
-         "1 = 'White/Caucasian';
-         2 = 'Native American, American Indian or Alaska Native';
-         3 = 'Black or African American';
-         4 = 'Chinese or Chinese American';
-         5 = 'Japanese or Japanese American';
-         6 = 'Korean or Korean American';
-         7 = 'Other Asian or Asian American (India, Malaysia, Pakistan, ...';
-         11 = 'East Indian (counted as Asian)';
-         12 = 'Middle Eastern/Arab';
-         13 = 'Other';
-         14 = 'Native Hawaiian or Pacific Islander'")
+data2$demog$DDS06_factor <-
+  factor(data2$demog$DDS06,
+         levels = as.character(c(1:7, 11:14)),
+         labels = c("White/Caucasian", 
+                    "Native American, American Indian or Alaska Native",
+                    "Black or African American", 
+                    "Chinese or Chinese American",
+                    "Japanese or Japanese American", 
+                    "Korean or Korean American",
+                    "Other Asian or Asian American (India, Malaysia, Pakistan, ...",
+                    "East Indian (counted as Asian)",
+                    "Middle Eastern/Arab",
+                    "Other",
+                    "Native Hawaiian or Pacific Islander"))
 
-data2$demog$DDS06c <- 
-  recode(data2$demog$DDS06c,
-         "1 = 'White/Caucasian';
-         2 = 'Native American, American Indian or Alaska Native';
-         3 = 'Black or African American';
-         4 = 'Chinese or Chinese American';
-         5 = 'Japanese or Japanese American';
-         6 = 'Korean or Korean American';
-         7 = 'Other Asian or Asian American (India, Malaysia, Pakistan, ...';
-         11 = 'East Indian';
-         12 = 'Middle Eastern/Arab';
-         13 = 'Other';
-         14 = 'Native Hawaiian or Pacific Islander';
-         15 = 'More than one other racial group'")
+data2$demog$DDS06c_factor <-
+  factor(data2$demog$DDS06c,
+         levels = as.character(c(1:7, 11:15)),
+         labels = c("White/Caucasian", 
+                    "Native American, American Indian or Alaska Native", 
+                    "Black or African American", 
+                    "Chinese or Chinese American", 
+                    "Japanese or Japanese American", 
+                    "Korean or Korean American", 
+                    "Other Asian or Asian American (India, Malaysia, Pakistan, ...", 
+                    "East Indian", 
+                    "Middle Eastern/Arab", 
+                    "Other", 
+                    "Native Hawaiian or Pacific Islander", 
+                    "More than one other racial group"))
+
+data2$demog$SH132_factor <- 
+  factor(data2$demog$SH132,
+         levels = as.character(0:4),
+         labels = c("Subject is uncertain", 
+                    "Heterosexual", 
+                    "Homosexual/Lesbian/Gay", 
+                    "Bisexual", 
+                    "Transgender"))
+
+data2$demog$DDS06b_factor <- 
+  factor(data2$demog$DDS06b,
+         levels = as.character(0:1),
+         labels = c("Not Hispanic or Latino",
+                    "Yes"))
+
+data2$demog$DDS10_factor <- 
+  factor(data2$demog$DDS10,
+         levels = as.character(0:1),
+         labels = c("No",
+                    "Yes"))
+
+data2$demog$DDS14_factor <- 
+  factor(data2$demog$DDS14,
+         levels = as.character(1:5),
+         labels = c("Single, never married", 
+                    "Widowed", 
+                    "Married", 
+                    "Separated", 
+                    "Divorced"))
+
+data2$demog$DDS17a2_factor <- 
+  factor(data2$demog$DDS17a2,
+         levels = as.character(0:14),
+         labels = c("Unemployed", 
+                    "Professional, technical, e.g., clergy, engineer, teacher,...", 
+                    "Owner, manager, administrator or executive of business (n...", 
+                    "Sales, e.g., insurance, real estate, auto", 
+                    "Clerical, e.g., secretary, retail clerk, typist", 
+                    "Skilled worker, craftsperson, foreman (non-farm)", 
+                    "Transport or equipment operator", 
+                    "Unskilled worker, laborer (non-farm)", 
+                    "Farm workers, e.g., farmer, farm laborer, farm manager or...", 
+                    "Service worker, e.g., custodian, waitress, guard, barber", 
+                    "Private household worker", 
+                    "Full-time homemaker", 
+                    "Full-time student", 
+                    "Other", 
+                    "Retired"))
+
+data2$demog$DDS25_factor <- 
+  factor(data2$demog$DDS25,
+         levels = as.character(0:1),
+         labels = c("No", 
+                    "Yes"))
+
+data2$demog$DDS26_factor <- 
+  factor(data2$demog$DDS26,
+         levels = as.character(0:1),
+         labels = c("No", 
+                    "Yes"))
 
 # Compute single "race" column
 
+data2$demog$race <- data2$demog$DDS06_factor
+levels(data2$demog$race) <- c(levels(data2$demog$race), "More than one race")
+
 for (i in 1:nrow(data2$demog)) {
-    data2$demog$race[i] <- data2$demog$DDS06[i]
-  
   if (!is.na(data2$demog$DDS06c[i]) & 
-      (data2$demog$DDS06[i] != data2$demog$DDS06c[i])) {
+      (as.character(data2$demog$DDS06_factor)[i] != 
+       as.character(data2$demog$DDS06c_factor)[i])) {
     data2$demog$race[i] <- "More than one race"
   }
 }
+
+View(data2$demog[, c("ResearchID", "DDS06_factor", "DDS06c_factor", "race")])
+
+# Create ordered factors for ordinal variables
+
+data2$demog$DDS15a_factor <- 
+  factor(data2$demog$DDS15a,
+         levels = as.character(1:10),
+         labels = c("eighth grade or less", 
+                    "some high school", 
+                    "GED", 
+                    "high school graduate", 
+                    "business or technical training beyond high school", 
+                    "some college", 
+                    "college graduate", 
+                    "some graduate or professional school beyond college", 
+                    "masters degree", 
+                    "doctoral degree"),
+         ordered = TRUE)
+
+data2$demog$DDS16a_factor <- 
+  factor(data2$demog$DDS16a,
+         levels = as.character(1:8),
+         labels = c("less than dollars5,000", 
+                    "dollars5,000-9,999", 
+                    "dollars10,000-14,999", 
+                    "dollars15,000-19,999", 
+                    "dollars20,000-24,999", 
+                    "dollars25,000-29,999", 
+                    "dollars30,000-49,999", 
+                    "dollars50,000 or more"),
+         ordered = TRUE)
 
 # ---------------------------------------------------------------------------- #
 # Investigate and compute average item scores for analysis variables ----
