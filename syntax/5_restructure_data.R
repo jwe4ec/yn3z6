@@ -73,26 +73,29 @@ analysis_vars <- c(meanDSS_vars, drtotl_m_imp_vars, cnDoSS_vars, KMTOT_vars)
 # Identify potential auxiliary variables (other than "Condition", which already
 # will be included in tables for analysis)
 
-# TODO: Add potential auxiliary variables from added tables
-
-
-
-
-
+acs_aux <- c("ACSmean", "ACS_AG", "ACS_PA", "ACS_DM", "ACS_AX")
+asi_aux <- "anyDrugs"
+dbt_wccl_aux <- c("meanDCS1", "meanDCS2", "meanDCS")
 demog_aux <- c("SH132", "DDS04", "DDS06", "DDS06b", "DDS06c", "DDS10", 
                "DDS14", "DDS15a", "DDS16a", "DDS17a2", "DDS25", "DDS26")
-scid1_aux <- c("SCPN120", "evanxdx", "evdep", "eveatdx", "evsubab", "nowanxdx", 
-               "nowdep", "noweatdx", "nowsomat", "nowsubab", "primaryDX")
-dbt_wccl_aux <- c("meanDCS1", "meanDCS2", "meanDCS")
 ders_aux <- c("dracce", "drawar", "drclar", "drcingr", "drgoal", "drimp", 
               "drstra")
 doss_aux <- c("nvDoSS", "drDoSS", "csDoSS", "prDoSS", "slDoSS")
+dpss_aux <- c("dpss_dp", "dpss_ds")
+eis_aux <- c("totCred", "meanExpImp", "meanConf")
+ess_aux <- c("esstot", "essbod", "essbs", "esscs")
 kims_aux <- c("KMAware", "KMDescribe", "KMNonJudgmental", "KMObserve")
 oasis_aux <- c("OASISsum")
+oq_aux <- c("oqsum", "oq_sd", "oq_ir", "oq_sr")
 phq_aux <- c("phqsum")
-ess_aux <- c("essbod", "essbs", "esscs", "esstot")
+ppvt_aux <- "PPVT"
+scid1_aux <- c("SCPN120", "evanxdx", "evdep", "eveatdx", "evsubab", "nowanxdx", 
+               "nowdep", "noweatdx", "nowsomat", "nowsubab", "primaryDX")
+scid2_bpd_aux <- "bpdcrit"
 staxi_aux <- c("stxAXIN", "stxAXOUT", "stxAXCON", "stxAXEX")
-oq_aux <- c("oq_sd", "oq_ir", "oq_sr", "oqsum")
+tas_aux <- c("tas_sum", "tas_dif", "tas_ddf", "tas_eot")
+thi_aux <- c("THP02_forCompliance", "tookMed", "medNoncomplianceMD",
+             "researchNoncompliance")
 
 # Create table for contemporaneous model (without potential auxiliary variables)
 
@@ -115,50 +118,37 @@ data4$contemp <- contemp
 
 # Create table for contemporaneous model (with potential auxiliary variables)
 
-contemp_aux <- merge(contemp, 
-                     data4$demog[, c("ResearchID", demog_aux)],
-                     by = c("ResearchID"),
-                     all.x = TRUE)
-contemp_aux <- merge(contemp_aux, 
-                     data4$scid1[, c("ResearchID", scid1_aux)],
-                     by = c("ResearchID"),
-                     all.x = TRUE)
-contemp_aux <- merge(contemp_aux, 
-                     data4$dbt_wccl[, c("ResearchID", "time0", dbt_wccl_aux)],
-                     by = c("ResearchID", "time0"),
-                     all.x = TRUE)
-contemp_aux <- merge(contemp_aux,
-                     data4$ders[, c("ResearchID", "time0", ders_aux)],
-                     by = c("ResearchID", "time0"),
-                     all.x = TRUE)
-contemp_aux <- merge(contemp_aux,
-                     data4$doss[, c("ResearchID", "time0", doss_aux)],
-                     by = c("ResearchID", "time0"),
-                     all.x = TRUE)
-contemp_aux <- merge(contemp_aux,
-                     data4$kims[, c("ResearchID", "time0", kims_aux)],
-                     by = c("ResearchID", "time0"),
-                     all.x = TRUE)
-contemp_aux <- merge(contemp_aux,
-                     data4$oasis[, c("ResearchID", "time0", oasis_aux)],
-                     by = c("ResearchID", "time0"),
-                     all.x = TRUE)
-contemp_aux <- merge(contemp_aux,
-                     data4$phq[, c("ResearchID", "time0", phq_aux)],
-                     by = c("ResearchID", "time0"),
-                     all.x = TRUE)
-contemp_aux <- merge(contemp_aux,
-                     data4$ess[, c("ResearchID", "time0", ess_aux)],
-                     by = c("ResearchID", "time0"),
-                     all.x = TRUE)
-contemp_aux <- merge(contemp_aux,
-                     data4$staxi[, c("ResearchID", "time0", staxi_aux)],
-                     by = c("ResearchID", "time0"),
-                     all.x = TRUE)
-contemp_aux <- merge(contemp_aux,
-                     data4$oq[, c("ResearchID", "time0", oq_aux)],
-                     by = c("ResearchID", "time0"),
-                     all.x = TRUE)
+contemp_aux <- contemp
+
+time_invariant_aux_tables <- 
+  unlist(strsplit(c("demog_aux", "ppvt_aux", "scid1_aux", "scid2_bpd_aux"), 
+                  "_aux", 
+                  fixed = TRUE))
+
+time_varying_aux_tables <- 
+  unlist(strsplit(c("acs_aux", "asi_aux", "dbt_wccl_aux", "ders_aux", "doss_aux", 
+                    "dpss_aux", "eis_aux", "ess_aux", "kims_aux", "oasis_aux", 
+                    "oq_aux", "phq_aux", "staxi_aux", "tas_aux", "thi_aux"),
+                  "_aux",
+                  fixed = TRUE))
+
+for (i in 1:length(data4)) {
+  if (names(data4[i]) %in% time_invariant_aux_tables) {
+    aux_vars <- paste0(names(data4[i]), "_aux")
+    
+    contemp_aux <- merge(contemp_aux, 
+                         data4[[i]][, c("ResearchID", get(aux_vars))],
+                         by = "ResearchID",
+                         all.x = TRUE)
+  } else if (names(data4[i]) %in% time_varying_aux_tables) {
+    aux_vars <- paste0(names(data4[i]), "_aux")
+    
+    contemp_aux <- merge(contemp_aux,
+                         data4[[i]][, c("ResearchID", "time0", get(aux_vars))],
+                         by = c("ResearchID", "time0"),
+                         all.x = TRUE)
+  }
+}
 
 data4$contemp_aux <- contemp_aux
 
