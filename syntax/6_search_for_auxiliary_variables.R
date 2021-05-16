@@ -59,6 +59,22 @@ data5 <- data4
 
 
 
+ignore_vars <- c("ResearchID", "Condition", "AIN",
+                 "SH132_factor", "DDS04", "DDS06b_factor", "DDS10_factor",
+                 "DDS14_factor", "DDS15a_factor", "DDS16a_factor",
+                 "DDS17a2_factor", "DDS25_factor", "DDS26_factor", "race",
+                 "PPVT", "SCPN120", "evanxdx", "evdep", "eveatdx", "evsubab",
+                 "nowanxdx", "nowdep", "noweatdx", "nowsomat", "nowsubab",
+                 "primaryDX", "bpdcrit", "researchNoncompliance")
+                 
+varying_vars <- setdiff(names(data5$contemp_aux), ignore_vars)
+
+contemp_aux_wide <- reshape(data5$contemp_aux,
+                            v.names = varying_vars,
+                            timevar = "time0",
+                            idvar = "ResearchID",
+                            direction = "wide")
+
 # TODO: Use point-biserial correlation coefficient for continuous variables
 # (cor.test function of stats package), rank-biserial correlation coefficient
 # for ordinal variables (wilcoxonRG function of rcompanion package), and
