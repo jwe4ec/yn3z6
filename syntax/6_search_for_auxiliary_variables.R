@@ -53,11 +53,7 @@ data5 <- data4
 # Identify correlates with missing data indicators ----
 # ---------------------------------------------------------------------------- #
 
-# TODO: Change data to wide format
-
-
-
-
+# Convert to wide format
 
 ignore_vars <- c("ResearchID", "Condition", "AIN",
                  "SH132_factor", "DDS04", "DDS06b_factor", "DDS10_factor",
@@ -74,6 +70,28 @@ contemp_aux_wide <- reshape(data5$contemp_aux,
                             timevar = "time0",
                             idvar = "ResearchID",
                             direction = "wide")
+
+# Subset column names
+
+factor_x_vars <- character()
+ordered_x_vars <- character()
+int_num_x_vars <- character()
+
+time0_vars <- names(contemp_aux_wide)[grep("time0", names(contemp_aux_wide))]
+Period_vars <- names(contemp_aux_wide)[grep("Period", names(contemp_aux_wide))]
+ind_y_vars <- names(contemp_aux_wide)[grep("_ind", names(contemp_aux_wide))]
+
+for (i in 1:length(contemp_aux_wide)) {
+  if (is.factor(contemp_aux_wide[, i]) & !is.ordered(contemp_aux_wide[, i])) {
+    factor_x_vars <- c(factor_x_vars, names(contemp_aux_wide[i]))
+  } else if (is.ordered(contemp_aux_wide[, i])) {
+    ordered_x_vars <- c(ordered_x_vars, names(contemp_aux_wide[i]))
+  } else if ((is.integer(contemp_aux_wide[, i]) | is.numeric(contemp_aux_wide[, i])) &
+             !(names(contemp_aux_wide[i]) %in% 
+               c("ResearchID", "AIN", time0_vars, Period_vars, ind_y_vars))) {
+    int_num_x_vars <- c(int_num_x_vars, names(contemp_aux_wide[i]))
+  } 
+}
 
 # TODO: Use point-biserial correlation coefficient for continuous variables
 # (cor.test function of stats package), rank-biserial correlation coefficient
