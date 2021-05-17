@@ -322,17 +322,25 @@ result_trim <-
 factor_miss <- result_trim[!is.na(result_trim$ind_y_v) & 
                               result_trim$ind_y_v >= abs(.2), ]
 
-# TODO: Compute INSERT correlations with analysis variables
+# Compute R-squared from one-way-ANOVA with analysis variables
 
+factor_miss_anal <- factor_miss
+factor_miss_anal$x_var_i <- NULL
+factor_miss_anal$ind_y_var_j <- NULL
 
+factor_miss_anal$y_var <- sub("_ind", "", fixed = TRUE, factor_miss_anal$ind_y_var)
+factor_miss_anal$y_r2 <- vector("double", nrow(factor_miss_anal))
+factor_miss_anal$y_note <- rep(NA, nrow(factor_miss_anal))
 
+for (i in 1:nrow(factor_miss_anal)) {
+  factor_miss_anal$y_r2[i] <- 
+    summary(lm(contemp_aux_wide[, factor_miss_anal$y_var[i]] ~ 
+                 contemp_aux_wide[, factor_miss_anal$x_var[i]]))$r.squared
+}
 
+# Restrict to R-squared of at least .16 (r >= .4) with analysis variables
 
-# TODO: Restrict to correlations of at least |.40| with analysis variables
-
-
-
-
+factor_miss_anal_thres <- factor_miss_anal[factor_miss_anal$y_r2 >= .16, ]
 
 # TODO: Decide which to include as auxiliary variables
 
