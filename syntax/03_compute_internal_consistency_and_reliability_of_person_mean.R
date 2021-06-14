@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------------- #
-# Run Analyses
+# Compute Internal Consistency and Reliability of Person Mean
 # Author: Jeremy W. Eberle
 # ---------------------------------------------------------------------------- #
 
@@ -30,7 +30,7 @@ wd_dir <- getwd()
 
 # Load custom functions
 
-source("./GitHub Repo/yn3z6/syntax/0_define_functions.R")
+source("./GitHub Repo/yn3z6/syntax/00_define_functions.R")
 
 # Check correct R version, load groundhog package, and specify groundhog_day
 
@@ -38,47 +38,20 @@ groundhog_day <- version_control()
 
 # Load packages with groundhog
 
-groundhog.library(nlme, groundhog_day)
+groundhog.library(MBESS, groundhog_day)
+
+set.seed(1234)
 
 # ---------------------------------------------------------------------------- #
 # Import data ----
 # ---------------------------------------------------------------------------- #
 
-# TODO
-
-
-
-
+load("./data/intermediate/data2.Rdata")
+load("./data/intermediate/scale_defs.Rdata")
 
 # ---------------------------------------------------------------------------- #
-# Run analyses for intent-to-treat sample ----
+# Compute internal consistency ----
 # ---------------------------------------------------------------------------- #
-
-# Contemporaneous models using POMP scores
-
-# TODO
-
-
-
-
-
-# Contemporaneous models using average item scores
-
-# TODO
-
-
-
-
-
-# Lagged models using POMP scores
-
-# TODO
-
-
-
-
-
-# Lagged models using average item scores
 
 # TODO
 
@@ -87,36 +60,11 @@ groundhog.library(nlme, groundhog_day)
 
 
 # ---------------------------------------------------------------------------- #
-# Run analyses for completer sample ----
+# Compute reliability of person mean ----
 # ---------------------------------------------------------------------------- #
 
-# Contemporaneous models using POMP scores
-
 # TODO
 
-
-
-
-
-# Contemporaneous models using average item scores
-
-# TODO
-
-
-
-
-
-# Lagged models using POMP scores
-
-# TODO
-
-
-
-
-
-# Lagged models using average item scores
-
-# TODO
 
 
 

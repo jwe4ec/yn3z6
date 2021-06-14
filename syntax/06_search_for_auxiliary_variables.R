@@ -30,7 +30,7 @@ wd_dir <- getwd()
 
 # Load custom functions
 
-source("./GitHub Repo/yn3z6/syntax/0_define_functions.R")
+source("./GitHub Repo/yn3z6/syntax/00_define_functions.R")
 
 # Check correct R version, load groundhog package, and specify groundhog_day
 
@@ -347,3 +347,91 @@ factor_miss_anal_thres <- factor_miss_anal[factor_miss_anal$y_r2 >= .16, ]
 
 
 
+
+# ---------------------------------------------------------------------------- #
+# Prepare and export data and create directories for Blimp ----
+# ---------------------------------------------------------------------------- #
+
+# Restrict columns
+
+data5$contemp_aux <- 
+  data4$contemp_aux[, c("ResearchID", "time0", "Condition", "AIN", "Period", 
+                        "meanDSS", "meanDSS_btw", "meanDSS_wth", "meanDSS_pomp", 
+                          "meanDSS_pomp_btw", "meanDSS_pomp_wth", 
+                        "drtotl_m_imp", "drtotl_m_imp_btw", "drtotl_m_imp_wth", 
+                          "drtotl_m_imp_pomp", "drtotl_m_imp_pomp_btw", 
+                          "drtotl_m_imp_pomp_wth", 
+                        "cnDoSS", "cnDoSS_btw", "cnDoSS_wth", "cnDoSS_pomp", 
+                          "cnDoSS_pomp_btw", "cnDoSS_pomp_wth", 
+                        "KMTOT", "KMTOT_btw", "KMTOT_wth", "KMTOT_pomp", 
+                          "KMTOT_pomp_btw", "KMTOT_pomp_wth", 
+                        "DDS14_factor", "DDS17a2_factor")]
+
+# Collapse sparse levels of DDS17a2_factor, as imputation model does not
+# converge after burn-in period with 100,000 iterations
+
+data5$contemp_aux$DDS17a2_factor_collapsed <- data5$contemp_aux$DDS17a2_factor
+data5$contemp_aux$DDS17a2_factor_collapsed2 <- data5$contemp_aux$DDS17a2_factor
+
+other_employed <- c("Sales, e.g., insurance, real estate, auto",
+                    "Clerical, e.g., secretary, retail clerk, typist",
+                    "Skilled worker, craftsperson, foreman (non-farm)",
+                    "Transport or equipment operator",
+                    "Unskilled worker, laborer (non-farm)",
+                    "Farm workers, e.g., farmer, farm laborer, farm manager or...",
+                    "Service worker, e.g., custodian, waitress, guard, barber",
+                    "Private household worker")
+
+levels(data5$contemp_aux$DDS17a2_factor_collapsed)[levels(data5$contemp_aux$DDS17a2_factor_collapsed) %in% 
+                                           other_employed] <- "Other Employed"
+
+paid <- c("Professional, technical, e.g., clergy, engineer, teacher,...",
+          "Owner, manager, administrator or executive of business (n...",
+          other_employed)
+
+unpaid <- c("Full-time homemaker",
+              "Full-time student")
+
+nonworking <- c("Unemployed",
+                "Retired")
+
+levels(data5$contemp_aux$DDS17a2_factor_collapsed2)[levels(data5$contemp_aux$DDS17a2_factor_collapsed2) %in%
+                                                      paid] <- "Paid"
+levels(data5$contemp_aux$DDS17a2_factor_collapsed2)[levels(data5$contemp_aux$DDS17a2_factor_collapsed2) %in%
+                                                      unpaid] <- "Unpaid"
+levels(data5$contemp_aux$DDS17a2_factor_collapsed2)[levels(data5$contemp_aux$DDS17a2_factor_collapsed2) %in%
+                                                      nonworking] <- "Nonworking"
+
+# Create contingency table for the factors. Sparse cells can contribute to slow
+# convergence in the imputation model, but once the factors were added to the
+# FIXED line in Blimp (because they are complete), the model converged without
+# needing to resolve the sparse cells.
+
+table(data5$contemp_aux$DDS14_factor,
+      data5$contemp_aux$DDS17a2_factor_collapsed2,
+      dnn = c("DDS14_factor", "DDS17a2_factor_collapsed2"))
+
+# Recode factors as numeric, as Blimp only reads numeric values
+
+data5$contemp_aux$DDS14_factor <- as.numeric(data5$contemp_aux$DDS14_factor)
+data5$contemp_aux$DDS17a2_factor <- as.numeric(data5$contemp_aux$DDS17a2_factor)
+data5$contemp_aux$DDS17a2_factor_collapsed <- 
+  as.numeric(data5$contemp_aux$DDS17a2_factor_collapsed)
+data5$contemp_aux$DDS17a2_factor_collapsed2 <- 
+  as.numeric(data5$contemp_aux$DDS17a2_factor_collapsed2)
+
+# Code NA as 999, which will be specified as the missing code for Blimp
+
+data5$contemp_aux[is.na(data5$contemp_aux)] <- 999
+
+# Export intermediate data for Blimp, which does not allow column names
+
+write.table(data5$contemp_aux, 
+            "./data/intermediate/contemp_aux.csv",
+            row.names = FALSE,
+            col.names = FALSE,
+            sep = ",")
+
+# Create directories for Blimp
+
+dir.create(paste0(wd_dir, "./data/imputed/contemp"), recursive = TRUE)

@@ -1,0 +1,52 @@
+# Impute data for contemporaneous model (diagnostic script for raw scores)
+# Author: Jeremy W. Eberle
+
+# This script uses the standalone software Blimp Base (ver. 0.0.42, preview of
+# ver. 3.0) and Blimp Studio (ver. 1.2.7) to conduct fully Bayesian model-based 
+# imputation
+
+# Start by determining number of burn-in iterations needed for convergence. We
+# initially used Blimp Base (ver. 2.2.4) without DDS14_factor and DDS17a2_factor
+# on the FIXED line, and we did not find convergence even after 100,000 iterations.
+# We then tried collapsing levels of DDS17a2_factor into DDS17a2_factor_collapsed
+# and then into DDS17a2_factor_collapsed2 and still did not find convergence, even 
+# after 100,000 iterations. Next, we upgraded to Blimp Base (ver. 0.0.42, preview
+# of ver. 3.0); added DDS14_factor and DDS17a2_factor_collapsed2 to the FIXED line
+# given that these variables are complete; and no longer person-mean-centered the
+# observed meanDSS, KMTOT, and cnDoSS scores nor computed person means for these
+# observed scores prior to imputation. Rather, we loaded the raw scores into Blimp 
+# and used the GROUPMEAN argument to person-mean-center meanDSS, KMTOT, and cnDoSS; 
+# appended ".mean" to these variables to estimate the person means; and used the 
+# GRANDMEAN argument to grand-mean-center the person means. We did not originally 
+# plan to grand-mean-center the person means, but when the GRANDMEAN argument is 
+# removed the model does not converge even after 200,000 iterations, so we decided
+# to center them, and the model converges (i.e., PSR < 1.05) after 5,500 iterations.
+
+# Note: The code below does not save trace plots. The plots have to be manually 
+# saved from within Blimp Studio.
+
+DATA: C:\Users\Jeremy\Box Sync\BRTC\Wyatt_Eberle_and_Neacsiu\rerunning analyses\For OSF\data\intermediate\contemp_aux.csv;
+VARIABLES: ResearchID time0 Condition AIN Period 
+           meanDSS meanDSS_btw meanDSS_wth meanDSS_pomp meanDSS_pomp_btw meanDSS_pomp_wth 
+           drtotl_m_imp drtotl_m_imp_btw drtotl_m_imp_wth drtotl_m_imp_pomp drtotl_m_imp_pomp_btw drtotl_m_imp_pomp_wth
+           cnDoSS cnDoSS_btw cnDoSS_wth cnDoSS_pomp cnDoSS_pomp_btw cnDoSS_pomp_wth
+           KMTOT KMTOT_btw KMTOT_wth KMTOT_pomp KMTOT_pomp_btw KMTOT_pomp_wth
+           DDS14_factor DDS17a2_factor DDS17a2_factor_collapsed DDS17a2_factor_collapsed2;
+NOMINAL: DDS14_factor DDS17a2_factor_collapsed2;
+MISSING: 999;
+CLUSTERID: ResearchID;
+FIXED: time0 DDS14_factor DDS17a2_factor_collapsed2;
+MODEL: drtotl_m_imp ~ time0 meanDSS meanDSS.mean KMTOT KMTOT.mean cnDoSS cnDoSS.mean DDS14_factor DDS17a2_factor_collapsed2
+                        | time0 meanDSS KMTOT cnDoSS;
+CENTER: GROUPMEAN = meanDSS KMTOT cnDoSS, GRANDMEAN = meanDSS.mean KMTOT.mean cnDoSS.mean;
+SEED: 1234;
+BURN: 10000;
+THIN: 1;
+NIMPS: 2; 
+OPTIONS: latent hov psr SaveLatent;
+SAVE: stacked = C:\Users\Jeremy\Box Sync\BRTC\Wyatt_Eberle_and_Neacsiu\rerunning analyses\For OSF\data\imputed\contemp\raw\diagnostic\imps.csv,
+      burn = C:\Users\Jeremy\Box Sync\BRTC\Wyatt_Eberle_and_Neacsiu\rerunning analyses\For OSF\data\imputed\contemp\raw\diagnostic\burn*.csv,
+      iterations = C:\Users\Jeremy\Box Sync\BRTC\Wyatt_Eberle_and_Neacsiu\rerunning analyses\For OSF\data\imputed\contemp\raw\diagnostic\iterations*.csv,
+      estimates = C:\Users\Jeremy\Box Sync\BRTC\Wyatt_Eberle_and_Neacsiu\rerunning analyses\For OSF\data\imputed\contemp\raw\diagnostic\estimates.txt,
+      starts = C:\Users\Jeremy\Box Sync\BRTC\Wyatt_Eberle_and_Neacsiu\rerunning analyses\For OSF\data\imputed\contemp\raw\diagnostic\starts.txt,
+      psr = C:\Users\Jeremy\Box Sync\BRTC\Wyatt_Eberle_and_Neacsiu\rerunning analyses\For OSF\data\imputed\contemp\raw\diagnostic\psr.csv;

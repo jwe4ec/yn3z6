@@ -30,7 +30,7 @@ wd_dir <- getwd()
 
 # Load custom functions
 
-source("./GitHub Repo/yn3z6/syntax/0_define_functions.R")
+source("./GitHub Repo/yn3z6/syntax/00_define_functions.R")
 
 # Check correct R version, load groundhog package, and specify groundhog_day
 
@@ -223,6 +223,15 @@ for (i in 1:length(data2)) {
     data2[[i]]$time0_lag[data2[[i]]$Period == 5] <- 2
   }
 }
+
+# ---------------------------------------------------------------------------- #
+# Add "completer" to "doss" table ----
+# ---------------------------------------------------------------------------- #
+
+data2$doss <- merge(data2$doss, 
+                    data2$dbt_wccl[, c("ResearchID", "Period", "completer")],
+                    by = c("ResearchID", "Period"),
+                    all.x = TRUE)
 
 # ---------------------------------------------------------------------------- #
 # Create factors for demographic auxiliary variables and compute race ----
@@ -548,6 +557,14 @@ data2$kims$KMTOT_pomp <-
 
 dir.create("./data/intermediate")
 save(data2, file = "./data/intermediate/data2.Rdata")
+
+# Save scale definitions as R object
+
+scale_defs <- list(drtotl_items, meanDSS_items, cnDoSS_items, KMTOT_items)
+names(scale_defs) <- c("drtotl_items", "meanDSS_items", "cnDoSS_items",
+                       "KMTOT_items")
+
+save(scale_defs, file = "./data/intermediate/scale_defs.Rdata")
 
 # ---------------------------------------------------------------------------- #
 # Compute item-level missingness ----

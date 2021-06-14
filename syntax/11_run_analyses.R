@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------------- #
-# Compute Internal Consistency and Reliability of Person Mean
+# Run Analyses
 # Author: Jeremy W. Eberle
 # ---------------------------------------------------------------------------- #
 
@@ -30,7 +30,7 @@ wd_dir <- getwd()
 
 # Load custom functions
 
-source("./GitHub Repo/yn3z6/syntax/0_define_functions.R")
+source("./GitHub Repo/yn3z6/syntax/00_define_functions.R")
 
 # Check correct R version, load groundhog package, and specify groundhog_day
 
@@ -38,21 +38,47 @@ groundhog_day <- version_control()
 
 # Load packages with groundhog
 
-# TODO
-
-
-
-
+groundhog.library(nlme, groundhog_day)
 
 # ---------------------------------------------------------------------------- #
 # Import data ----
 # ---------------------------------------------------------------------------- #
 
-load("./data/intermediate/data2.Rdata")
+# TODO
+
+
+
+
 
 # ---------------------------------------------------------------------------- #
-# Compute internal consistency ----
+# Run analyses for intent-to-treat sample ----
 # ---------------------------------------------------------------------------- #
+
+# Contemporaneous models using POMP scores
+
+# TODO
+
+
+
+
+
+# Contemporaneous models using average item scores
+
+# TODO
+
+
+
+
+
+# Lagged models using POMP scores
+
+# TODO
+
+
+
+
+
+# Lagged models using average item scores
 
 # TODO
 
@@ -61,11 +87,36 @@ load("./data/intermediate/data2.Rdata")
 
 
 # ---------------------------------------------------------------------------- #
-# Compute reliability of person mean ----
+# Run analyses for completer sample ----
 # ---------------------------------------------------------------------------- #
+
+# Contemporaneous models using POMP scores
 
 # TODO
 
+
+
+
+
+# Contemporaneous models using average item scores
+
+# TODO
+
+
+
+
+
+# Lagged models using POMP scores
+
+# TODO
+
+
+
+
+
+# Lagged models using average item scores
+
+# TODO
 
 
 
