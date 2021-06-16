@@ -54,15 +54,10 @@ data4 <- data3
 
 # Identify key analysis variables
 
-meanDSS_vars <- c("meanDSS", "meanDSS_btw", "meanDSS_wth",
-                  "meanDSS_pomp", "meanDSS_pomp_btw", "meanDSS_pomp_wth")
-drtotl_m_imp_vars <- c("drtotl_m_imp", "drtotl_m_imp_btw", "drtotl_m_imp_wth",
-                       "drtotl_m_imp_pomp", "drtotl_m_imp_pomp_btw", 
-                       "drtotl_m_imp_pomp_wth")
-cnDoSS_vars <- c("cnDoSS", "cnDoSS_btw", "cnDoSS_wth",
-                 "cnDoSS_pomp", "cnDoSS_pomp_btw", "cnDoSS_pomp_wth")
-KMTOT_vars <- c("KMTOT", "KMTOT_btw", "KMTOT_wth",
-                "KMTOT_pomp", "KMTOT_pomp_btw", "KMTOT_pomp_wth")
+meanDSS_vars <- c("meanDSS", "meanDSS_btw", "meanDSS_wth")
+drtotl_m_imp_vars <- c("drtotl_m_imp", "drtotl_m_imp_btw", "drtotl_m_imp_wth")
+cnDoSS_vars <- c("cnDoSS", "cnDoSS_btw", "cnDoSS_wth")
+KMTOT_vars <- c("KMTOT", "KMTOT_btw", "KMTOT_wth")
 
 analysis_vars <- c(meanDSS_vars, drtotl_m_imp_vars, cnDoSS_vars, KMTOT_vars)
 

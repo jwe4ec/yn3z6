@@ -16,10 +16,7 @@
 
 DATA: C:\Users\Jeremy\Box Sync\BRTC\Wyatt_Eberle_and_Neacsiu\rerunning analyses\For OSF\data\intermediate\contemp_aux.csv;
 VARIABLES: ResearchID time0 Condition AIN Period 
-           meanDSS meanDSS_btw meanDSS_wth meanDSS_pomp meanDSS_pomp_btw meanDSS_pomp_wth 
-           drtotl_m_imp drtotl_m_imp_btw drtotl_m_imp_wth drtotl_m_imp_pomp drtotl_m_imp_pomp_btw drtotl_m_imp_pomp_wth
-           cnDoSS cnDoSS_btw cnDoSS_wth cnDoSS_pomp cnDoSS_pomp_btw cnDoSS_pomp_wth
-           KMTOT KMTOT_btw KMTOT_wth KMTOT_pomp KMTOT_pomp_btw KMTOT_pomp_wth
+           meanDSS drtotl_m_imp cnDoSS KMTOT
            DDS14_factor DDS17a2_factor DDS17a2_factor_collapsed DDS17a2_factor_collapsed2;
 NOMINAL: DDS14_factor DDS17a2_factor_collapsed2;
 MISSING: 999;

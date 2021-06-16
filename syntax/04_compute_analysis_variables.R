@@ -45,37 +45,32 @@ groundhog_day <- version_control()
 # ---------------------------------------------------------------------------- #
 
 # Define function to compute variables for between-person effects (i.e., person
-# means) and within-person effects (i.e., person-mean centered scores) for both
-# average item scores and POMP scores
+# means) and within-person effects (i.e., person-mean centered scores) for
+# average item scores. Note that here the between-person effects are not grand
+# mean centered, whereas they are grand mean centered in the imputation model.
 
-disaggregate <- function(df, avg_item_colname, pomp_colname) {
+disaggregate <- function(df, avg_item_colname) {
   
   # Compute between-person effects
   
   avg_item_btw_colname <- paste0(avg_item_colname, "_btw")
-  pomp_btw_colname <- paste0(pomp_colname, "_btw")
-  
-  person_means <- aggregate(df[, c(avg_item_colname, pomp_colname)],
+
+  person_means <- aggregate(df[, avg_item_colname],
                             list(df$ResearchID),
                             mean, na.rm = TRUE)
   names(person_means)[1] <- "ResearchID"
   names(person_means)[2] <- avg_item_btw_colname
-  names(person_means)[3] <- pomp_btw_colname
-  
+
   output <- merge(df, person_means, by = "ResearchID", all.x = TRUE)
-  output[is.na(output[, avg_item_colname]), 
-         c(avg_item_btw_colname, pomp_btw_colname)] <- NA
+  output[is.na(output[, avg_item_colname]), avg_item_btw_colname] <- NA
   
   # Compute within-person effects
   
   avg_item_wth_colname <- paste0(avg_item_colname, "_wth")
-  pomp_wth_colname <- paste0(pomp_colname, "_wth")
-  
+
   output[, avg_item_wth_colname] <- 
     output[, avg_item_colname] - output[, avg_item_btw_colname]
-  output[, pomp_wth_colname] <- 
-    output[, pomp_colname] - output[, pomp_btw_colname]
-  
+
   return(output)
 }
 
@@ -91,10 +86,10 @@ data3 <- data2
 # Compute variables for between- and within-person effects ----
 # ---------------------------------------------------------------------------- #
 
-data3$ders <- disaggregate(data2$ders, "drtotl_m_imp", "drtotl_m_imp_pomp")
-data3$dbt_wccl <- disaggregate(data2$dbt_wccl, "meanDSS", "meanDSS_pomp")
-data3$doss <- disaggregate(data2$doss, "cnDoSS", "cnDoSS_pomp")
-data3$kims <- disaggregate(data2$kims, "KMTOT", "KMTOT_pomp")
+data3$ders <- disaggregate(data2$ders, "drtotl_m_imp")
+data3$dbt_wccl <- disaggregate(data2$dbt_wccl, "meanDSS")
+data3$doss <- disaggregate(data2$doss, "cnDoSS")
+data3$kims <- disaggregate(data2$kims, "KMTOT")
 
 # ---------------------------------------------------------------------------- #
 # Save intermediate data ----

@@ -119,29 +119,16 @@ for (i in 1:length(int_num_x_vars)) {
                  unlist(strsplit(ind_y_vars[j], "_btw", fixed = TRUE))[1] |
                unlist(strsplit(int_num_x_vars[i], ".", fixed = TRUE))[1] ==
                  unlist(strsplit(ind_y_vars[j], "_wth", fixed = TRUE))[1] |
-               unlist(strsplit(int_num_x_vars[i], ".", fixed = TRUE))[1] ==
-                 unlist(strsplit(ind_y_vars[j], "_pomp", fixed = TRUE))[1] |
                
                unlist(strsplit(int_num_x_vars[i], "_btw", fixed = TRUE))[1] ==
                  unlist(strsplit(ind_y_vars[j], "_ind", fixed = TRUE))[1] |
                unlist(strsplit(int_num_x_vars[i], "_btw", fixed = TRUE))[1] ==
                  unlist(strsplit(ind_y_vars[j], "_wth", fixed = TRUE))[1] |
-               unlist(strsplit(int_num_x_vars[i], "_btw", fixed = TRUE))[1] ==
-                 unlist(strsplit(ind_y_vars[j], "_pomp", fixed = TRUE))[1] |
                
                unlist(strsplit(int_num_x_vars[i], "_wth", fixed = TRUE))[1] ==
                  unlist(strsplit(ind_y_vars[j], "_ind", fixed = TRUE))[1] |
                unlist(strsplit(int_num_x_vars[i], "_wth", fixed = TRUE))[1] ==
-                 unlist(strsplit(ind_y_vars[j], "_btw", fixed = TRUE))[1] |
-               unlist(strsplit(int_num_x_vars[i], "_wth", fixed = TRUE))[1] ==
-                 unlist(strsplit(ind_y_vars[j], "_pomp", fixed = TRUE))[1] |
-               
-               unlist(strsplit(int_num_x_vars[i], "_pomp", fixed = TRUE))[1] ==
-                 unlist(strsplit(ind_y_vars[j], "_ind", fixed = TRUE))[1] |
-               unlist(strsplit(int_num_x_vars[i], "_pomp", fixed = TRUE))[1] ==
-                 unlist(strsplit(ind_y_vars[j], "_btw", fixed = TRUE))[1] |
-               unlist(strsplit(int_num_x_vars[i], "_pomp", fixed = TRUE))[1] ==
-                 unlist(strsplit(ind_y_vars[j], "_wth", fixed = TRUE))[1]) {
+                 unlist(strsplit(ind_y_vars[j], "_btw", fixed = TRUE))[1]) {
       ind_y_cor[k] <- NA
       ind_y_note[k] <- "x_var and ind_y_var are computed from the same variable"
     } else {
@@ -167,9 +154,7 @@ for (i in 1:length(int_num_x_vars)) {
 result <- data.frame(x_var, x_var_i, ind_y_var, ind_y_var_j, ind_y_cor, ind_y_note)
 
 result_trim <- 
-  result[!(result$x_var %in% unique(result$x_var[grepl("pomp", result$x_var)])) &
-           !(result$ind_y_var %in% unique(result$ind_y_var[grepl("pomp", result$ind_y_var)])) &
-           !(result$ind_y_var %in% unique(result$ind_y_var[grepl("_btw", result$ind_y_var)])) &
+  result[!(result$ind_y_var %in% unique(result$ind_y_var[grepl("_btw", result$ind_y_var)])) &
            !(result$ind_y_var %in% unique(result$ind_y_var[grepl("_wth", result$ind_y_var)])), ]
 
 # Restrict to correlations of at least |.20| with missing data indicators
@@ -243,9 +228,8 @@ for (i in 1:length(ordered_x_vars)) {
 result <- data.frame(x_var, x_var_i, ind_y_var, ind_y_var_j, ind_y_rg, ind_y_note)
 
 result_trim <- 
-  result[!(result$ind_y_var %in% unique(result$ind_y_var[grepl("pomp", result$ind_y_var)])) &
-         !(result$ind_y_var %in% unique(result$ind_y_var[grepl("_btw", result$ind_y_var)])) &
-         !(result$ind_y_var %in% unique(result$ind_y_var[grepl("_wth", result$ind_y_var)])), ]
+  result[!(result$ind_y_var %in% unique(result$ind_y_var[grepl("_btw", result$ind_y_var)])) &
+           !(result$ind_y_var %in% unique(result$ind_y_var[grepl("_wth", result$ind_y_var)])), ]
 
 # Restrict to correlations of at least |.20| with missing data indicators
 
@@ -313,8 +297,7 @@ for (i in 1:length(factor_x_vars)) {
 result <- data.frame(x_var, x_var_i, ind_y_var, ind_y_var_j, ind_y_v, ind_y_note)
 
 result_trim <- 
-  result[!(result$ind_y_var %in% unique(result$ind_y_var[grepl("pomp", result$ind_y_var)])) &
-           !(result$ind_y_var %in% unique(result$ind_y_var[grepl("_btw", result$ind_y_var)])) &
+  result[!(result$ind_y_var %in% unique(result$ind_y_var[grepl("_btw", result$ind_y_var)])) &
            !(result$ind_y_var %in% unique(result$ind_y_var[grepl("_wth", result$ind_y_var)])), ]
 
 # Restrict to correlations of at least |.20| with missing data indicators
@@ -342,11 +325,7 @@ for (i in 1:nrow(factor_miss_anal)) {
 
 factor_miss_anal_thres <- factor_miss_anal[factor_miss_anal$y_r2 >= .16, ]
 
-# TODO: Decide which to include as auxiliary variables
-
-
-
-
+# Use DDS14_factor and DDS17a2_factor as auxiliary variables
 
 # ---------------------------------------------------------------------------- #
 # Prepare and export data and create directories for Blimp ----
@@ -356,15 +335,10 @@ factor_miss_anal_thres <- factor_miss_anal[factor_miss_anal$y_r2 >= .16, ]
 
 data5$contemp_aux <- 
   data4$contemp_aux[, c("ResearchID", "time0", "Condition", "AIN", "Period", 
-                        "meanDSS", "meanDSS_btw", "meanDSS_wth", "meanDSS_pomp", 
-                          "meanDSS_pomp_btw", "meanDSS_pomp_wth", 
-                        "drtotl_m_imp", "drtotl_m_imp_btw", "drtotl_m_imp_wth", 
-                          "drtotl_m_imp_pomp", "drtotl_m_imp_pomp_btw", 
-                          "drtotl_m_imp_pomp_wth", 
-                        "cnDoSS", "cnDoSS_btw", "cnDoSS_wth", "cnDoSS_pomp", 
-                          "cnDoSS_pomp_btw", "cnDoSS_pomp_wth", 
-                        "KMTOT", "KMTOT_btw", "KMTOT_wth", "KMTOT_pomp", 
-                          "KMTOT_pomp_btw", "KMTOT_pomp_wth", 
+                        "meanDSS", "meanDSS_btw", "meanDSS_wth", 
+                        "drtotl_m_imp", "drtotl_m_imp_btw", "drtotl_m_imp_wth",
+                        "cnDoSS", "cnDoSS_btw", "cnDoSS_wth", 
+                        "KMTOT", "KMTOT_btw", "KMTOT_wth", 
                         "DDS14_factor", "DDS17a2_factor")]
 
 # Collapse sparse levels of DDS17a2_factor, as imputation model does not
@@ -402,15 +376,6 @@ levels(data5$contemp_aux$DDS17a2_factor_collapsed2)[levels(data5$contemp_aux$DDS
 levels(data5$contemp_aux$DDS17a2_factor_collapsed2)[levels(data5$contemp_aux$DDS17a2_factor_collapsed2) %in%
                                                       nonworking] <- "Nonworking"
 
-# Create contingency table for the factors. Sparse cells can contribute to slow
-# convergence in the imputation model, but once the factors were added to the
-# FIXED line in Blimp (because they are complete), the model converged without
-# needing to resolve the sparse cells.
-
-table(data5$contemp_aux$DDS14_factor,
-      data5$contemp_aux$DDS17a2_factor_collapsed2,
-      dnn = c("DDS14_factor", "DDS17a2_factor_collapsed2"))
-
 # Recode factors as numeric, as Blimp only reads numeric values
 
 data5$contemp_aux$DDS14_factor <- as.numeric(data5$contemp_aux$DDS14_factor)
@@ -420,11 +385,35 @@ data5$contemp_aux$DDS17a2_factor_collapsed <-
 data5$contemp_aux$DDS17a2_factor_collapsed2 <- 
   as.numeric(data5$contemp_aux$DDS17a2_factor_collapsed2)
 
+# Create contingency table for the factors. Sparse cells can contribute to slow
+# convergence in the imputation model, but once the factors were added to the
+# FIXED line in Blimp (because they are complete), the model converged without
+# needing to resolve the sparse cells.
+
+table(data5$contemp_aux$DDS14_factor,
+      data5$contemp_aux$DDS17a2_factor_collapsed2,
+      dnn = c("DDS14_factor", "DDS17a2_factor_collapsed2"))
+
+# Remove columns for between-person and within-person effects. Although we
+# initially included these in the imputation model instead of the raw scores,
+# the raw scores should be entered into the imputation model and the between-
+# person and within-person effects should be computed after imputation, per
+# consultation with Craig Enders (6/8/2021).
+
+exclude_cols <- c("meanDSS_btw", "meanDSS_wth", 
+                  "drtotl_m_imp_btw", "drtotl_m_imp_wth",
+                  "cnDoSS_btw", "cnDoSS_wth", 
+                  "KMTOT_btw", "KMTOT_wth")
+
+data5$contemp_aux[, exclude_cols] <- NULL
+
 # Code NA as 999, which will be specified as the missing code for Blimp
 
 data5$contemp_aux[is.na(data5$contemp_aux)] <- 999
 
 # Export intermediate data for Blimp, which does not allow column names
+
+save(data5, file = "./data/intermediate/data5.RData")
 
 write.table(data5$contemp_aux, 
             "./data/intermediate/contemp_aux.csv",
@@ -434,4 +423,7 @@ write.table(data5$contemp_aux,
 
 # Create directories for Blimp
 
-dir.create(paste0(wd_dir, "./data/imputed/contemp"), recursive = TRUE)
+dir.create(paste0(wd_dir, "./data/imputed/contemp/raw/diagnostic"), recursive = TRUE)
+dir.create(paste0(wd_dir, "./data/imputed/contemp/raw/actual"), recursive = TRUE)
+dir.create(paste0(wd_dir, "./data/imputed/lagged/raw/diagnostic"), recursive = TRUE)
+dir.create(paste0(wd_dir, "./data/imputed/lagged/raw/actual"), recursive = TRUE)
