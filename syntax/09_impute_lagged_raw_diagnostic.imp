@@ -1,7 +1,7 @@
 # Impute data for lagged model (diagnostic script for raw scores)
 # Author: Jeremy W. Eberle
 
-# This script uses the standalone software Blimp Base (ver. 0.0.42, preview of
+# This script uses the standalone software Blimp Base (ver. 0.0.43, preview of
 # ver. 3.0) and Blimp Studio (ver. 1.2.7) to conduct fully Bayesian model-based 
 # imputation
 

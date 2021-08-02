@@ -1,12 +1,13 @@
 # Impute data for contemporaneous model (actual script for raw scores)
 # Author: Jeremy W. Eberle
 
-# This script uses the standalone software Blimp Base (ver. 0.0.42, preview of
+# This script uses the standalone software Blimp Base (ver. 0.0.43, preview of
 # ver. 3.0) and Blimp Studio (ver. 1.2.7) to conduct fully Bayesian model-based 
 # imputation
 
 # Although the diagnostic model converged after 5,500 burn-in iterations, here we 
-# use 10,000 burn-in iterations just to be safe.
+# use 10,000 burn-in iterations just to be safe. After initially using 10 imputed
+# datasets, we now use 100 imputed datasets for more precise estimates.
 
 # Note: The code below does not save trace plots. The plots have to be manually 
 # saved from within Blimp Studio.
@@ -25,7 +26,7 @@ CENTER: GROUPMEAN = meanDSS KMTOT cnDoSS, GRANDMEAN = meanDSS.mean KMTOT.mean cn
 SEED: 1234;
 BURN: 10000;
 THIN: 5000;
-NIMPS: 10; 
+NIMPS: 100; 
 OPTIONS: latent hov psr SaveLatent;
 SAVE: stacked = C:\Users\Jeremy\Box Sync\BRTC\Wyatt_Eberle_and_Neacsiu\rerunning analyses\For OSF\data\imputed\contemp\raw\actual\imps.csv,
       burn = C:\Users\Jeremy\Box Sync\BRTC\Wyatt_Eberle_and_Neacsiu\rerunning analyses\For OSF\data\imputed\contemp\raw\actual\burn*.csv,
