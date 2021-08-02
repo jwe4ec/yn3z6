@@ -39,6 +39,7 @@ version_control <- function() {
   # and putting "Rtools" on the PATH. Then try loading the packages again.
   
   library(groundhog)
+  meta.groundhog("2021-07-01")
   groundhog_day <- "2021-04-01"
   return(groundhog_day)
 }
