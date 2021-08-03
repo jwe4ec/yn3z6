@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------------- #
-# Run Analyses - Maximal Models
+# Run Analyses - Maximal Models (Retaining All Random Effects)
 # Author: Jeremy W. Eberle
 # ---------------------------------------------------------------------------- #
 

@@ -1,4 +1,4 @@
-# Impute data for lagged model (diagnostic script for raw scores)
+# Impute data for maximal lagged model (diagnostic script)
 # Author: Jeremy W. Eberle
 
 # This script uses the standalone software Blimp Base (ver. 0.0.43, preview of
