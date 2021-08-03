@@ -31,9 +31,9 @@ BURN: 20000;
 THIN: 10000;
 NIMPS: 100;
 OPTIONS: latent hov psr SaveLatent;
-SAVE: stacked = C:\Users\Jeremy\Box Sync\BRTC\Wyatt_Eberle_and_Neacsiu\rerunning analyses\For OSF\data\imputed\lagged\raw\actual\imps.csv,
-      burn = C:\Users\Jeremy\Box Sync\BRTC\Wyatt_Eberle_and_Neacsiu\rerunning analyses\For OSF\data\imputed\lagged\raw\actual\burn*.csv,
-      iterations = C:\Users\Jeremy\Box Sync\BRTC\Wyatt_Eberle_and_Neacsiu\rerunning analyses\For OSF\data\imputed\lagged\raw\actual\iterations*.csv,
-      estimates = C:\Users\Jeremy\Box Sync\BRTC\Wyatt_Eberle_and_Neacsiu\rerunning analyses\For OSF\data\imputed\lagged\raw\actual\estimates.txt,
-      starts = C:\Users\Jeremy\Box Sync\BRTC\Wyatt_Eberle_and_Neacsiu\rerunning analyses\For OSF\data\imputed\lagged\raw\actual\starts.txt,
-      psr = C:\Users\Jeremy\Box Sync\BRTC\Wyatt_Eberle_and_Neacsiu\rerunning analyses\For OSF\data\imputed\lagged\raw\actual\psr.csv;
+SAVE: stacked = C:\Users\Jeremy\Box Sync\BRTC\Wyatt_Eberle_and_Neacsiu\rerunning analyses\For OSF\data\imputed\maximal\lagged\actual\imps.csv,
+      burn = C:\Users\Jeremy\Box Sync\BRTC\Wyatt_Eberle_and_Neacsiu\rerunning analyses\For OSF\data\imputed\maximal\lagged\actual\burn*.csv,
+      iterations = C:\Users\Jeremy\Box Sync\BRTC\Wyatt_Eberle_and_Neacsiu\rerunning analyses\For OSF\data\imputed\maximal\lagged\actual\iterations*.csv,
+      estimates = C:\Users\Jeremy\Box Sync\BRTC\Wyatt_Eberle_and_Neacsiu\rerunning analyses\For OSF\data\imputed\maximal\lagged\actual\estimates.txt,
+      starts = C:\Users\Jeremy\Box Sync\BRTC\Wyatt_Eberle_and_Neacsiu\rerunning analyses\For OSF\data\imputed\maximal\lagged\actual\starts.txt,
+      psr = C:\Users\Jeremy\Box Sync\BRTC\Wyatt_Eberle_and_Neacsiu\rerunning analyses\For OSF\data\imputed\maximal\lagged\actual\psr.csv;
