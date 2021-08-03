@@ -43,3 +43,59 @@ version_control <- function() {
   groundhog_day <- "2021-04-01"
   return(groundhog_day)
 }
+
+# ---------------------------------------------------------------------------- #
+# Define create_re_var_cov() ----
+# ---------------------------------------------------------------------------- #
+
+# Define function to create random effects variance-covariance matrix from 
+# extra.pars output of testEstimates function
+
+create_re_var_cov <- function(pooled, n_random_effects) {
+  var_first <- 1
+  var_last <- n_random_effects
+  var <- pooled$extra.pars[1:var_last]
+  cov_first <- n_random_effects + 1
+  cov_last <- length(pooled$extra.pars) - 2
+  cov <- pooled$extra.pars[cov_first:cov_last]
+  
+  names <- unlist(lapply(strsplit(labels(pooled$extra.pars)[[1]][1:var_last], 
+                                  split = "~~", 
+                                  fixed = TRUE),
+                         function(x) x[1]))
+  
+  var_cov <- matrix(NA, ncol = length(var), nrow = length(var))
+  rownames(var_cov) <- names
+  colnames(var_cov) <- names
+  diag(var_cov) <- var
+  var_cov[upper.tri(var_cov)] <- cov
+  var_cov[lower.tri(var_cov)] <- t(var_cov)[lower.tri(t(var_cov))]
+  
+  return(var_cov)
+}
+
+# ---------------------------------------------------------------------------- #
+# Define create_results_list() ----
+# ---------------------------------------------------------------------------- #
+
+# Define function to create list of results for a model, including random
+# effects correlation matrix and confidence intervals for fixed effects
+
+create_results_list <- function(modelList, pooled, n_random_effects) {
+  if (modelList == "Model did not converge" & is.na(pooled)) {
+    re_var_cov <- NA
+    re_cor <- NA
+    ci <- NA
+  } else {
+    re_var_cov <- create_re_var_cov(pooled, n_random_effects)
+    re_cor <- cov2cor(re_var_cov)
+    ci <- confint(pooled)
+  }
+  results_list <- list("modelList" = modelList,
+                       "pooled" = pooled,
+                       "re_var_cov" = re_var_cov,
+                       "re_cor" = re_cor,
+                       "ci" = ci)
+  
+  return(results_list)
+}
