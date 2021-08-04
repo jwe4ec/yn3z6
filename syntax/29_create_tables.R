@@ -158,6 +158,9 @@ write_table1 <- function(result, path, sample) {
 # ---------------------------------------------------------------------------- #
 
 load("./results/result_itt_max.RData")
+load("./results/result_itt_red_meanDSS.RData")
+load("./results/result_itt_red_cnDoSS.RData")
+load("./results/result_itt_red_KMTOT.RData")
 
 # ---------------------------------------------------------------------------- #
 # Format tables ----
@@ -166,4 +169,13 @@ load("./results/result_itt_max.RData")
 # Table 1
 
 result_itt_max <- format_table1(result_itt_max)
-write_table1(result_itt_max, "./results/table1.csv", ITT)
+write_table1(result_itt_max, "./results/table1_max.csv", ITT)
+
+result_itt_red_meanDSS <- format_table1(result_itt_red_meanDSS)
+write_table1(result_itt_red_meanDSS, "./results/table1_itt_red_meanDSS.csv", ITT)
+
+result_itt_red_cnDoSS <- format_table1(result_itt_red_cnDoSS)
+write_table1(result_itt_red_cnDoSS, "./results/table1_itt_red_cnDoSS.csv", ITT)
+
+result_itt_red_KMTOT <- format_table1(result_itt_red_KMTOT)
+write_table1(result_itt_red_KMTOT, "./results/table1_itt_red_KMTOT.csv", ITT)

@@ -94,9 +94,15 @@ write_results <- function(result, path, sample) {
 # ---------------------------------------------------------------------------- #
 
 load("./results/result_itt_max.RData")
+load("./results/result_itt_red_meanDSS.RData")
+load("./results/result_itt_red_cnDoSS.RData")
+load("./results/result_itt_red_KMTOT.RData")
 
 # ---------------------------------------------------------------------------- #
 # Write results ----
 # ---------------------------------------------------------------------------- #
 
 write_results(result_itt_max, "./results/itt_max.txt", ITT)
+write_results(result_itt_red_meanDSS, "./results/itt_red_meanDSS.txt", ITT)
+write_results(result_itt_red_cnDoSS, "./results/itt_red_cnDoSS.txt", ITT)
+write_results(result_itt_red_KMTOT, "./results/itt_red_KMTOT.txt", ITT)

@@ -82,7 +82,7 @@ create_re_var_cov <- function(pooled, n_random_effects) {
 # effects correlation matrix and confidence intervals for fixed effects
 
 create_results_list <- function(modelList, pooled, n_random_effects) {
-  if (modelList == "Model did not converge" & is.na(pooled)) {
+  if (modelList[1] == "Model did not converge" & is.na(pooled[1])) {
     re_var_cov <- NA
     re_cor <- NA
     ci <- NA

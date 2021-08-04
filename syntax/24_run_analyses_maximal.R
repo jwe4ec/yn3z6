@@ -48,13 +48,13 @@ groundhog.library(nlme, groundhog_day)
 load("./data/final/imps2.RData")
 
 # ---------------------------------------------------------------------------- #
-# Unstack imputed datasets ----
+# Unstack relevant imputed datasets ----
 # ---------------------------------------------------------------------------- #
 
-impList_contemp <- as.mitml.list(split(imps2$contemp_imps, 
-                                       imps2$contemp_imps$imp_num))
-impList_lagged <- as.mitml.list(split(imps2$lagged_imps,
-                                      imps2$lagged_imps$imp_num))
+impList_contemp <- as.mitml.list(split(imps2$contemp_imps$max_contemp_imps, 
+                                       imps2$contemp_imps$max_contemp_imps$imp_num))
+impList_lagged <- as.mitml.list(split(imps2$lagged_imps$max_lagged_imps,
+                                      imps2$lagged_imps$max_lagged_imps$imp_num))
 
 # ---------------------------------------------------------------------------- #
 # Run analyses for intent-to-treat sample ----
