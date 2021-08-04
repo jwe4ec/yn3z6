@@ -119,12 +119,32 @@ compute_pomp <- function(df, scale_vars, n_items, scale_min, scale_max) {
 load("./data/intermediate/data5.RData")
 load("./data/intermediate/scale_defs.Rdata")
 
-contemp_imps <- read.csv("./data/imputed/contemp/raw/actual/imps.csv",
-                         header = FALSE)
-lagged_imps <- read.csv("./data/imputed/lagged/raw/actual/imps.csv",
-                        header = FALSE)
-imps <- list(contemp_imps, lagged_imps)
-names(imps) <- c("contemp_imps", "lagged_imps")
+max_contemp_imps <- read.csv("./data/imputed/maximal/contemp/actual/imps.csv",
+                             header = FALSE)
+max_lagged_imps <- read.csv("./data/imputed/maximal/lagged/actual/imps.csv",
+                            header = FALSE)
+red_meanDSS_contemp_imps <- read.csv("./data/imputed/reduced_meanDSS/contemp/actual/imps.csv",
+                                     header = FALSE)
+red_meanDSS_lagged_imps <- read.csv("./data/imputed/reduced_meanDSS/lagged/actual/imps.csv",
+                                    header = FALSE)
+red_cnDoSS_contemp_imps <- read.csv("./data/imputed/reduced_cnDoSS/contemp/actual/imps.csv",
+                                     header = FALSE)
+red_cnDoSS_lagged_imps <- read.csv("./data/imputed/reduced_cnDoSS/lagged/actual/imps.csv",
+                                    header = FALSE)
+red_KMTOT_contemp_imps <- read.csv("./data/imputed/reduced_KMTOT/contemp/actual/imps.csv",
+                                    header = FALSE)
+red_KMTOT_lagged_imps <- read.csv("./data/imputed/reduced_KMTOT/lagged/actual/imps.csv",
+                                   header = FALSE)
+
+contemp_imps <- list("max_contemp_imps" = max_contemp_imps,
+                     "red_meanDSS_contemp_imps" = red_meanDSS_contemp_imps,
+                     "red_cnDoSS_contemp_imps" = red_cnDoSS_contemp_imps,
+                     "red_KMTOT_contemp_imps" = red_KMTOT_contemp_imps)
+lagged_imps <- list("max_lagged_imps" = max_lagged_imps,
+                    "red_meanDSS_lagged_imps" = red_meanDSS_lagged_imps,
+                    "red_cnDoSS_lagged_imps" = red_cnDoSS_lagged_imps,
+                    "red_KMTOT_lagged_imps" = red_KMTOT_lagged_imps)
+imps <- list("contemp_imps" = contemp_imps, "lagged_imps" = lagged_imps)
 
 # ---------------------------------------------------------------------------- #
 # Label with Blimp-outputted column names ----
@@ -141,51 +161,86 @@ names(imps) <- c("contemp_imps", "lagged_imps")
 # mean-centered Level 1 predictors and the person means should then be grand-
 # mean-centered before being entered into the analysis model at Level 2.
 
-contemp_imps_blimp_out_names <- c("imp#", "ResearchI", "time0", "Condition",
-                                  "AIN", "Period", 
-                                  "meanDSS", "drtotl_m_", "cnDoSS", "KMTOT",
-                                  "DDS14_fac", 
-                                  "DDS17a2_f", "DDS17a2_1", "DDS17a2_2", 
-                                  "drtotl_m_[ResearchI]", 
-                                  "drtotl_m_$time0[ResearchI]", 
-                                  "drtotl_m_$meanDSS[ResearchI]", 
-                                  "drtotl_m_$KMTOT[ResearchI]", 
-                                  "drtotl_m_$cnDoSS[ResearchI]",
-                                  "meanDSS.mean[ResearchI]", 
-                                  "cnDoSS.mean[ResearchI]", 
-                                  "KMTOT.mean[ResearchI]")
+max_contemp_imps_blimp_out_names <- c("imp#", "ResearchI", "time0", "Condition",
+                                      "AIN", "Period", 
+                                      "meanDSS", "drtotl_m_", "cnDoSS", "KMTOT",
+                                      "DDS14_fac", 
+                                      "DDS17a2_f", "DDS17a2_1", "DDS17a2_2", 
+                                      "drtotl_m_[ResearchI]", 
+                                      "drtotl_m_$time0[ResearchI]", 
+                                      "drtotl_m_$meanDSS[ResearchI]", 
+                                      "drtotl_m_$KMTOT[ResearchI]", 
+                                      "drtotl_m_$cnDoSS[ResearchI]",
+                                      "meanDSS.mean[ResearchI]", 
+                                      "cnDoSS.mean[ResearchI]", 
+                                      "KMTOT.mean[ResearchI]")
+max_lagged_imps_blimp_out_names <- c("imp#", "ResearchI", "time0", "Condition",
+                                     "AIN", "Period", 
+                                     "meanDSS", "drtotl_m_", "cnDoSS", "KMTOT",
+                                     "DDS14_fac", 
+                                     "DDS17a2_f", "DDS17a2_1", "DDS17a2_2", 
+                                     "lmeanDSS", "lKMTOT", "lcnDoSS", 
+                                     "drtotl_m_[ResearchI]", 
+                                     "drtotl_m_$time0[ResearchI]", 
+                                     "drtotl_m_$lmeanDSS[ResearchI]", 
+                                     "drtotl_m_$lKMTOT[ResearchI]", 
+                                     "drtotl_m_$lcnDoSS[ResearchI]", 
+                                     "lmeanDSS.mean[ResearchI]", 
+                                     "lKMTOT.mean[ResearchI]", 
+                                     "lcnDoSS.mean[ResearchI]")
 
-lagged_imps_blimp_out_names <- c("imp#", "ResearchI", "time0", "Condition",
-                                 "AIN", "Period", 
-                                 "meanDSS", "drtotl_m_", "cnDoSS", "KMTOT",
-                                 "DDS14_fac", 
-                                 "DDS17a2_f", "DDS17a2_1", "DDS17a2_2", 
-                                 "lmeanDSS", "lKMTOT", "lcnDoSS", 
-                                 "drtotl_m_[ResearchI]", 
-                                 "drtotl_m_$time0[ResearchI]", 
-                                 "drtotl_m_$lmeanDSS[ResearchI]", 
-                                 "drtotl_m_$lKMTOT[ResearchI]", 
-                                 "drtotl_m_$lcnDoSS[ResearchI]", 
-                                 "lmeanDSS.mean[ResearchI]", 
-                                 "lKMTOT.mean[ResearchI]", 
-                                 "lcnDoSS.mean[ResearchI]")
+red_meanDSS_contemp_imps_blimp_out_names <-
+  max_contemp_imps_blimp_out_names[!max_contemp_imps_blimp_out_names %in% 
+                                     c("drtotl_m_$KMTOT[ResearchI]",
+                                       "drtotl_m_$cnDoSS[ResearchI]")]
+red_meanDSS_lagged_imps_blimp_out_names <-
+  max_lagged_imps_blimp_out_names[!max_lagged_imps_blimp_out_names %in% 
+                                     c("drtotl_m_$lKMTOT[ResearchI]",
+                                       "drtotl_m_$lcnDoSS[ResearchI]")]
 
-names(imps$contemp_imps) <- contemp_imps_blimp_out_names
-names(imps$lagged_imps) <- lagged_imps_blimp_out_names
+red_cnDoSS_contemp_imps_blimp_out_names <-
+  max_contemp_imps_blimp_out_names[!max_contemp_imps_blimp_out_names %in% 
+                                     c("drtotl_m_$meanDSS[ResearchI]",
+                                       "drtotl_m_$KMTOT[ResearchI]")]
+red_cnDoSS_lagged_imps_blimp_out_names <-
+  max_lagged_imps_blimp_out_names[!max_lagged_imps_blimp_out_names %in% 
+                                    c("drtotl_m_$lmeanDSS[ResearchI]",
+                                      "drtotl_m_$lKMTOT[ResearchI]")]
+
+red_KMTOT_contemp_imps_blimp_out_names <-
+  max_contemp_imps_blimp_out_names[!max_contemp_imps_blimp_out_names %in% 
+                                     c("drtotl_m_$meanDSS[ResearchI]",
+                                       "drtotl_m_$cnDoSS[ResearchI]")]
+red_KMTOT_lagged_imps_blimp_out_names <-
+  max_lagged_imps_blimp_out_names[!max_lagged_imps_blimp_out_names %in% 
+                                    c("drtotl_m_$lmeanDSS[ResearchI]",
+                                      "drtotl_m_$lcnDoSS[ResearchI]")]
+
+names(imps$contemp_imps$max_contemp_imps) <- max_contemp_imps_blimp_out_names
+names(imps$lagged_imps$max_lagged_imps) <- max_lagged_imps_blimp_out_names
+names(imps$contemp_imps$red_meanDSS_contemp_imps) <- red_meanDSS_contemp_imps_blimp_out_names
+names(imps$lagged_imps$red_meanDSS_lagged_imps) <- red_meanDSS_lagged_imps_blimp_out_names
+names(imps$contemp_imps$red_cnDoSS_contemp_imps) <- red_cnDoSS_contemp_imps_blimp_out_names
+names(imps$lagged_imps$red_cnDoSS_lagged_imps) <- red_cnDoSS_lagged_imps_blimp_out_names
+names(imps$contemp_imps$red_KMTOT_contemp_imps) <- red_KMTOT_contemp_imps_blimp_out_names
+names(imps$lagged_imps$red_KMTOT_lagged_imps) <- red_KMTOT_lagged_imps_blimp_out_names
 
 # ---------------------------------------------------------------------------- #
 # Rename columns ----
 # ---------------------------------------------------------------------------- #
 
 for (i in 1:length(imps)) {
-  names(imps[[i]]) <- gsub("ResearchI", "ResearchID", names(imps[[i]]), fixed = TRUE)
-  
-  names(imps[[i]])[names(imps[[i]]) == "imp#"] <- "imp_num"
-  names(imps[[i]])[names(imps[[i]]) == "drtotl_m_"] <- "drtotl_m_imp"
-  names(imps[[i]])[names(imps[[i]]) == "DDS14_fac"] <- "DDS14_factor"
-  names(imps[[i]])[names(imps[[i]]) == "DDS17a2_f"] <- "DDS17a2_factor"
-  names(imps[[i]])[names(imps[[i]]) == "DDS17a2_1"] <- "DDS17a2_factor_collapsed"
-  names(imps[[i]])[names(imps[[i]]) == "DDS17a2_2"] <- "DDS17a2_factor_collapsed2"
+  for (j in 1:length(imps[[i]])) {
+    names(imps[[i]][[j]]) <- 
+      gsub("ResearchI", "ResearchID", names(imps[[i]][[j]]), fixed = TRUE)
+    
+    names(imps[[i]][[j]])[names(imps[[i]][[j]]) == "imp#"] <- "imp_num"
+    names(imps[[i]][[j]])[names(imps[[i]][[j]]) == "drtotl_m_"] <- "drtotl_m_imp"
+    names(imps[[i]][[j]])[names(imps[[i]][[j]]) == "DDS14_fac"] <- "DDS14_factor"
+    names(imps[[i]][[j]])[names(imps[[i]][[j]]) == "DDS17a2_f"] <- "DDS17a2_factor"
+    names(imps[[i]][[j]])[names(imps[[i]][[j]]) == "DDS17a2_1"] <- "DDS17a2_factor_collapsed"
+    names(imps[[i]][[j]])[names(imps[[i]][[j]]) == "DDS17a2_2"] <- "DDS17a2_factor_collapsed2"
+  }
 }
 
 # ---------------------------------------------------------------------------- #
@@ -195,10 +250,12 @@ for (i in 1:length(imps)) {
 # Recode 999 as NA in lagged data (due to lagged variables "lmeanDSS", "lKMTOT", 
 # and "lcnDoSS" being inputed instead of "meanDSS", "KMTOT", and "cnDoSS")
 
-imps$lagged_imps[imps$lagged_imps == 999] <- NA
+for (i in 1:length(imps$lagged_imps)) {
+  imps$lagged_imps[[i]][imps$lagged_imps[[i]] == 999] <- NA
+}
 
 # Drop auxiliary variables, estimated latent group means, and estimated random 
-# effects from both tables and drop non-lagged variables from lagged table
+# effects from all tables and drop non-lagged variables from lagged tables
 
 drop_contemp <- c("DDS14_factor",
                   "DDS17a2_factor", "DDS17a2_factor_collapsed",
@@ -219,8 +276,12 @@ drop_lagged <- c("meanDSS", "cnDoSS", "KMTOT",
                  "lmeanDSS.mean[ResearchID]", "lcnDoSS.mean[ResearchID]",
                  "lKMTOT.mean[ResearchID]")
 
-imps$contemp_imps[, drop_contemp] <- NULL
-imps$lagged_imps[, drop_lagged] <- NULL
+for (i in 1:length(imps$contemp_imps)) {
+  imps$contemp_imps[[i]][, drop_contemp] <- NULL
+}
+for (i in 1:length(imps$lagged_imps)) {
+  imps$lagged_imps[[i]][, drop_lagged] <- NULL
+}
 
 # ---------------------------------------------------------------------------- #
 # Compute variables for between- and within-person effects ----
@@ -228,13 +289,17 @@ imps$lagged_imps[, drop_lagged] <- NULL
 
 imps2 <- imps
 
-imps2$contemp_imps <- disaggregate_post_imp(imps2$contemp_imps, "meanDSS")
-imps2$contemp_imps <- disaggregate_post_imp(imps2$contemp_imps, "cnDoSS")
-imps2$contemp_imps <- disaggregate_post_imp(imps2$contemp_imps, "KMTOT")
+for (i in 1:length(imps2$contemp_imps)) {
+  imps2$contemp_imps[[i]] <- disaggregate_post_imp(imps2$contemp_imps[[i]], "meanDSS")
+  imps2$contemp_imps[[i]] <- disaggregate_post_imp(imps2$contemp_imps[[i]], "cnDoSS")
+  imps2$contemp_imps[[i]] <- disaggregate_post_imp(imps2$contemp_imps[[i]], "KMTOT")
+}
 
-imps2$lagged_imps <- disaggregate_post_imp(imps2$lagged_imps, "lmeanDSS")
-imps2$lagged_imps <- disaggregate_post_imp(imps2$lagged_imps, "lcnDoSS")
-imps2$lagged_imps <- disaggregate_post_imp(imps2$lagged_imps, "lKMTOT")
+for (i in 1:length(imps2$lagged_imps)) {
+  imps2$lagged_imps[[i]] <- disaggregate_post_imp(imps2$lagged_imps[[i]], "lmeanDSS")
+  imps2$lagged_imps[[i]] <- disaggregate_post_imp(imps2$lagged_imps[[i]], "lcnDoSS")
+  imps2$lagged_imps[[i]] <- disaggregate_post_imp(imps2$lagged_imps[[i]], "lKMTOT")
+}
 
 # ---------------------------------------------------------------------------- #
 # Compute POMP scores ----
@@ -270,23 +335,27 @@ lcnDoSS_vars <- c("lcnDoSS", "lcnDoSS_btw", "lcnDoSS_btw_mean",
 lKMTOT_vars <- c("lKMTOT", "lKMTOT_btw", "lKMTOT_btw_mean", 
                  "lKMTOT_btw_cent", "lKMTOT_wth")
 
-imps2$contemp_imps <- compute_pomp(imps2$contemp_imps, drtotl_vars, 
-                                   drtotl_n_items, drtotl_min, drtotl_max)
-imps2$contemp_imps <- compute_pomp(imps2$contemp_imps, meanDSS_vars, 
-                                   meanDSS_n_items, meanDSS_min, meanDSS_max)
-imps2$contemp_imps <- compute_pomp(imps2$contemp_imps, cnDoSS_vars, 
-                                   cnDoSS_n_items, cnDoSS_min, cnDoSS_max)
-imps2$contemp_imps <- compute_pomp(imps2$contemp_imps, KMTOT_vars, 
-                                   KMTOT_n_items, KMTOT_min, KMTOT_max)
+for (i in 1:length(imps2$contemp_imps)) {
+  imps2$contemp_imps[[i]] <- compute_pomp(imps2$contemp_imps[[i]], drtotl_vars,
+                                          drtotl_n_items, drtotl_min, drtotl_max)
+  imps2$contemp_imps[[i]] <- compute_pomp(imps2$contemp_imps[[i]], meanDSS_vars, 
+                                          meanDSS_n_items, meanDSS_min, meanDSS_max)
+  imps2$contemp_imps[[i]] <- compute_pomp(imps2$contemp_imps[[i]], cnDoSS_vars, 
+                                          cnDoSS_n_items, cnDoSS_min, cnDoSS_max)
+  imps2$contemp_imps[[i]] <- compute_pomp(imps2$contemp_imps[[i]], KMTOT_vars, 
+                                          KMTOT_n_items, KMTOT_min, KMTOT_max)
+}
 
-imps2$lagged_imps <- compute_pomp(imps2$lagged_imps, drtotl_vars, 
-                                  drtotl_n_items, drtotl_min, drtotl_max)
-imps2$lagged_imps <- compute_pomp(imps2$lagged_imps, lmeanDSS_vars, 
-                                  meanDSS_n_items, meanDSS_min, meanDSS_max)
-imps2$lagged_imps <- compute_pomp(imps2$lagged_imps, lcnDoSS_vars, 
-                                  cnDoSS_n_items, cnDoSS_min, cnDoSS_max)
-imps2$lagged_imps <- compute_pomp(imps2$lagged_imps, lKMTOT_vars, 
-                                  KMTOT_n_items, KMTOT_min, KMTOT_max)
+for (i in 1:length(imps2$lagged_imps)) {
+  imps2$lagged_imps[[i]] <- compute_pomp(imps2$lagged_imps[[i]], drtotl_vars, 
+                                    drtotl_n_items, drtotl_min, drtotl_max)
+  imps2$lagged_imps[[i]] <- compute_pomp(imps2$lagged_imps[[i]], lmeanDSS_vars, 
+                                    meanDSS_n_items, meanDSS_min, meanDSS_max)
+  imps2$lagged_imps[[i]] <- compute_pomp(imps2$lagged_imps[[i]], lcnDoSS_vars, 
+                                    cnDoSS_n_items, cnDoSS_min, cnDoSS_max)
+  imps2$lagged_imps[[i]] <- compute_pomp(imps2$lagged_imps[[i]], lKMTOT_vars, 
+                                    KMTOT_n_items, KMTOT_min, KMTOT_max)
+}
 
 # ---------------------------------------------------------------------------- #
 # Export final data ----
