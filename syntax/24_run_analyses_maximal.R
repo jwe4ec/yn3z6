@@ -214,8 +214,8 @@ contemp_KMTOT_wth_pomp <- create_results_list(modelList, pooled, 3)
 
 # "Error: Fewer observations than random effects in all level 1 groups". Can
 # override with allow.n.lt.q. Tried to resolve computationally singular result
-# with nlminb optimizer and the optim optimizers "Nelder-Mead" (default), "BFGS", 
-# and "CG" (John Nash says "SANN" optimizer "does not provide a meaningful 
+# with nlminb optimizer and the optim optimizer algorithms "BFGS" (default), 
+# "Nelder-Mead", and "CG" (John Nash says "SANN" "does not provide a meaningful 
 # convergence code" [https://cran.r-project.org/web/packages/optimx/optimx.pdf] 
 # but rather "always evaluates the objective function at the specified maxit 
 # number of times" [http://dx.doi.org/10.18637/jss.v060.i02, p. 4], so did not 
@@ -269,7 +269,7 @@ contemp_KMTOT_wth_pomp <- create_results_list(modelList, pooled, 3)
 #              KMTOT_wth_pomp | ResearchID,
 #            correlation = corAR1(form = ~ time0 | ResearchID),
 #            control = lmeControl(opt = "optim",
-#                                 optimMethod = "Nelder-Mead",
+#                                 optimMethod = "BFGS",
 #                                 allow.n.lt.q = TRUE,
 #                                 maxIter = 1e9,
 #                                 msMaxIter = 1e9,
@@ -284,7 +284,7 @@ contemp_KMTOT_wth_pomp <- create_results_list(modelList, pooled, 3)
 #              KMTOT_wth_pomp | ResearchID,
 #            correlation = corAR1(form = ~ time0 | ResearchID),
 #            control = lmeControl(opt = "optim",
-#                                 optimMethod = "BFGS",
+#                                 optimMethod = "Nelder-Mead",
 #                                 allow.n.lt.q = TRUE,
 #                                 maxIter = 1e9,
 #                                 msMaxIter = 1e9,
