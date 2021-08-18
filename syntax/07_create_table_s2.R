@@ -90,10 +90,9 @@ factor_miss_anal_thres <- factor_miss_anal_thres[, c("x_var",
 row.names(int_num_miss_anal_thres) <- 1:nrow(int_num_miss_anal_thres)
 row.names(factor_miss_anal_thres) <- 1:nrow(factor_miss_anal_thres)
 
-int_num_miss_anal_thres <- int_num_miss_anal_thres[c(9, 10,
-                                                     8,
-                                                     3, 2,
-                                                     1, 6:7, 4:5, 11), ]
+int_num_miss_anal_thres <- int_num_miss_anal_thres[c(8, 3, 1,
+                                                     9, 10, 6, 7, 4, 5, 11,
+                                                     2), ]
 factor_miss_anal_thres <- factor_miss_anal_thres[c(1:2,
                                                    4, 8, 11,
                                                    3, 7, 10,
@@ -115,7 +114,7 @@ int_num_miss_anal_thres$y_r2 <- NA
 factor_miss_anal_thres$ind_y_cor <- NA
 factor_miss_anal_thres$y_cor <- NA
 
-table_s2 <- rbind(int_num_miss_anal_thres, factor_miss_anal_thres)
+table_s2 <- rbind(factor_miss_anal_thres, int_num_miss_anal_thres)
 
 # Rearrange columns
 
