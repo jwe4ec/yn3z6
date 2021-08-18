@@ -328,6 +328,16 @@ factor_miss_anal_thres <- factor_miss_anal[factor_miss_anal$y_r2 >= .16, ]
 # Use DDS14_factor and DDS17a2_factor as auxiliary variables
 
 # ---------------------------------------------------------------------------- #
+# Save results ----
+# ---------------------------------------------------------------------------- #
+
+dir.create("./results/aux_vars")
+
+save(int_num_miss_anal_thres, file = "./results/aux_vars/int_num_miss_anal_thres.RData")
+save(ordered_miss_anal_thres, file = "./results/aux_vars/ordered_miss_anal_thres.RData")
+save(factor_miss_anal_thres, file = "./results/aux_vars/factor_miss_anal_thres.RData")
+
+# ---------------------------------------------------------------------------- #
 # Prepare and export data and create directories for Blimp ----
 # ---------------------------------------------------------------------------- #
 
