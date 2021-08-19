@@ -182,11 +182,9 @@ for (i in 1:nrow(int_num_miss_anal)) {
 
 int_num_miss_anal_thres <- int_num_miss_anal[int_num_miss_anal$y_cor >= abs(.4), ]
 
-# TODO: Decide which to include as auxiliary variables
-
-
-
-
+# prDoSS.0 is neither an analysis variable nor a subscale of an analysis variable
+# already in the imputation model. Therefore, it could be included as an auxiliary
+# variable. However, this was not realized until after analyses were complete.
 
 # ---------------------------------------------------------------------------- #
 # Identify ordinal auxiliary variables ----

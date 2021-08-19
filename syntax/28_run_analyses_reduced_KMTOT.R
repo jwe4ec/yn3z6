@@ -380,34 +380,5 @@ save(result_itt_red_KMTOT, file = "./results/result_itt_red_KMTOT.RData")
 # Run analyses for completer sample ----
 # ---------------------------------------------------------------------------- #
 
-# Contemporaneous models using average item scores
-
-# TODO
-
-
-
-
-
-# Contemporaneous models using POMP scores
-
-# TODO
-
-
-
-
-
-# Lagged models using average item scores
-
-# TODO
-
-
-
-
-
-# Lagged models using POMP scores
-
-# TODO
-
-
-
-
+# Analyses for completer sample were planned but not conducted due to issues
+# with model convergence encountered already with the larger ITT sample
