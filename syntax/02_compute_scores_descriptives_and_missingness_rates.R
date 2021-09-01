@@ -574,7 +574,7 @@ table$Period[table$Period == 5] <- "Follow-Up"
 
 names(table)[names(table) == "Period"] <- "Assessment"
 
-write.csv(table, "./results/table_s1.csv", row.names = FALSE)
+write.csv(table, "./results/table_s2.csv", row.names = FALSE)
 
 # ---------------------------------------------------------------------------- #
 # Compute scale-level missingness ----
