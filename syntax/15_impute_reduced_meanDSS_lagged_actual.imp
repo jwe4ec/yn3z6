@@ -1,0 +1,38 @@
+# Impute data for reduced meanDSS lagged model (actual script)
+# Author: Jeremy W. Eberle
+
+# This script uses the standalone software Blimp Base (ver. 0.0.43, preview of
+# ver. 3.0) and Blimp Studio (ver. 1.2.7) to conduct fully Bayesian model-based 
+# imputation
+
+# Although the diagnostic model converged after 6,000 burn-in iterations, here 
+# we use 10,000 burn-in iterations just to be safe.
+
+# Note: The code below does not save trace plots. The plots have to be manually 
+# saved from within Blimp Studio.
+
+DATA: C:\Users\Jeremy\Box Sync\BRTC\Wyatt_Eberle_and_Neacsiu\rerunning analyses\For OSF\data\intermediate\contemp_aux.csv;
+VARIABLES: ResearchID time0 Condition AIN Period 
+           meanDSS drtotl_m_imp cnDoSS KMTOT
+           DDS14_factor DDS17a2_factor DDS17a2_factor_collapsed DDS17a2_factor_collapsed2;
+NOMINAL: DDS14_factor DDS17a2_factor_collapsed2;
+MISSING: 999;
+TRANSFORM: lmeanDSS = lag1(meanDSS, time0, ResearchID);
+           lKMTOT = lag1(KMTOT, time0, ResearchID);
+           lcnDoSS = lag1(cnDoSS, time0, ResearchID);
+CLUSTERID: ResearchID;
+FIXED: time0 DDS14_factor DDS17a2_factor_collapsed2;
+MODEL: drtotl_m_imp ~ time0 lmeanDSS lmeanDSS.mean lKMTOT lKMTOT.mean lcnDoSS lcnDoSS.mean DDS14_factor DDS17a2_factor_collapsed2
+                        | time0 lmeanDSS;
+CENTER: GROUPMEAN = lmeanDSS lKMTOT lcnDoSS, GRANDMEAN = lmeanDSS.mean lKMTOT.mean lcnDoSS.mean;
+SEED: 1234;
+BURN: 10000;
+THIN: 5000;
+NIMPS: 100;
+OPTIONS: latent hov psr SaveLatent;
+SAVE: stacked = C:\Users\Jeremy\Box Sync\BRTC\Wyatt_Eberle_and_Neacsiu\rerunning analyses\For OSF\data\imputed\reduced_meanDSS\lagged\actual\imps.csv,
+      burn = C:\Users\Jeremy\Box Sync\BRTC\Wyatt_Eberle_and_Neacsiu\rerunning analyses\For OSF\data\imputed\reduced_meanDSS\lagged\actual\burn*.csv,
+      iterations = C:\Users\Jeremy\Box Sync\BRTC\Wyatt_Eberle_and_Neacsiu\rerunning analyses\For OSF\data\imputed\reduced_meanDSS\lagged\actual\iterations*.csv,
+      estimates = C:\Users\Jeremy\Box Sync\BRTC\Wyatt_Eberle_and_Neacsiu\rerunning analyses\For OSF\data\imputed\reduced_meanDSS\lagged\actual\estimates.txt,
+      starts = C:\Users\Jeremy\Box Sync\BRTC\Wyatt_Eberle_and_Neacsiu\rerunning analyses\For OSF\data\imputed\reduced_meanDSS\lagged\actual\starts.txt,
+      psr = C:\Users\Jeremy\Box Sync\BRTC\Wyatt_Eberle_and_Neacsiu\rerunning analyses\For OSF\data\imputed\reduced_meanDSS\lagged\actual\psr.csv;
