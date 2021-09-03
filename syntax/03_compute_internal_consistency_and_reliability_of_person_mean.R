@@ -246,13 +246,18 @@ residuals(fit_meanDSS_1f, type = 'cor')
 
 reliability(fit_meanDSS_1f)
 
-# TODO: Compute 95% CI for omega (using percentile bootstrap per Flora, 2020, 
+# Computing 95% CI for omega (using either percentile bootstrap per Flora, 2020, 
 # or using bias-corrected and accelerated bootstrap per Dunn et al., 2014) based 
-# on single-factor model
+# on single-factor model yields this error and warnings:
 
-
-
-
+# Error in if (const(t, min(1e-08, mean(t, na.rm = TRUE)/1e+06))) { : 
+#   missing value where TRUE/FALSE needed
+# In addition: Warning messages:
+# 1: In lavaan::lavaan(model = model, data = data, missing = missing,  :
+#   lavaan WARNING:
+#     the optimizer warns that a solution has NOT been found!
+# 2: In lavaan::lavaan(model = model, data = data, missing = missing,  :
+#   lavaan WARNING: estimation of the baseline model failed.
 
 rawData <- data2$dbt_wccl[data2$dbt_wccl$time0 == 0, scale_defs$meanDSS_items]
 
@@ -266,16 +271,12 @@ ci.reliability(data = completeData,
                type = "omega",
                conf.level = 0.95,
                interval.type = "perc",
-               B = 10000)
+               B = 5000)
 ci.reliability(data = completeData,
                type = "omega",
                conf.level = 0.95,
                interval.type = "bca",
-               B = 10000)
-
-
-
-
+               B = 5000)
 
 # ---------------------------------------------------------------------------- #
 # Compute internal consistency for cnDoSS score of DoSS ----
@@ -309,13 +310,21 @@ residuals(fit_cnDoSS_1f, type = 'cor')
 
 reliability(fit_cnDoSS_1f)
 
-# TODO: Compute 95% CI for omega (using percentile bootstrap per Flora, 2020, 
+# Computing 95% CI for omega (using either percentile bootstrap per Flora, 2020, 
 # or using bias-corrected and accelerated bootstrap per Dunn et al., 2014) based 
-# on single-factor model
+# on single-factor model yields these warning messages:
 
-
-
-
+# In lav_object_post_check(object) :
+#   lavaan WARNING: some estimated ov variances are negative
+# In lavaan::lavaan(model = model, data = data, missing = missing,  ... :
+#   lavaan WARNING:
+#     the optimizer warns that a solution has NOT been found!
+# In lavaan::lavaan(model = model, data = data, missing = missing,  ... :
+#   lavaan WARNING:
+#     the optimizer (NLMINB) claimed the model converged, but not all
+#     elements of the gradient are (near) zero; the optimizer may not
+#     have found a local solution use check.gradient = FALSE to skip
+#     this check.
 
 rawData <- data2$doss[data2$doss$time0 == 0, scale_defs$cnDoSS_items]
 
@@ -335,10 +344,6 @@ ci.reliability(data = completeData,
                conf.level = 0.95,
                interval.type = "bca",
                B = 1000)
-
-
-
-
 
 # ---------------------------------------------------------------------------- #
 # Compute internal consistency for KMTOT score of KIMS ----
