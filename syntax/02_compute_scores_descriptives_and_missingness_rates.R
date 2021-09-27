@@ -106,6 +106,28 @@ describe_by_time <- function(df, scale) {
   return(output)
 }
 
+# Define function to view rows with scale-level missingness for a given data
+# frame based on name of scale variable and name of whymiss variable (NULL if
+# not present in data frame)
+
+view_scale_miss <- function(df, scale, whymiss) {
+  df_scale_miss <- df[is.na(df[, scale]), ]
+  
+  if (is.null(whymiss)) {
+    View(df_scale_miss[order(df_scale_miss[, "Condition"],
+                             df_scale_miss[, "ResearchID"]),
+                       c(which(colnames(df_scale_miss) == "Period"),
+                         which(!colnames(df_scale_miss) %in% "Period"))])
+  } else {
+    View(df_scale_miss[order(df_scale_miss[, "Condition"],
+                             -df_scale_miss[, whymiss],
+                             df_scale_miss[, "ResearchID"]),
+                       c(which(colnames(df_scale_miss) == whymiss),
+                         which(colnames(df_scale_miss) == "Period"),
+                         which(!colnames(df_scale_miss) %in% c(whymiss, "Period")))])
+  }
+}
+
 # ---------------------------------------------------------------------------- #
 # Import further cleaned CSV data files ----
 # ---------------------------------------------------------------------------- #
@@ -593,3 +615,19 @@ round(prop_drtotl_m_imp*100, 2)
 round(prop_meanDSS*100, 2)
 round(prop_cnDoSS*100, 2)
 round(prop_KMTOT*100, 2)
+
+# ---------------------------------------------------------------------------- #
+# Investigate scale-level missingness ----
+# ---------------------------------------------------------------------------- #
+
+# Note: For whymiss variable, -12 = "Subject could not be located or otherwise
+# unreachable" and -13 = "Subject is a drop-out; no data collected". In Figure
+# 1 of main outcomes paper (Neacsiu et al. 2014), -13 was used to define "lost 
+# to follow-up"; in these cases, the participant withdrew from assessments. By
+# contrast, other participants (-12) were unreachable at some assessment points 
+# but did not inform the study team that they wanted to withdraw.
+
+view_scale_miss(data2$ders, "drtotl_m_imp", "derswhymiss")
+view_scale_miss(data2$dbt_wccl, "meanDSS", NULL)
+view_scale_miss(data2$doss, "cnDoSS", "DoSSwhymiss")
+view_scale_miss(data2$kims, "KMTOT", "kmwhymiss")
