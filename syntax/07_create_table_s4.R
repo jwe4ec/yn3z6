@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------------- #
-# Create Table S3
+# Create Table S4
 # Author: Jeremy W. Eberle
 # ---------------------------------------------------------------------------- #
 
@@ -105,12 +105,12 @@ int_num_miss_anal_thres$y_r2 <- NA
 factor_miss_anal_thres$ind_y_cor <- NA
 factor_miss_anal_thres$y_cor <- NA
 
-table_s3 <- rbind(factor_miss_anal_thres, int_num_miss_anal_thres)
+table_s4 <- rbind(factor_miss_anal_thres, int_num_miss_anal_thres)
 
 # Rearrange columns
 
-table_s3 <- table_s3[, c("x_var", "y_var", "ind_y_cor", "ind_y_v", "y_cor", "y_r2")]
+table_s4 <- table_s4[, c("x_var", "y_var", "ind_y_cor", "ind_y_v", "y_cor", "y_r2")]
 
 # Write to CSV
 
-write.csv(table_s3, "./results/table_s3.csv", row.names = FALSE)
+write.csv(table_s4, "./results/table_s4.csv", row.names = FALSE)
