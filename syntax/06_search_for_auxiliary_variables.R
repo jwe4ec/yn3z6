@@ -384,6 +384,13 @@ levels(data5$contemp_aux$DDS17a2_factor_collapsed2)[levels(data5$contemp_aux$DDS
 levels(data5$contemp_aux$DDS17a2_factor_collapsed2)[levels(data5$contemp_aux$DDS17a2_factor_collapsed2) %in%
                                                       nonworking] <- "Nonworking"
 
+# Define "cond0rev" so DBT-ST is coded 1 and ASG is coded 0. Note: This coding was
+# used in Neacsiu et al. (2018; https://doi.org/gdkhfn), whereas in Neacsiu et al.
+# (2014; http://doi.org/f6cntg) "cond0" was used (where DBT-ST = 0 and ASG = 1).
+
+data5$contemp_aux$cond0rev[data5$contemp_aux$Condition == 23] <- 1
+data5$contemp_aux$cond0rev[data5$contemp_aux$Condition == 24] <- 0
+
 # Recode factors as numeric, as Blimp only reads numeric values
 
 data5$contemp_aux$DDS14_factor <- as.numeric(data5$contemp_aux$DDS14_factor)
