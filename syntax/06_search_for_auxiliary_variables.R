@@ -347,7 +347,7 @@ data5$contemp_aux <-
                         "drtotl_m_imp", "drtotl_m_imp_btw", "drtotl_m_imp_wth",
                         "cnDoSS", "cnDoSS_btw", "cnDoSS_wth", 
                         "KMTOT", "KMTOT_btw", "KMTOT_wth", 
-                        "DDS14_factor", "DDS17a2_factor")]
+                        "DDS14_factor", "DDS17a2_factor", "prDoSS")]
 
 # Collapse sparse levels of DDS17a2_factor, as imputation model does not
 # converge after burn-in period with 100,000 iterations
@@ -436,9 +436,18 @@ write.table(data5$contemp_aux,
             col.names = FALSE,
             sep = ",")
 
-# Create directories for Blimp
+# Create directories for Blimp sensitivity analyses
 
-dir.create(paste0(wd_dir, "./data/imputed/contemp/raw/diagnostic"), recursive = TRUE)
-dir.create(paste0(wd_dir, "./data/imputed/contemp/raw/actual"), recursive = TRUE)
-dir.create(paste0(wd_dir, "./data/imputed/lagged/raw/diagnostic"), recursive = TRUE)
-dir.create(paste0(wd_dir, "./data/imputed/lagged/raw/actual"), recursive = TRUE)
+sen_anyls <- c("maximal", "reduced_cnDoSS", "reduced_KMTOT", "reduced_meanDSS")
+
+for (i in 1:length(sen_anyls)) {
+  dir.create(paste0(wd_dir, "./data/imputed/", sen_anyls[i], "/contemp/diagnostic"), recursive = TRUE)
+  dir.create(paste0(wd_dir, "./data/imputed/", sen_anyls[i], "/contemp/actual"), recursive = TRUE)
+  dir.create(paste0(wd_dir, "./data/imputed/", sen_anyls[i], "/lagged/diagnostic"), recursive = TRUE)
+  dir.create(paste0(wd_dir, "./data/imputed/", sen_anyls[i], "/lagged/actual"), recursive = TRUE)
+}
+
+# Create directories for Blimp mediation analysis
+
+dir.create(paste0(wd_dir, "./data/imputed/mediation/maximal/lagged/diagnostic"), recursive = TRUE)
+dir.create(paste0(wd_dir, "./data/imputed/mediation/maximal/lagged/actual"), recursive = TRUE)
