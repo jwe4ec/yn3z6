@@ -349,6 +349,10 @@ data5$contemp_aux <-
                         "KMTOT", "KMTOT_btw", "KMTOT_wth", 
                         "DDS14_factor", "DDS17a2_factor", "prDoSS")]
 
+# Note: "prDoSS" is not completely observed so cannot go on FIXED line in Blimp
+
+sum(is.na(data5$contemp_aux$prDoSS))
+
 # Collapse sparse levels of DDS17a2_factor, as imputation model does not
 # converge after burn-in period with 100,000 iterations
 
