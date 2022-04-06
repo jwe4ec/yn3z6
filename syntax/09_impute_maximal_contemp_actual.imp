@@ -15,7 +15,7 @@
 DATA: C:\Users\Jeremy\Box Sync\BRTC\Wyatt_Eberle_and_Neacsiu\rerunning analyses\For OSF\data\intermediate\contemp_aux.csv;
 VARIABLES: ResearchID time0 Condition AIN Period 
            meanDSS drtotl_m_imp cnDoSS KMTOT
-           DDS14_factor DDS17a2_factor DDS17a2_factor_collapsed DDS17a2_factor_collapsed2;
+           DDS14_factor DDS17a2_factor prDoSS DDS17a2_factor_collapsed DDS17a2_factor_collapsed2 cond0rev;
 NOMINAL: DDS14_factor DDS17a2_factor_collapsed2;
 MISSING: 999;
 CLUSTERID: ResearchID;

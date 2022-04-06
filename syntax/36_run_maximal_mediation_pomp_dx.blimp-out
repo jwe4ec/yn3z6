@@ -1,0 +1,562 @@
+
+---------------------------------------------------------------------------
+
+                                   Blimp
+                                  3.0.58
+
+             Blimp was developed with funding from Institute of
+          Educational Sciences awards R305D150056 and R305D190002.
+
+            Craig K. Enders, P.I. Email: cenders@psych.ucla.edu
+              Brian T. Keller, Co-P.I. Email: blimp@utexas.edu
+                 Han Du, Co-P.I. Email: hdu@psych.ucla.edu
+                 Roy Levy, Co-P.I. Email: roy.levy@asu.edu
+
+              Programming and Blimp Studio by Brian T. Keller
+
+                   There is no expressed license given.
+
+---------------------------------------------------------------------------
+
+
+ALGORITHMIC OPTIONS SPECIFIED:
+
+  Imputation method:                 Fully Bayesian model-based
+  MCMC algorithm:                    Full conditional Metropolis sampler
+  Between-cluster imputation model:  Latent cluster means (LATENT)
+  Residual variance structure:       Homogeneous level-1 variance (HOV)
+  Prior for random effect variances: Zero matrix, df = -(p + 1) (PRIOR2)
+  Prior for residual variances:      Zero sum of squares, df = -2 (PRIOR2)
+  Prior for predictor variances:     Unit sum of squares, df = 2 (XPRIOR1)
+  Chain Starting Values:             Random starting values
+
+
+  NOTE: The default prior for regression coefficients 
+        in categorical models is 'normal( 0.0, 5.0)'
+
+  NOTE: The following nominal variables have automatically
+        been assigned a reference group.
+
+          'DDS14_factor' with reference value '1'
+          'DDS17a2_factor_collapsed2' with reference value '1'
+
+        To change reference group use the following command:
+          NOMINAL: variable_name(reference_value);
+
+  NOTE: The following variables have been renamed
+        to be 9 characters or less.
+
+           ResearchID -> ResearchI
+           drtotl_m_imp -> drtotl_m_
+           DDS14_factor -> DDS14_fac
+           DDS17a2_factor -> DDS17a2_f
+           DDS17a2_factor_collapsed -> DDS17a2_1
+           DDS17a2_factor_collapsed2 -> DDS17a2_2
+           drtotl_m_imp_pomp -> drtotl_m1
+           meanDSS_pomp -> meanDSS_p
+           cnDoSS_pomp -> cnDoSS_po
+           KMTOT_pomp -> KMTOT_pom
+           lmeanDSS_pomp -> lmeanDSS_
+           lKMTOT_pomp -> lKMTOT_po
+           lcnDoSS_pomp -> lcnDoSS_p
+           DDS14_factor.3 -> DDS14_fa3
+           DDS14_factor.5 -> DDS14_fa5
+           DDS17a2_factor_collapsed2.2 -> DDS17a2_3
+           DDS17a2_factor_collapsed2.3 -> DDS17a2_4
+
+
+BURN-IN POTENTIAL SCALE REDUCTION (PSR) OUTPUT:
+
+  NOTE: Split chain PSR is being used. This splits each chain's
+        iterations to create twice as many chains.
+
+  Comparing iterations across 2 chains     Highest PSR   Parameter #  
+                         5001 to 10000           1.862            74  
+                        10001 to 20000           1.356            74  
+                        15001 to 30000           1.385            74  
+                        20001 to 40000           1.087            74  
+                        25001 to 50000           1.007            74  
+                        30001 to 60000           1.024            74  
+                        35001 to 70000           1.034            74  
+                        40001 to 80000           1.067            74  
+                        45001 to 90000           1.028            74  
+                        50001 to 100000          1.049            74  
+                        55001 to 110000          1.046            74  
+                        60001 to 120000          1.026            74  
+                        65001 to 130000          1.053            74  
+                        70001 to 140000          1.039            74  
+                        75001 to 150000          1.046            74  
+                        80001 to 160000          1.003            76  
+                        85001 to 170000          1.019            74  
+                        90001 to 180000          1.035            74  
+                        95001 to 190000          1.025            74  
+                       100001 to 200000          1.042            74  
+
+
+PARAMETER LABELS:
+
+  Printing out PSR for last 5 comparisons:
+
+  NOTE: Split chain PSR is being used. This splits each chain's
+        iterations to create twice as many chains.
+
+  Comparing iterations across 2 chains  
+                  [1]   80001 to 160000
+                  [2]   85001 to 170000
+                  [3]   90001 to 180000
+                  [4]   95001 to 190000
+                  [5]  100001 to 200000
+
+                                      [1]    [2]    [3]    [4]    [5]  
+Outcome Variable:  drtotl_m1  
+
+    Variances:                      
+  1  L2 : Var(Intercept)              1.00   1.00   1.00   1.00   1.00 
+  2  L2 : Cov(lmeanDSS_,Intercept)    1.00   1.00   1.00   1.00   1.00 
+  3  L2 : Var(lmeanDSS_)              1.00   1.00   1.00   1.00   1.00 
+  4  L2 : Cov(lKMTOT_po,Intercept)    1.00   1.00   1.00   1.00   1.00 
+  5  L2 : Cov(lKMTOT_po,lmeanDSS_)    1.00   1.00   1.00   1.00   1.00 
+  6  L2 : Var(lKMTOT_po)              1.00   1.00   1.00   1.00   1.00 
+  7  L2 : Cov(lcnDoSS_p,Intercept)    1.00   1.00   1.00   1.00   1.00 
+  8  L2 : Cov(lcnDoSS_p,lmeanDSS_)    1.00   1.00   1.00   1.00   1.00 
+  9  L2 : Cov(lcnDoSS_p,lKMTOT_po)    1.00   1.00   1.00   1.00   1.00 
+ 10  L2 : Var(lcnDoSS_p)              1.00   1.00   1.00   1.00   1.00 
+ 11  Residual Var.                    1.00   1.00   1.00   1.00   1.00 
+
+    Coefficients:                   
+ 12  Intercept                        1.00   1.00   1.00   1.00   1.00 
+ 13  lmeanDSS_                        1.00   1.00   1.00   1.00   1.00 
+ 14  lmeanDSS_.mean[ResearchI]        1.00   1.00   1.00   1.00   1.00 
+ 15  lKMTOT_po                        1.00   1.00   1.00   1.00   1.00 
+ 16  lKMTOT_po.mean[ResearchI]        1.00   1.00   1.00   1.00   1.00 
+ 17  lcnDoSS_p                        1.00   1.00   1.00   1.00   1.00 
+ 18  lcnDoSS_p.mean[ResearchI]        1.00   1.00   1.00   1.00   1.00 
+ 19  cond0rev                         1.00   1.00   1.00   1.00   1.00 
+ 20  DDS14_fa3                        1.00   1.00   1.00   1.00   1.00 
+ 21  DDS14_fa5                        1.00   1.00   1.00   1.00   1.00 
+ 22  DDS17a2_3                        1.00   1.00   1.00   1.00   1.00 
+ 23  DDS17a2_4                        1.00   1.00   1.00   1.00   1.00 
+
+    Standardized Coefficients:      
+ 24  lmeanDSS_                        1.00   1.00   1.00   1.00   1.00 
+ 25  lmeanDSS_.mean[ResearchI]        1.00   1.00   1.00   1.00   1.00 
+ 26  lKMTOT_po                        1.00   1.00   1.00   1.00   1.00 
+ 27  lKMTOT_po.mean[ResearchI]        1.00   1.00   1.00   1.00   1.00 
+ 28  lcnDoSS_p                        1.00   1.00   1.00   1.00   1.00 
+ 29  lcnDoSS_p.mean[ResearchI]        1.00   1.00   1.00   1.00   1.00 
+ 30  cond0rev                         1.00   1.00   1.00   1.00   1.00 
+ 31  DDS14_fa3                        1.00   1.00   1.00   1.00   1.00 
+ 32  DDS14_fa5                        1.00   1.00   1.00   1.00   1.00 
+ 33  DDS17a2_3                        1.00   1.00   1.00   1.00   1.00 
+ 34  DDS17a2_4                        1.00   1.00   1.00   1.00   1.00 
+
+    Proportion Variance Explained   
+ 35  by Coefficients                  1.00   1.00   1.00   1.00   1.00 
+ 36  by Level-2 Random Intercepts     1.00   1.00   1.00   1.00   1.00 
+ 37  by Level-2 Random Slopes         1.00   1.00   1.00   1.00   1.00 
+ 38  by Level-1 Residual Variation    1.00   1.00   1.00   1.00   1.00 
+
+
+Outcome Variable:  lKMTOT_po  
+
+    Variances:                      
+ 39  L2 : Var(Intercept)              1.00   1.00   1.00   1.00   1.00 
+ 40  Residual Var.                    1.00   1.00   1.00   1.00   1.00 
+
+    Coefficients:                   
+ 41  Intercept                        1.00   1.00   1.00   1.00   1.00 
+ 42  cond0rev                         1.00   1.00   1.00   1.00   1.00 
+
+    Standardized Coefficients:      
+ 43  cond0rev                         1.00   1.00   1.00   1.00   1.00 
+
+    Proportion Variance Explained   
+ 44  by Coefficients                  1.00   1.00   1.00   1.00   1.00 
+ 45  by Level-2 Random Intercepts     1.00   1.00   1.00   1.00   1.00 
+ 46  by Level-1 Residual Variation    1.00   1.00   1.00   1.00   1.00 
+
+
+Outcome Variable:  lcnDoSS_p  
+
+    Variances:                      
+ 47  L2 : Var(Intercept)              1.00   1.00   1.00   1.00   1.00 
+ 48  Residual Var.                    1.00   1.00   1.00   1.00   1.00 
+
+    Coefficients:                   
+ 49  Intercept                        1.00   1.00   1.00   1.00   1.00 
+ 50  cond0rev                         1.00   1.00   1.00   1.00   1.00 
+
+    Standardized Coefficients:      
+ 51  cond0rev                         1.00   1.00   1.00   1.00   1.00 
+
+    Proportion Variance Explained   
+ 52  by Coefficients                  1.00   1.00   1.00   1.00   1.00 
+ 53  by Level-2 Random Intercepts     1.00   1.00   1.00   1.00   1.00 
+ 54  by Level-1 Residual Variation    1.00   1.00   1.00   1.00   1.00 
+
+
+Outcome Variable:  lmeanDSS_  
+
+    Variances:                      
+ 55  L2 : Var(Intercept)              1.00   1.00   1.00   1.00   1.00 
+ 56  Residual Var.                    1.00   1.00   1.00   1.00   1.00 
+
+    Coefficients:                   
+ 57  Intercept                        1.00   1.00   1.00   1.00   1.00 
+ 58  cond0rev                         1.00   1.00   1.00   1.00   1.00 
+
+    Standardized Coefficients:      
+ 59  cond0rev                         1.00   1.00   1.00   1.00   1.00 
+
+    Proportion Variance Explained   
+ 60  by Coefficients                  1.00   1.00   1.00   1.00   1.00 
+ 61  by Level-2 Random Intercepts     1.00   1.00   1.00   1.00   1.00 
+ 62  by Level-1 Residual Variation    1.00   1.00   1.00   1.00   1.00 
+
+
+Generated Parameters:
+
+ 63  specific.indirect1               1.00   1.00   1.00   1.00   1.00 
+ 64  specific.indirect2               1.00   1.00   1.00   1.00   1.00 
+ 65  specific.indirect3               1.00   1.00   1.00   1.00   1.00 
+ 66  total.indirect                   1.00   1.00   1.00   1.00   1.00 
+ 67  total                            1.00   1.00   1.00   1.00   1.00 
+
+
+Means Model:        lmeanDSS_  
+
+ 68  Grand Mean                       1.00   1.00   1.00   1.00   1.00 
+
+     Level 1:                       
+ 69   Residual Var.                   1.00   1.00   1.00   1.00   1.00 
+
+     Level 2:                       
+ 70   Residual Var.                   1.00   1.00   1.00   1.00   1.00 
+
+
+Means Model:        lKMTOT_po  
+
+ 71  Grand Mean                       1.00   1.00   1.00   1.00   1.00 
+
+     Level 1:                       
+ 72   Residual Var.                   1.00   1.00   1.00   1.00   1.00 
+
+     Level 2:                       
+ 73   Residual Var.                   1.00   1.00   1.00   1.00   1.00 
+
+
+Means Model:        lcnDoSS_p  
+
+ 74  Grand Mean                       1.00   1.02   1.04   1.02   1.04 
+
+     Level 1:                       
+ 75   Residual Var.                   1.00   1.00   1.00   1.00   1.00 
+
+     Level 2:                       
+ 76   Residual Var.                   1.00   1.00   1.00   1.00   1.00 
+
+
+METROPOLIS-HASTINGS ACCEPTANCE RATES:
+
+  Chain 1:
+    Variable                            Type    Probability   Target Value 
+    lcnDoSS_p                      parameter          0.447          0.500 
+
+  Chain 2:
+    Variable                            Type    Probability   Target Value 
+    lmeanDSS_                      parameter          0.425          0.500 
+    lcnDoSS_p                      parameter          0.571          0.500 
+
+
+  NOTE: Suppressing printing of tuning info that is within
+        +/- 0.05 of the target acceptance probability.
+        Use keyword 'tuneinfo' in options to override.
+
+
+DATA INFORMATION:
+
+  Level-2 identifier:       ResearchI
+  Sample Size:              176
+  Level-2 Clusters:         44
+  Missing Data Rates:
+
+                drtotl_m1 = 07.95
+                lKMTOT_po = 31.25
+                lcnDoSS_p = 31.25
+                lmeanDSS_ = 30.11
+
+  Nominal Dummy Codes:
+
+                DDS14_fac = DDS14_fa3 DDS14_fa5
+                DDS17a2_2 = DDS17a2_3 DDS17a2_4
+
+
+MODEL INFORMATION:
+
+  NUMBER OF PARAMETERS
+    Outcome Models:         35
+    Generated Parameters:   5
+    Predictor Models:       9
+
+  PREDICTORS
+    Fixed variables:        DDS14_fac DDS17a2_2 cond0rev
+
+  CENTERED PREDICTORS
+    Group Mean Centered:    lmeanDSS_ lKMTOT_po lcnDoSS_p
+
+  LATENT CLUSTER MEANS
+    Grand Mean Centered:    lmeanDSS_ lKMTOT_po lcnDoSS_p
+
+  MODELS
+    [1]  drtotl_m1 ~ Intercept lmeanDSS_ lmeanDSS_.mean[ResearchI]@b1path lKMTOT_po 
+                 lKMTOT_po.mean[ResearchI]@b2path lcnDoSS_p 
+                 lcnDoSS_p.mean[ResearchI]@b3path cond0rev@direct 
+                 DDS14_fa3 DDS14_fa5 DDS17a2_3 DDS17a2_4 
+                 | Intercept lmeanDSS_ lKMTOT_po lcnDoSS_p
+    [2]  lKMTOT_po ~ Intercept cond0rev@a2path
+    [3]  lcnDoSS_p ~ Intercept cond0rev@a3path
+    [4]  lmeanDSS_ ~ Intercept cond0rev@a1path
+
+  GENERATED PARAMETERS
+    [1]  specific.indirect1 = a1path*b1path
+    [2]  specific.indirect2 = a2path*b2path
+    [3]  specific.indirect3 = a3path*b3path
+    [4]  total.indirect = specific.indirect1+specific.indirect2+specific.indirect3
+    [5]  total = total.indirect+direct
+
+
+WARNING MESSAGES:
+
+  WARNING: One or more tuning parameters had a suboptimal acceptance probability.
+           See METROPOLIS-HASTINGS ACCEPTANCE RATES section.
+
+
+OUTCOME MODEL ESTIMATES:
+
+  Summaries based on 2 iterations using 2 chains.
+
+
+Outcome Variable:  drtotl_m1  
+
+Grand Mean Centered: lKMTOT_po.mean[ResearchI] lcnDoSS_p.mean[ResearchI]
+                     lmeanDSS_.mean[ResearchI]
+Group Mean Centered: lKMTOT_po lcnDoSS_p lmeanDSS_
+
+
+Parameters                           Median     StdDev       2.5%      97.5%        PSR      N_Eff 
+                                -------------------------------------------------------------------
+Variances:                      
+  L2 : Var(Intercept)                51.194      0.820     50.614     51.773        nan        nan 
+  L2 : Cov(lmeanDSS_,Intercept)      -0.282      0.377     -0.549     -0.015        nan        nan 
+  L2 : Var(lmeanDSS_)                 0.567      0.316      0.343      0.790        nan        nan 
+  L2 : Cov(lKMTOT_po,Intercept)       4.345      0.129      4.254      4.436        nan        nan 
+  L2 : Cov(lKMTOT_po,lmeanDSS_)      -0.092      0.155     -0.201      0.017        nan        nan 
+  L2 : Var(lKMTOT_po)                 0.833      0.193      0.696      0.969        nan        nan 
+  L2 : Cov(lcnDoSS_p,Intercept)      -0.064      1.224     -0.930      0.801        nan        nan 
+  L2 : Cov(lcnDoSS_p,lmeanDSS_)      -0.136      0.018     -0.149     -0.123        nan        nan 
+  L2 : Cov(lcnDoSS_p,lKMTOT_po)      -0.058      0.014     -0.068     -0.048        nan        nan 
+  L2 : Var(lcnDoSS_p)                 0.149      0.082      0.090      0.207        nan        nan 
+  Residual Var.                      61.147     20.303     46.791     75.504        nan        nan 
+
+Coefficients:                   
+  Intercept                          45.946      7.386     40.724     51.169        nan        nan 
+  lmeanDSS_                           0.346      0.047      0.313      0.379        nan        nan 
+  lmeanDSS_.mean[ResearchI]           0.069      0.557     -0.325      0.463        nan        nan 
+  lKMTOT_po                          -0.472      0.068     -0.520     -0.424        nan        nan 
+  lKMTOT_po.mean[ResearchI]          -0.858      0.037     -0.884     -0.832        nan        nan 
+  lcnDoSS_p                          -0.170      0.043     -0.201     -0.140        nan        nan 
+  lcnDoSS_p.mean[ResearchI]          -6.705      5.896    -10.875     -2.536        nan        nan 
+  cond0rev                            2.644      8.262     -3.198      8.486        nan        nan 
+  DDS14_fa3                           6.438     10.890     -1.263     14.138        nan        nan 
+  DDS14_fa5                          -2.631      2.998     -4.750     -0.511        nan        nan 
+  DDS17a2_3                          -7.614     16.270    -19.118      3.891        nan        nan 
+  DDS17a2_4                          -4.686     14.641    -15.038      5.667        nan        nan 
+
+Standardized Coefficients:      
+  lmeanDSS_                           0.175      0.037      0.149      0.201        nan        nan 
+  lmeanDSS_.mean[ResearchI]           0.030      0.217     -0.123      0.183        nan        nan 
+  lKMTOT_po                          -0.195      0.047     -0.228     -0.162        nan        nan 
+  lKMTOT_po.mean[ResearchI]          -0.377      0.008     -0.383     -0.371        nan        nan 
+  lcnDoSS_p                          -0.160      0.032     -0.183     -0.138        nan        nan 
+  lcnDoSS_p.mean[ResearchI]          -0.275      0.165     -0.392     -0.158        nan        nan 
+  cond0rev                            0.066      0.204     -0.079      0.210        nan        nan 
+  DDS14_fa3                           0.138      0.233     -0.027      0.303        nan        nan 
+  DDS14_fa5                          -0.044      0.051     -0.080     -0.009        nan        nan 
+  DDS17a2_3                          -0.179      0.381     -0.448      0.091        nan        nan 
+  DDS17a2_4                          -0.097      0.303     -0.311      0.117        nan        nan 
+
+Proportion Variance Explained   
+  by Coefficients                     0.318      0.027      0.299      0.337        nan        nan 
+  by Level-2 Random Intercepts        0.132      0.012      0.123      0.141        nan        nan 
+  by Level-2 Random Slopes            0.403      0.087      0.341      0.464        nan        nan 
+  by Level-1 Residual Variation       0.147      0.048      0.114      0.181        nan        nan 
+
+                                -------------------------------------------------------------------
+
+
+
+Outcome Variable:  lKMTOT_po  
+
+Parameters                           Median     StdDev       2.5%      97.5%        PSR      N_Eff 
+                                -------------------------------------------------------------------
+Variances:                      
+  L2 : Var(Intercept)                80.674     16.963     68.680     92.669        nan        nan 
+  Residual Var.                      67.309     13.594     57.697     76.922        nan        nan 
+
+Coefficients:                   
+  Intercept                          48.427      2.821     46.432     50.422        nan        nan 
+  cond0rev                            2.678      6.482     -1.905      7.261        nan        nan 
+
+Standardized Coefficients:      
+  cond0rev                            0.117      0.270     -0.073      0.308        nan        nan 
+
+Proportion Variance Explained   
+  by Coefficients                     0.050      0.063      0.005      0.095        nan        nan 
+  by Level-2 Random Intercepts        0.518      0.037      0.492      0.544        nan        nan 
+  by Level-1 Residual Variation       0.432      0.027      0.413      0.451        nan        nan 
+
+                                -------------------------------------------------------------------
+
+
+
+Outcome Variable:  lcnDoSS_p  
+
+Parameters                           Median     StdDev       2.5%      97.5%        PSR      N_Eff 
+                                -------------------------------------------------------------------
+Variances:                      
+  L2 : Var(Intercept)                22.064      3.006     19.939     24.190        nan        nan 
+  Residual Var.                     376.337     23.757    359.538    393.136        nan        nan 
+
+Coefficients:                   
+  Intercept                          54.947      2.343     53.290     56.604        nan        nan 
+  cond0rev                           -0.822      1.078     -1.584     -0.059        nan        nan 
+
+Standardized Coefficients:      
+  cond0rev                           -0.021      0.028     -0.041     -0.001        nan        nan 
+
+Proportion Variance Explained   
+  by Coefficients                     0.001      0.001      0.000      0.002        nan        nan 
+  by Level-2 Random Intercepts        0.056      0.010      0.048      0.063        nan        nan 
+  by Level-1 Residual Variation       0.944      0.012      0.935      0.952        nan        nan 
+
+                                -------------------------------------------------------------------
+
+
+
+Outcome Variable:  lmeanDSS_  
+
+Parameters                           Median     StdDev       2.5%      97.5%        PSR      N_Eff 
+                                -------------------------------------------------------------------
+Variances:                      
+  L2 : Var(Intercept)                56.838     16.447     45.208     68.468        nan        nan 
+  Residual Var.                     101.956     11.028     94.157    109.754        nan        nan 
+
+Coefficients:                   
+  Intercept                          62.584      3.171     60.342     64.826        nan        nan 
+  cond0rev                            4.931      1.338      3.985      5.877        nan        nan 
+
+Standardized Coefficients:      
+  cond0rev                            0.192      0.047      0.159      0.225        nan        nan 
+
+Proportion Variance Explained   
+  by Coefficients                     0.038      0.018      0.025      0.051        nan        nan 
+  by Level-2 Random Intercepts        0.342      0.082      0.284      0.400        nan        nan 
+  by Level-1 Residual Variation       0.620      0.100      0.550      0.690        nan        nan 
+
+                                -------------------------------------------------------------------
+
+
+
+GENERATED PARAMETERS:
+
+  Summaries based on 2 iterations using 2 chains.
+
+
+Parameters                           Median     StdDev       2.5%      97.5%        PSR      N_Eff 
+                                -------------------------------------------------------------------
+
+  specific.indirect1                  0.713      2.839     -1.295      2.721        nan        nan 
+  specific.indirect2                 -2.180      5.465     -6.044      1.685        nan        nan 
+  specific.indirect3                  2.330      2.386      0.643      4.018        nan        nan 
+  total.indirect                      0.864      5.012     -2.681      4.408        nan        nan 
+  total                               3.507     13.275     -5.879     12.894        nan        nan 
+
+                                -------------------------------------------------------------------
+
+
+PREDICTOR MODEL ESTIMATES:
+
+  Summaries based on 2 iterations using 2 chains.
+
+
+Means Model:        lmeanDSS_  
+
+    NOTE: This model is used to estimate the grand mean and latent group means needed 
+          to center outcome variables that appear as predictors in other models.
+
+Parameters                           Median     StdDev       2.5%      97.5%        PSR      N_Eff 
+                                -------------------------------------------------------------------
+
+Grand Mean                           65.744      0.052     65.708     65.781        nan        nan 
+
+Level 1:                                                                                           
+  Residual Var.                      93.253      9.735     86.369    100.137        nan        nan 
+
+Level 2:                                                                                           
+  Residual Var.                      63.046      8.699     56.895     69.197        nan        nan 
+                                                                                                   
+                                -------------------------------------------------------------------
+
+
+
+Means Model:        lKMTOT_po  
+
+    NOTE: This model is used to estimate the grand mean and latent group means needed 
+          to center outcome variables that appear as predictors in other models.
+
+Parameters                           Median     StdDev       2.5%      97.5%        PSR      N_Eff 
+                                -------------------------------------------------------------------
+
+Grand Mean                           50.648      0.139     50.550     50.746        nan        nan 
+
+Level 1:                                                                                           
+  Residual Var.                      69.259     28.827     48.875     89.643        nan        nan 
+
+Level 2:                                                                                           
+  Residual Var.                      93.359     20.585     78.803    107.914        nan        nan 
+                                                                                                   
+                                -------------------------------------------------------------------
+
+
+
+Means Model:        lcnDoSS_p  
+
+    NOTE: This model is used to estimate the grand mean and latent group means needed 
+          to center outcome variables that appear as predictors in other models.
+
+Parameters                           Median     StdDev       2.5%      97.5%        PSR      N_Eff 
+                                -------------------------------------------------------------------
+
+Grand Mean                           57.020      0.940     56.355     57.685        nan        nan 
+
+Level 1:                                                                                           
+  Residual Var.                     396.823     14.232    386.760    406.886        nan        nan 
+
+Level 2:                                                                                           
+  Residual Var.                       1.016      0.479      0.677      1.354        nan        nan 
+                                                                                                   
+                                -------------------------------------------------------------------
+
+
+
+VARIABLE ORDER IN IMPUTED DATA:
+
+   stacked = 'C:\Users\Jeremy\Box Sync\paper w Kristin\rerunning analyses\For OSF\data\imputed\mediation\maximal\lagged\pomp\diagnostic\imps.csv'
+
+     imp# ResearchI time0 Condition AIN Period meanDSS drtotl_m_ cnDoSS KMTOT DDS14_fac
+     DDS17a2_f prDoSS DDS17a2_1 DDS17a2_2 cond0rev drtotl_m1 meanDSS_p cnDoSS_po
+     KMTOT_pom lmeanDSS_ lKMTOT_po lcnDoSS_p drtotl_m1[ResearchI] drtotl_m1$lmeanDSS_[ResearchI]
+     drtotl_m1$lKMTOT_po[ResearchI] drtotl_m1$lcnDoSS_p[ResearchI] lKMTOT_po[ResearchI]
+     lcnDoSS_p[ResearchI] lmeanDSS_[ResearchI] DDS14_fa3.mean[ResearchI] DDS14_fa5.mean[ResearchI]
+     DDS17a2_3.mean[ResearchI]
+

@@ -136,7 +136,7 @@ view_scale_miss <- function(df, scale, whymiss) {
 
 further_clean_data_dir <- paste0(wd_dir, "/data/clean_further")
 filenames <- list.files(paste0(further_clean_data_dir),
-                        pattern = "*.csv",
+                        pattern = "\\.csv$",
                         full.names = FALSE)
 
 # Import data files and store them in list
@@ -541,6 +541,28 @@ data2$doss$cnDoSS_sum <- data2$doss$cnDoSS*length(cnDoSS_items)
 data2$kims$KMTOT_sum <- data2$kims$KMTOT*length(KMTOT_items)
 
 # ---------------------------------------------------------------------------- #
+# Compute scale lengths and minimum/maximum possible scores ----
+# ---------------------------------------------------------------------------- #
+
+scale_defs <- list(drtotl_items, meanDSS_items, cnDoSS_items, KMTOT_items)
+names(scale_defs) <- c("drtotl_items", "meanDSS_items", "cnDoSS_items",
+                       "KMTOT_items")
+
+scale_defs$drtotl_n_items <- length(scale_defs$drtotl_items)
+scale_defs$meanDSS_n_items <- length(scale_defs$meanDSS_items)
+scale_defs$cnDoSS_n_items <- length(scale_defs$cnDoSS_items)
+scale_defs$KMTOT_n_items <- length(scale_defs$KMTOT_items)
+
+scale_defs$drtotl_min <-  1*scale_defs$drtotl_n_items
+scale_defs$drtotl_max <-  5*scale_defs$drtotl_n_items
+scale_defs$meanDSS_min <- 0*scale_defs$meanDSS_n_items
+scale_defs$meanDSS_max <- 3*scale_defs$meanDSS_n_items
+scale_defs$cnDoSS_min <-  0*scale_defs$cnDoSS_n_items
+scale_defs$cnDoSS_max <-  4*scale_defs$cnDoSS_n_items
+scale_defs$KMTOT_min <-   1*scale_defs$KMTOT_n_items
+scale_defs$KMTOT_max <-   5*scale_defs$KMTOT_n_items
+
+# ---------------------------------------------------------------------------- #
 # Save intermediate data ----
 # ---------------------------------------------------------------------------- #
 
@@ -550,10 +572,6 @@ dir.create("./data/intermediate")
 save(data2, file = "./data/intermediate/data2.Rdata")
 
 # Save scale definitions as R object
-
-scale_defs <- list(drtotl_items, meanDSS_items, cnDoSS_items, KMTOT_items)
-names(scale_defs) <- c("drtotl_items", "meanDSS_items", "cnDoSS_items",
-                       "KMTOT_items")
 
 save(scale_defs, file = "./data/intermediate/scale_defs.Rdata")
 

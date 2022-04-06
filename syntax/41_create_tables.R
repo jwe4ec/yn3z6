@@ -161,6 +161,7 @@ load("./results/result_itt_max.RData")
 load("./results/result_itt_red_meanDSS.RData")
 load("./results/result_itt_red_cnDoSS.RData")
 load("./results/result_itt_red_KMTOT.RData")
+load("./results/result_itt_max_w_prDoSS.RData")
 
 # ---------------------------------------------------------------------------- #
 # Format tables ----
@@ -179,3 +180,6 @@ write_table1(result_itt_red_cnDoSS, "./results/table1_itt_red_cnDoSS.csv", ITT)
 
 result_itt_red_KMTOT <- format_table1(result_itt_red_KMTOT)
 write_table1(result_itt_red_KMTOT, "./results/table1_itt_red_KMTOT.csv", ITT)
+
+result_itt_max_w_prDoSS <- format_table1(result_itt_max_w_prDoSS)
+write_table1(result_itt_max_w_prDoSS, "./results/table1_max_w_prDoSS.csv", ITT)

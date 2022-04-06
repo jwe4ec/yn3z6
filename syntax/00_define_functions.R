@@ -45,6 +45,33 @@ version_control <- function() {
 }
 
 # ---------------------------------------------------------------------------- #
+# Define compute_pomp() ----
+# ---------------------------------------------------------------------------- #
+
+# Define function to compute POMP scores starting from scale-related variables
+# that are on the metric of the scale's average item scores. POMP scores that
+# result are on a metric of 0-100.
+
+compute_pomp <- function(df, scale_vars, n_items, scale_min, scale_max) {
+  output <- df
+  
+  if (all(scale_vars %in% names(df))) {
+    for (i in 1:length(scale_vars)) {
+      scale_var_pomp_colname <- paste0(scale_vars[i], "_pomp")
+      
+      avg_item_score <- df[, scale_vars[i]]
+      item_sum_score <- avg_item_score*n_items
+      pomp_score <- ((item_sum_score - scale_min)/(scale_max - scale_min))*100
+      output[, scale_var_pomp_colname] <- pomp_score
+    }
+    
+    return(output)
+  } else {
+    warning("At least one scale_vars not in df")
+  }
+}
+
+# ---------------------------------------------------------------------------- #
 # Define create_re_var_cov() ----
 # ---------------------------------------------------------------------------- #
 

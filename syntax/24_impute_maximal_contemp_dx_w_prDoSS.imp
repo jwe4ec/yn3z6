@@ -1,0 +1,36 @@
+# Impute data for maximal contemporaneous model with prDoSS (diagnostic script)
+# Author: Jeremy W. Eberle
+
+# This script uses the standalone software Blimp Base (ver. 3.0.58) and Blimp Studio 
+# (ver. 1.3.5) to conduct fully Bayesian model-based imputation
+
+# Start by determining number of burn-in iterations needed for convergence. The model 
+# converges (i.e., PSR < 1.05) after 7,500 iterations.
+
+# Note: The code below does not save trace plots. The plots have to be manually 
+# saved from within Blimp Studio.
+
+DATA: C:\Users\Jeremy\Box Sync\paper w Kristin\rerunning analyses\For OSF\data\intermediate\contemp_aux.csv;
+VARIABLES: ResearchID time0 Condition AIN Period 
+           meanDSS drtotl_m_imp cnDoSS KMTOT
+           DDS14_factor DDS17a2_factor prDoSS DDS17a2_factor_collapsed DDS17a2_factor_collapsed2 cond0rev;
+NOMINAL: DDS14_factor DDS17a2_factor_collapsed2;
+MISSING: 999;
+CLUSTERID: ResearchID;
+FIXED: time0 DDS14_factor DDS17a2_factor_collapsed2;
+MODEL: drtotl_m_imp ~ time0 meanDSS meanDSS.mean KMTOT KMTOT.mean cnDoSS cnDoSS.mean DDS14_factor DDS17a2_factor_collapsed2
+                        | time0 meanDSS KMTOT cnDoSS;
+	   prDoSS ~ drtotl_m_imp time0 meanDSS meanDSS.mean KMTOT KMTOT.mean cnDoSS cnDoSS.mean DDS14_factor DDS17a2_factor_collapsed2
+                        | time0 meanDSS KMTOT cnDoSS;
+CENTER: GROUPMEAN = meanDSS KMTOT cnDoSS, GRANDMEAN = meanDSS.mean KMTOT.mean cnDoSS.mean;
+SEED: 1234;
+BURN: 10000;
+THIN: 1;
+NIMPS: 2; 
+OPTIONS: latent hov psr SaveLatent;
+SAVE: stacked = C:\Users\Jeremy\Box Sync\paper w Kristin\rerunning analyses\For OSF\data\imputed\maximal_w_prDoSS\contemp\diagnostic\imps.csv,
+      burn = C:\Users\Jeremy\Box Sync\paper w Kristin\rerunning analyses\For OSF\data\imputed\maximal_w_prDoSS\contemp\diagnostic\burn*.csv,
+      iterations = C:\Users\Jeremy\Box Sync\paper w Kristin\rerunning analyses\For OSF\data\imputed\maximal_w_prDoSS\contemp\diagnostic\iterations*.csv,
+      estimates = C:\Users\Jeremy\Box Sync\paper w Kristin\rerunning analyses\For OSF\data\imputed\maximal_w_prDoSS\contemp\diagnostic\estimates.txt,
+      starts = C:\Users\Jeremy\Box Sync\paper w Kristin\rerunning analyses\For OSF\data\imputed\maximal_w_prDoSS\contemp\diagnostic\starts.txt,
+      psr = C:\Users\Jeremy\Box Sync\paper w Kristin\rerunning analyses\For OSF\data\imputed\maximal_w_prDoSS\contemp\diagnostic\psr.csv;

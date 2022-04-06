@@ -46,6 +46,7 @@ groundhog.library(DescTools, groundhog_day)
 # ---------------------------------------------------------------------------- #
 
 load("./data/intermediate/data4.Rdata")
+load("./data/intermediate/scale_defs.Rdata")
 
 data5 <- data4
 
@@ -389,8 +390,12 @@ levels(data5$contemp_aux$DDS17a2_factor_collapsed2)[levels(data5$contemp_aux$DDS
                                                       nonworking] <- "Nonworking"
 
 # Define "cond0rev" so DBT-ST is coded 1 and ASG is coded 0. Note: This coding was
-# used in Neacsiu et al. (2018; https://doi.org/gdkhfn), whereas in Neacsiu et al.
-# (2014; http://doi.org/f6cntg) "cond0" was used (where DBT-ST = 0 and ASG = 1).
+# used in simple mediation model of Neacsiu et al. (2018; https://doi.org/gdkhfn) 
+# because PROCESS macro is based on regression. By contrast, Neacsiu et al. (2014; 
+# http://doi.org/f6cntg) used "cond0" (where DBT-ST = 0 and ASG = 1) in conflated
+# 2-1-1 contemporaneous multilevel mediation model because "cond0" was treated as
+# categorical (entered after "BY" argument of "MIXED" command) and SPSS treats the 
+# level with the highest value (ASG) as the reference group.
 
 data5$contemp_aux$cond0rev[data5$contemp_aux$Condition == 23] <- 1
 data5$contemp_aux$cond0rev[data5$contemp_aux$Condition == 24] <- 0
@@ -426,9 +431,29 @@ exclude_cols <- c("meanDSS_btw", "meanDSS_wth",
 
 data5$contemp_aux[, exclude_cols] <- NULL
 
+# Compute POMP scores for mediation dataset only (given that Bayesian results will
+# be interpreted for mediation model instead of reanalyzing imputed data). POMP scores 
+# for models of within-person relations are computed after multiple imputation.
+
+data5$contemp_aux_med <- data5$contemp_aux
+
+data5$contemp_aux_med <- 
+  compute_pomp(data5$contemp_aux_med, "drtotl_m_imp",
+               scale_defs$drtotl_n_items, scale_defs$drtotl_min, scale_defs$drtotl_max)
+data5$contemp_aux_med <- 
+  compute_pomp(data5$contemp_aux_med, "meanDSS",
+               scale_defs$meanDSS_n_items, scale_defs$meanDSS_min, scale_defs$meanDSS_max)
+data5$contemp_aux_med <- 
+  compute_pomp(data5$contemp_aux_med, "cnDoSS",
+               scale_defs$cnDoSS_n_items, scale_defs$cnDoSS_min, scale_defs$cnDoSS_max)
+data5$contemp_aux_med <- 
+  compute_pomp(data5$contemp_aux_med, "KMTOT",
+               scale_defs$KMTOT_n_items, scale_defs$KMTOT_min, scale_defs$KMTOT_max)
+
 # Code NA as 999, which will be specified as the missing code for Blimp
 
 data5$contemp_aux[is.na(data5$contemp_aux)] <- 999
+data5$contemp_aux_med[is.na(data5$contemp_aux_med)] <- 999
 
 # Export intermediate data for Blimp, which does not allow column names
 
@@ -440,9 +465,16 @@ write.table(data5$contemp_aux,
             col.names = FALSE,
             sep = ",")
 
+write.table(data5$contemp_aux_med, 
+            "./data/intermediate/contemp_aux_med.csv",
+            row.names = FALSE,
+            col.names = FALSE,
+            sep = ",")
+
 # Create directories for Blimp sensitivity analyses
 
-sen_anyls <- c("maximal", "reduced_cnDoSS", "reduced_KMTOT", "reduced_meanDSS")
+sen_anyls <- c("maximal", "reduced_cnDoSS", "reduced_KMTOT", "reduced_meanDSS",
+               "maximal_w_prDoSS")
 
 for (i in 1:length(sen_anyls)) {
   dir.create(paste0(wd_dir, "./data/imputed/", sen_anyls[i], "/contemp/diagnostic"), recursive = TRUE)
@@ -453,5 +485,12 @@ for (i in 1:length(sen_anyls)) {
 
 # Create directories for Blimp mediation analysis
 
-dir.create(paste0(wd_dir, "./data/imputed/mediation/maximal/lagged/diagnostic"), recursive = TRUE)
-dir.create(paste0(wd_dir, "./data/imputed/mediation/maximal/lagged/actual"), recursive = TRUE)
+sen_anyls_med <- c("maximal/lagged/avg_item", "maximal/lagged/pomp", 
+                   "maximal_w_prDoSS/lagged/avg_item")
+
+for (i in 1:length(sen_anyls_med)) {
+  dir.create(paste0(wd_dir, "./data/imputed/mediation/", sen_anyls_med[i], "/diagnostic"),
+             recursive = TRUE)
+  dir.create(paste0(wd_dir, "./data/imputed/mediation/", sen_anyls_med[i], "/actual"), 
+             recursive = TRUE)
+}
