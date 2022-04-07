@@ -46,6 +46,7 @@ groundhog.library(DescTools, groundhog_day)
 # ---------------------------------------------------------------------------- #
 
 load("./data/intermediate/data4.Rdata")
+load("./data/intermediate/scale_defs.Rdata")
 
 data5 <- data4
 
@@ -336,18 +337,18 @@ save(ordered_miss_anal_thres, file = "./results/aux_vars/ordered_miss_anal_thres
 save(factor_miss_anal_thres, file = "./results/aux_vars/factor_miss_anal_thres.RData")
 
 # ---------------------------------------------------------------------------- #
-# Prepare and export data and create directories for Blimp ----
+# Collapse sparse factor levels of auxiliary variables ----
 # ---------------------------------------------------------------------------- #
 
 # Restrict columns
 
 data5$contemp_aux <- 
-  data4$contemp_aux[, c("ResearchID", "time0", "Condition", "AIN", "Period", 
-                        "meanDSS", "meanDSS_btw", "meanDSS_wth", 
-                        "drtotl_m_imp", "drtotl_m_imp_btw", "drtotl_m_imp_wth",
-                        "cnDoSS", "cnDoSS_btw", "cnDoSS_wth", 
-                        "KMTOT", "KMTOT_btw", "KMTOT_wth", 
-                        "DDS14_factor", "DDS17a2_factor")]
+  data5$contemp_aux[, c("ResearchID", "time0", "Condition", "AIN", "Period", 
+                        "meanDSS", "meanDSS_ind", "meanDSS_btw", "meanDSS_wth", 
+                        "drtotl_m_imp", "drtotl_m_imp_ind", "drtotl_m_imp_btw", "drtotl_m_imp_wth",
+                        "cnDoSS", "cnDoSS_ind", "cnDoSS_btw", "cnDoSS_wth", 
+                        "KMTOT", "KMTOT_ind", "KMTOT_btw", "KMTOT_wth", 
+                        "DDS14_factor", "DDS17a2_factor", "prDoSS")]
 
 # Collapse sparse levels of DDS17a2_factor, as imputation model does not
 # converge after burn-in period with 100,000 iterations
@@ -384,15 +385,6 @@ levels(data5$contemp_aux$DDS17a2_factor_collapsed2)[levels(data5$contemp_aux$DDS
 levels(data5$contemp_aux$DDS17a2_factor_collapsed2)[levels(data5$contemp_aux$DDS17a2_factor_collapsed2) %in%
                                                       nonworking] <- "Nonworking"
 
-# Recode factors as numeric, as Blimp only reads numeric values
-
-data5$contemp_aux$DDS14_factor <- as.numeric(data5$contemp_aux$DDS14_factor)
-data5$contemp_aux$DDS17a2_factor <- as.numeric(data5$contemp_aux$DDS17a2_factor)
-data5$contemp_aux$DDS17a2_factor_collapsed <- 
-  as.numeric(data5$contemp_aux$DDS17a2_factor_collapsed)
-data5$contemp_aux$DDS17a2_factor_collapsed2 <- 
-  as.numeric(data5$contemp_aux$DDS17a2_factor_collapsed2)
-
 # Create contingency table for the factors. Sparse cells can contribute to slow
 # convergence in the imputation model, but once the factors were added to the
 # FIXED line in Blimp (because they are complete), the model converged without
@@ -401,6 +393,128 @@ data5$contemp_aux$DDS17a2_factor_collapsed2 <-
 table(data5$contemp_aux$DDS14_factor,
       data5$contemp_aux$DDS17a2_factor_collapsed2,
       dnn = c("DDS14_factor", "DDS17a2_factor_collapsed2"))
+
+# ---------------------------------------------------------------------------- #
+# Report missingness per level of marital status and occupation ----
+# ---------------------------------------------------------------------------- #
+
+# Define function to compute proportion of missing assessments across time points
+# based on a given measure's binary missing data indicator
+
+compute_prop_miss_assess <- function(df, scale_ind) {
+  tmp_ag <- aggregate(formula(paste0(scale_ind, " ~ ResearchID")), df, FUN = sum)
+  
+  scale_ind_sum_name <- paste0(scale_ind, "_sum")
+  scale_ind_prop_name <- paste0(scale_ind, "_prop")
+  
+  names(tmp_ag)[names(tmp_ag) == scale_ind] <- scale_ind_sum_name
+
+  tmp_ag[, scale_ind_prop_name] <- tmp_ag[, scale_ind_sum_name] / 4
+  
+  df <- merge(df, tmp_ag, by = "ResearchID", all.x = TRUE)
+}
+
+# Run function for each analysis variable
+
+data5$contemp_aux <- compute_prop_miss_assess(data5$contemp_aux, "meanDSS_ind")
+data5$contemp_aux <- compute_prop_miss_assess(data5$contemp_aux, "drtotl_m_imp_ind")
+data5$contemp_aux <- compute_prop_miss_assess(data5$contemp_aux, "cnDoSS_ind")
+data5$contemp_aux <- compute_prop_miss_assess(data5$contemp_aux, "KMTOT_ind")
+
+# Restrict data to selected time-invariant variables
+
+contemp_aux_iv <- data5$contemp_aux[, c("ResearchID", "Condition", "AIN",
+                                        "DDS14_factor", "DDS17a2_factor",
+                                        "DDS17a2_factor_collapsed", 
+                                        "DDS17a2_factor_collapsed2",
+                                        "meanDSS_ind_sum", "meanDSS_ind_prop",
+                                        "drtotl_m_imp_ind_sum", "drtotl_m_imp_ind_prop",
+                                        "cnDoSS_ind_sum", "cnDoSS_ind_prop",
+                                        "KMTOT_ind_sum", "KMTOT_ind_prop")]
+
+contemp_aux_iv <- unique(contemp_aux_iv)
+
+# Define function to compute mean proportion of missing assessments for a given
+# measure across time points within each level of auxiliary variables
+
+compute_desc_by_level_for_scale <- function(df, scale_ind) {
+  scale_ind_prop_name <- paste0(scale_ind, "_prop")
+  
+  aux_vars <- c("DDS14_factor", 
+                "DDS17a2_factor", "DDS17a2_factor_collapsed", 
+                "DDS17a2_factor_collapsed2")
+  aux_var_labels <- c("Marital Status", 
+                      "Occupation", "Occupation (Collapsed)", 
+                      "Occupation (Collapsed into Employment Status)")
+  
+  res <- data.frame()
+  
+  for (i in 1:length(aux_vars)) {
+    # Compute count, mean, and standard deviation
+    
+    tbl <-     table(df[, aux_vars[i]])
+    ag_mean <- aggregate(formula(paste0(scale_ind_prop_name, " ~ ", aux_vars[i])), 
+                         df, FUN = mean, drop = FALSE)
+    ag_sd <-   aggregate(formula(paste0(scale_ind_prop_name, " ~ ", aux_vars[i])), 
+                         df, FUN = sd, drop = FALSE)
+    
+    var_res <- rbind(data.frame(label = aux_var_labels[i],
+                                n     = NA,
+                                M_SD  = NA),
+                     data.frame(label = names(tbl),
+                                n     = as.numeric(tbl),
+                                M_SD  = paste0(round(ag_mean[, scale_ind_prop_name], 2), " (",
+                                               round(ag_sd[, scale_ind_prop_name], 2), ")")))
+    
+    res <- rbind(res, var_res)
+  }
+  
+  return(res)
+}
+
+# Run function for each analysis variable, combine results into table, and export table
+
+res_meanDSS      <- compute_desc_by_level_for_scale(contemp_aux_iv, "meanDSS_ind")
+res_drtotl_m_imp <- compute_desc_by_level_for_scale(contemp_aux_iv, "drtotl_m_imp_ind")
+res_cnDoSS       <- compute_desc_by_level_for_scale(contemp_aux_iv, "cnDoSS_ind")
+res_KMTOT        <- compute_desc_by_level_for_scale(contemp_aux_iv, "KMTOT_ind")
+
+all_res <- cbind(res_drtotl_m_imp, 
+                 res_meanDSS[, names(res_meanDSS) != "label"], 
+                 res_cnDoSS[, names(res_cnDoSS) != "label"],
+                 res_KMTOT[, names(res_KMTOT) != "label"])
+
+write.csv(all_res,
+          file = "./results/table_s5.csv",
+          row.names = FALSE)
+
+# ---------------------------------------------------------------------------- #
+# Prepare and export data for Blimp ----
+# ---------------------------------------------------------------------------- #
+
+# Note: "prDoSS" is not completely observed so cannot go on FIXED line in Blimp
+
+sum(is.na(data5$contemp_aux$prDoSS))
+
+# Define "cond0rev" so DBT-ST is coded 1 and ASG is coded 0. Note: This coding was
+# used in simple mediation model of Neacsiu et al. (2018; https://doi.org/gdkhfn) 
+# because PROCESS macro is based on regression. By contrast, Neacsiu et al. (2014; 
+# http://doi.org/f6cntg) used "cond0" (where DBT-ST = 0 and ASG = 1) in conflated
+# 2-1-1 contemporaneous multilevel mediation model because "cond0" was treated as
+# categorical (entered after "BY" argument of "MIXED" command) and SPSS treats the 
+# level with the highest value (ASG) as the reference group.
+
+data5$contemp_aux$cond0rev[data5$contemp_aux$Condition == 23] <- 1
+data5$contemp_aux$cond0rev[data5$contemp_aux$Condition == 24] <- 0
+
+# Recode factors as numeric, as Blimp only reads numeric values
+
+data5$contemp_aux$DDS14_factor <- as.numeric(data5$contemp_aux$DDS14_factor)
+data5$contemp_aux$DDS17a2_factor <- as.numeric(data5$contemp_aux$DDS17a2_factor)
+data5$contemp_aux$DDS17a2_factor_collapsed <- 
+  as.numeric(data5$contemp_aux$DDS17a2_factor_collapsed)
+data5$contemp_aux$DDS17a2_factor_collapsed2 <- 
+  as.numeric(data5$contemp_aux$DDS17a2_factor_collapsed2)
 
 # Remove columns for between-person and within-person effects. Although we
 # initially included these in the imputation model instead of the raw scores,
@@ -415,9 +529,29 @@ exclude_cols <- c("meanDSS_btw", "meanDSS_wth",
 
 data5$contemp_aux[, exclude_cols] <- NULL
 
+# Compute POMP scores for mediation dataset only (given that Bayesian results will
+# be interpreted for mediation model instead of reanalyzing imputed data). POMP scores 
+# for models of within-person relations are computed after multiple imputation.
+
+data5$contemp_aux_med <- data5$contemp_aux
+
+data5$contemp_aux_med <- 
+  compute_pomp(data5$contemp_aux_med, "drtotl_m_imp",
+               scale_defs$drtotl_n_items, scale_defs$drtotl_min, scale_defs$drtotl_max)
+data5$contemp_aux_med <- 
+  compute_pomp(data5$contemp_aux_med, "meanDSS",
+               scale_defs$meanDSS_n_items, scale_defs$meanDSS_min, scale_defs$meanDSS_max)
+data5$contemp_aux_med <- 
+  compute_pomp(data5$contemp_aux_med, "cnDoSS",
+               scale_defs$cnDoSS_n_items, scale_defs$cnDoSS_min, scale_defs$cnDoSS_max)
+data5$contemp_aux_med <- 
+  compute_pomp(data5$contemp_aux_med, "KMTOT",
+               scale_defs$KMTOT_n_items, scale_defs$KMTOT_min, scale_defs$KMTOT_max)
+
 # Code NA as 999, which will be specified as the missing code for Blimp
 
 data5$contemp_aux[is.na(data5$contemp_aux)] <- 999
+data5$contemp_aux_med[is.na(data5$contemp_aux_med)] <- 999
 
 # Export intermediate data for Blimp, which does not allow column names
 
@@ -429,9 +563,36 @@ write.table(data5$contemp_aux,
             col.names = FALSE,
             sep = ",")
 
-# Create directories for Blimp
+write.table(data5$contemp_aux_med, 
+            "./data/intermediate/contemp_aux_med.csv",
+            row.names = FALSE,
+            col.names = FALSE,
+            sep = ",")
 
-dir.create(paste0(wd_dir, "./data/imputed/contemp/raw/diagnostic"), recursive = TRUE)
-dir.create(paste0(wd_dir, "./data/imputed/contemp/raw/actual"), recursive = TRUE)
-dir.create(paste0(wd_dir, "./data/imputed/lagged/raw/diagnostic"), recursive = TRUE)
-dir.create(paste0(wd_dir, "./data/imputed/lagged/raw/actual"), recursive = TRUE)
+# ---------------------------------------------------------------------------- #
+# Create directories for Blimp ----
+# ---------------------------------------------------------------------------- #
+
+# Create directories for Blimp sensitivity analyses
+
+sen_anyls <- c("maximal", "reduced_cnDoSS", "reduced_KMTOT", "reduced_meanDSS",
+               "maximal_w_prDoSS")
+
+for (i in 1:length(sen_anyls)) {
+  dir.create(paste0(wd_dir, "./data/imputed/", sen_anyls[i], "/contemp/diagnostic"), recursive = TRUE)
+  dir.create(paste0(wd_dir, "./data/imputed/", sen_anyls[i], "/contemp/actual"), recursive = TRUE)
+  dir.create(paste0(wd_dir, "./data/imputed/", sen_anyls[i], "/lagged/diagnostic"), recursive = TRUE)
+  dir.create(paste0(wd_dir, "./data/imputed/", sen_anyls[i], "/lagged/actual"), recursive = TRUE)
+}
+
+# Create directories for Blimp mediation analysis
+
+sen_anyls_med <- c("maximal/lagged/avg_item", "maximal/lagged/pomp", 
+                   "maximal_w_prDoSS/lagged/avg_item")
+
+for (i in 1:length(sen_anyls_med)) {
+  dir.create(paste0(wd_dir, "./data/imputed/mediation/", sen_anyls_med[i], "/diagnostic"),
+             recursive = TRUE)
+  dir.create(paste0(wd_dir, "./data/imputed/mediation/", sen_anyls_med[i], "/actual"), 
+             recursive = TRUE)
+}

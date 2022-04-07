@@ -1,0 +1,39 @@
+# Impute data for maximal lagged model with prDoSS (actual script)
+# Author: Jeremy W. Eberle
+
+# This script uses the standalone software Blimp Base (ver. 3.0.58) and Blimp Studio 
+# (ver. 1.3.5) to conduct fully Bayesian model-based imputation
+
+# Although the diagnostic model converged after 8,000 burn-in iterations, here we 
+# use 16,000 burn-in iterations just to be safe.
+
+# Note: The code below does not save trace plots. The plots have to be manually 
+# saved from within Blimp Studio.
+
+DATA: C:\Users\Jeremy\Box Sync\paper w Kristin\rerunning analyses\For OSF\data\intermediate\contemp_aux.csv;
+VARIABLES: ResearchID time0 Condition AIN Period 
+           meanDSS drtotl_m_imp cnDoSS KMTOT
+           DDS14_factor DDS17a2_factor prDoSS DDS17a2_factor_collapsed DDS17a2_factor_collapsed2 cond0rev;
+NOMINAL: DDS14_factor DDS17a2_factor_collapsed2;
+MISSING: 999;
+TRANSFORM: lmeanDSS = lag1(meanDSS, time0, ResearchID);
+           lKMTOT = lag1(KMTOT, time0, ResearchID);
+           lcnDoSS = lag1(cnDoSS, time0, ResearchID);
+CLUSTERID: ResearchID;
+FIXED: time0 DDS14_factor DDS17a2_factor_collapsed2;
+MODEL: drtotl_m_imp ~ time0 lmeanDSS lmeanDSS.mean lKMTOT lKMTOT.mean lcnDoSS lcnDoSS.mean DDS14_factor DDS17a2_factor_collapsed2
+                        | time0 lmeanDSS lKMTOT lcnDoSS;
+       prDoSS ~ drtotl_m_imp time0 lmeanDSS lmeanDSS.mean lKMTOT lKMTOT.mean lcnDoSS lcnDoSS.mean DDS14_factor DDS17a2_factor_collapsed2
+                        | time0 lmeanDSS lKMTOT lcnDoSS;
+CENTER: GROUPMEAN = lmeanDSS lKMTOT lcnDoSS, GRANDMEAN = lmeanDSS.mean lKMTOT.mean lcnDoSS.mean;
+SEED: 1234;
+BURN: 16000;
+THIN: 8000;
+NIMPS: 100;
+OPTIONS: latent hov psr SaveLatent;
+SAVE: stacked = C:\Users\Jeremy\Box Sync\paper w Kristin\rerunning analyses\For OSF\data\imputed\maximal_w_prDoSS\lagged\actual\imps.csv,
+      burn = C:\Users\Jeremy\Box Sync\paper w Kristin\rerunning analyses\For OSF\data\imputed\maximal_w_prDoSS\lagged\actual\burn*.csv,
+      iterations = C:\Users\Jeremy\Box Sync\paper w Kristin\rerunning analyses\For OSF\data\imputed\maximal_w_prDoSS\lagged\actual\iterations*.csv,
+      estimates = C:\Users\Jeremy\Box Sync\paper w Kristin\rerunning analyses\For OSF\data\imputed\maximal_w_prDoSS\lagged\actual\estimates.txt,
+      starts = C:\Users\Jeremy\Box Sync\paper w Kristin\rerunning analyses\For OSF\data\imputed\maximal_w_prDoSS\lagged\actual\starts.txt,
+      psr = C:\Users\Jeremy\Box Sync\paper w Kristin\rerunning analyses\For OSF\data\imputed\maximal_w_prDoSS\lagged\actual\psr.csv;

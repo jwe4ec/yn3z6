@@ -53,70 +53,55 @@ groundhog_day <- version_control()
 # compute the between-person effects and within-person effects prior to analysis.
 
 disaggregate_post_imp <- function(imps_df, score_colname) {
-  # Compute between-person effects
-  
-  score_btw_colname <- paste0(score_colname, "_btw")
-  score_btw_mean_colname <- paste0(score_colname, "_btw_mean")
-  score_btw_cent_colname <- paste0(score_colname, "_btw_cent")
-  
-  person_means <- aggregate(imps_df[, score_colname],
-                            list(imps_df$ResearchID, imps_df$imp_num),
-                            mean, na.rm = FALSE)
-  names(person_means)[1] <- "ResearchID"
-  names(person_means)[2] <- "imp_num"
-  names(person_means)[3] <- score_btw_colname
-  
-  mean_person_means <- aggregate(person_means[, score_btw_colname],
-                                 list(person_means$imp_num),
-                                 mean, na.rm = FALSE)
-  names(mean_person_means)[1] <- "imp_num"
-  names(mean_person_means)[2] <- score_btw_mean_colname
-  
-  output <- merge(imps_df, 
-                  person_means, 
-                  by = c("imp_num", "ResearchID"), 
-                  all.x = TRUE)
-  output <- merge(output,
-                  mean_person_means,
-                  by = "imp_num",
-                  all.x = TRUE)
-  
-  output[, score_btw_cent_colname] <-
-    output[, score_btw_colname] - output[, score_btw_mean_colname]
-  
-  # Compute within-person effects
-  
-  score_wth_colname <- paste0(score_colname, "_wth")
-  
-  output[, score_wth_colname] <- 
-    output[, score_colname] - output[, score_btw_colname]
-  
-  return(output)
-}
-
-# Define function to compute POMP scores starting from scale-related variables
-# that are on the metric of the scale's average item scores. POMP scores that
-# result are on a metric of 0-100.
-
-compute_pomp <- function(df, scale_vars, n_items, scale_min, scale_max) {
-  output <- df
-  
-  for (i in 1:length(scale_vars)) {
-    scale_var_pomp_colname <- paste0(scale_vars[i], "_pomp")
+  if (score_colname %in% names(imps_df)) {
+    # Compute between-person effects
     
-    avg_item_score <- df[, scale_vars[i]]
-    item_sum_score <- avg_item_score*n_items
-    pomp_score <- ((item_sum_score - scale_min)/(scale_max - scale_min))*100
-    output[, scale_var_pomp_colname] <- pomp_score
+    score_btw_colname <- paste0(score_colname, "_btw")
+    score_btw_mean_colname <- paste0(score_colname, "_btw_mean")
+    score_btw_cent_colname <- paste0(score_colname, "_btw_cent")
+    
+    person_means <- aggregate(imps_df[, score_colname],
+                              list(imps_df$ResearchID, imps_df$imp_num),
+                              mean, na.rm = FALSE)
+    names(person_means)[1] <- "ResearchID"
+    names(person_means)[2] <- "imp_num"
+    names(person_means)[3] <- score_btw_colname
+    
+    mean_person_means <- aggregate(person_means[, score_btw_colname],
+                                   list(person_means$imp_num),
+                                   mean, na.rm = FALSE)
+    names(mean_person_means)[1] <- "imp_num"
+    names(mean_person_means)[2] <- score_btw_mean_colname
+    
+    output <- merge(imps_df, 
+                    person_means, 
+                    by = c("imp_num", "ResearchID"), 
+                    all.x = TRUE)
+    output <- merge(output,
+                    mean_person_means,
+                    by = "imp_num",
+                    all.x = TRUE)
+    
+    output[, score_btw_cent_colname] <-
+      output[, score_btw_colname] - output[, score_btw_mean_colname]
+    
+    # Compute within-person effects
+    
+    score_wth_colname <- paste0(score_colname, "_wth")
+    
+    output[, score_wth_colname] <- 
+      output[, score_colname] - output[, score_btw_colname]
+    
+    return(output)
+  } else {
+    warning(paste0(score_colname, " not in imps_df"))
   }
-  return(output)
 }
 
 # ---------------------------------------------------------------------------- #
 # Import data ----
 # ---------------------------------------------------------------------------- #
 
-load("./data/intermediate/data5.RData")
 load("./data/intermediate/scale_defs.Rdata")
 
 max_contemp_imps <- read.csv("./data/imputed/maximal/contemp/actual/imps.csv",
@@ -136,14 +121,21 @@ red_KMTOT_contemp_imps <- read.csv("./data/imputed/reduced_KMTOT/contemp/actual/
 red_KMTOT_lagged_imps <- read.csv("./data/imputed/reduced_KMTOT/lagged/actual/imps.csv",
                                    header = FALSE)
 
+max_contemp_w_prDoSS_imps <- read.csv("./data/imputed/maximal_w_prDoSS/contemp/actual/imps.csv",
+                                      header = FALSE)
+max_lagged_w_prDoSS_imps <- read.csv("./data/imputed/maximal_w_prDoSS/lagged/actual/imps.csv",
+                                     header = FALSE)
+
 contemp_imps <- list("max_contemp_imps" = max_contemp_imps,
                      "red_meanDSS_contemp_imps" = red_meanDSS_contemp_imps,
                      "red_cnDoSS_contemp_imps" = red_cnDoSS_contemp_imps,
-                     "red_KMTOT_contemp_imps" = red_KMTOT_contemp_imps)
+                     "red_KMTOT_contemp_imps" = red_KMTOT_contemp_imps,
+                     "max_contemp_w_prDoSS_imps" = max_contemp_w_prDoSS_imps)
 lagged_imps <- list("max_lagged_imps" = max_lagged_imps,
                     "red_meanDSS_lagged_imps" = red_meanDSS_lagged_imps,
                     "red_cnDoSS_lagged_imps" = red_cnDoSS_lagged_imps,
-                    "red_KMTOT_lagged_imps" = red_KMTOT_lagged_imps)
+                    "red_KMTOT_lagged_imps" = red_KMTOT_lagged_imps,
+                    "max_lagged_w_prDoSS_imps" = max_lagged_w_prDoSS_imps)
 imps <- list("contemp_imps" = contemp_imps, "lagged_imps" = lagged_imps)
 
 # ---------------------------------------------------------------------------- #
@@ -162,30 +154,42 @@ imps <- list("contemp_imps" = contemp_imps, "lagged_imps" = lagged_imps)
 # mean-centered before being entered into the analysis model at Level 2.
 
 max_contemp_imps_blimp_out_names <- c("imp#", "ResearchI", "time0", "Condition",
-                                      "AIN", "Period", 
+                                      "AIN", "Period",
                                       "meanDSS", "drtotl_m_", "cnDoSS", "KMTOT",
-                                      "DDS14_fac", 
-                                      "DDS17a2_f", "DDS17a2_1", "DDS17a2_2", 
-                                      "drtotl_m_[ResearchI]", 
-                                      "drtotl_m_$time0[ResearchI]", 
-                                      "drtotl_m_$meanDSS[ResearchI]", 
-                                      "drtotl_m_$KMTOT[ResearchI]", 
+                                      "DDS14_fac",
+                                      "DDS17a2_f", "prDoSS", "DDS17a2_1", "DDS17a2_2",
+                                      "cond0rev",
+                                      "drtotl_m_[ResearchI]",
+                                      "drtotl_m_$time0[ResearchI]",
+                                      "drtotl_m_$meanDSS[ResearchI]",
+                                      "drtotl_m_$KMTOT[ResearchI]",
                                       "drtotl_m_$cnDoSS[ResearchI]",
-                                      "meanDSS.mean[ResearchI]", 
-                                      "cnDoSS.mean[ResearchI]", 
+                                      "prDoSS[ResearchI]",
+                                      "prDoSS$time0[ResearchI]",
+                                      "prDoSS$meanDSS[ResearchI]",
+                                      "prDoSS$KMTOT[ResearchI]",
+                                      "prDoSS$cnDoSS[ResearchI]",
+                                      "meanDSS.mean[ResearchI]",
+                                      "cnDoSS.mean[ResearchI]",
                                       "KMTOT.mean[ResearchI]")
-max_lagged_imps_blimp_out_names <- c("imp#", "ResearchI", "time0", "Condition",
+max_lagged_imps_blimp_out_names <- c("imp#", "ResearchI", "time0", "Condition", 
                                      "AIN", "Period", 
-                                     "meanDSS", "drtotl_m_", "cnDoSS", "KMTOT",
-                                     "DDS14_fac", 
-                                     "DDS17a2_f", "DDS17a2_1", "DDS17a2_2", 
+                                     "meanDSS", "drtotl_m_", "cnDoSS", "KMTOT", 
+                                     "DDS14_fac",
+                                     "DDS17a2_f", "prDoSS", "DDS17a2_1", "DDS17a2_2", 
+                                     "cond0rev", 
                                      "lmeanDSS", "lKMTOT", "lcnDoSS", 
-                                     "drtotl_m_[ResearchI]", 
+                                     "drtotl_m_[ResearchI]",
                                      "drtotl_m_$time0[ResearchI]", 
                                      "drtotl_m_$lmeanDSS[ResearchI]", 
-                                     "drtotl_m_$lKMTOT[ResearchI]", 
+                                     "drtotl_m_$lKMTOT[ResearchI]",
                                      "drtotl_m_$lcnDoSS[ResearchI]", 
-                                     "lmeanDSS.mean[ResearchI]", 
+                                     "prDoSS[ResearchI]", 
+                                     "prDoSS$time0[ResearchI]", 
+                                     "prDoSS$lmeanDSS[ResearchI]",
+                                     "prDoSS$lKMTOT[ResearchI]", 
+                                     "prDoSS$lcnDoSS[ResearchI]", 
+                                     "lmeanDSS.mean[ResearchI]",
                                      "lKMTOT.mean[ResearchI]", 
                                      "lcnDoSS.mean[ResearchI]")
 
@@ -225,6 +229,9 @@ names(imps$lagged_imps$red_cnDoSS_lagged_imps) <- red_cnDoSS_lagged_imps_blimp_o
 names(imps$contemp_imps$red_KMTOT_contemp_imps) <- red_KMTOT_contemp_imps_blimp_out_names
 names(imps$lagged_imps$red_KMTOT_lagged_imps) <- red_KMTOT_lagged_imps_blimp_out_names
 
+names(imps$contemp_imps$max_contemp_w_prDoSS_imps) <- max_contemp_imps_blimp_out_names
+names(imps$lagged_imps$max_lagged_w_prDoSS_imps) <- max_lagged_imps_blimp_out_names
+
 # ---------------------------------------------------------------------------- #
 # Rename columns ----
 # ---------------------------------------------------------------------------- #
@@ -248,7 +255,7 @@ for (i in 1:length(imps)) {
 # ---------------------------------------------------------------------------- #
 
 # Recode 999 as NA in lagged data (due to lagged variables "lmeanDSS", "lKMTOT", 
-# and "lcnDoSS" being inputed instead of "meanDSS", "KMTOT", and "cnDoSS")
+# and "lcnDoSS" being imputed instead of "meanDSS", "KMTOT", and "cnDoSS")
 
 for (i in 1:length(imps$lagged_imps)) {
   imps$lagged_imps[[i]][imps$lagged_imps[[i]] == 999] <- NA
@@ -258,21 +265,27 @@ for (i in 1:length(imps$lagged_imps)) {
 # effects from all tables and drop non-lagged variables from lagged tables
 
 drop_contemp <- c("DDS14_factor",
-                  "DDS17a2_factor", "DDS17a2_factor_collapsed",
+                  "DDS17a2_factor", "prDoSS", "DDS17a2_factor_collapsed",
                   "DDS17a2_factor_collapsed2",
                   "drtotl_m_[ResearchID]",
                   "drtotl_m_$time0[ResearchID]", "drtotl_m_$meanDSS[ResearchID]",
                   "drtotl_m_$KMTOT[ResearchID]", "drtotl_m_$cnDoSS[ResearchID]",
+                  "prDoSS[ResearchID]", "prDoSS$time0[ResearchID]", 
+                  "prDoSS$meanDSS[ResearchID]", "prDoSS$KMTOT[ResearchID]", 
+                  "prDoSS$cnDoSS[ResearchID]",
                   "meanDSS.mean[ResearchID]", "cnDoSS.mean[ResearchID]",
                   "KMTOT.mean[ResearchID]")
 
 drop_lagged <- c("meanDSS", "cnDoSS", "KMTOT",
                  "DDS14_factor",
-                 "DDS17a2_factor", "DDS17a2_factor_collapsed",
+                 "DDS17a2_factor", "prDoSS", "DDS17a2_factor_collapsed",
                  "DDS17a2_factor_collapsed2",
                  "drtotl_m_[ResearchID]",
                  "drtotl_m_$time0[ResearchID]", "drtotl_m_$lmeanDSS[ResearchID]",
                  "drtotl_m_$lKMTOT[ResearchID]", "drtotl_m_$lcnDoSS[ResearchID]",
+                 "prDoSS[ResearchID]", "prDoSS$time0[ResearchID]", 
+                 "prDoSS$lmeanDSS[ResearchID]", "prDoSS$lKMTOT[ResearchID]", 
+                 "prDoSS$lcnDoSS[ResearchID]",
                  "lmeanDSS.mean[ResearchID]", "lcnDoSS.mean[ResearchID]",
                  "lKMTOT.mean[ResearchID]")
 
@@ -307,20 +320,6 @@ for (i in 1:length(imps2$lagged_imps)) {
 
 # Compute percent-of-maximum-possible (POMP) scores (Cohen et al., 1999, p. 323)
 
-drtotl_n_items <- length(scale_defs$drtotl_items)
-meanDSS_n_items <- length(scale_defs$meanDSS_items)
-cnDoSS_n_items <- length(scale_defs$cnDoSS_items)
-KMTOT_n_items <- length(scale_defs$KMTOT_items)
-
-drtotl_min <- 1*drtotl_n_items
-drtotl_max <- 5*drtotl_n_items
-meanDSS_min <- 0*meanDSS_n_items
-meanDSS_max <- 3*meanDSS_n_items
-cnDoSS_min <- 0*cnDoSS_n_items
-cnDoSS_max <- 4*cnDoSS_n_items
-KMTOT_min <- 1*KMTOT_n_items
-KMTOT_max <- 5*KMTOT_n_items
-
 drtotl_vars <- "drtotl_m_imp"
 meanDSS_vars <- c("meanDSS", "meanDSS_btw", "meanDSS_btw_mean", 
                   "meanDSS_btw_cent", "meanDSS_wth")
@@ -336,30 +335,52 @@ lKMTOT_vars <- c("lKMTOT", "lKMTOT_btw", "lKMTOT_btw_mean",
                  "lKMTOT_btw_cent", "lKMTOT_wth")
 
 for (i in 1:length(imps2$contemp_imps)) {
-  imps2$contemp_imps[[i]] <- compute_pomp(imps2$contemp_imps[[i]], drtotl_vars,
-                                          drtotl_n_items, drtotl_min, drtotl_max)
-  imps2$contemp_imps[[i]] <- compute_pomp(imps2$contemp_imps[[i]], meanDSS_vars, 
-                                          meanDSS_n_items, meanDSS_min, meanDSS_max)
-  imps2$contemp_imps[[i]] <- compute_pomp(imps2$contemp_imps[[i]], cnDoSS_vars, 
-                                          cnDoSS_n_items, cnDoSS_min, cnDoSS_max)
-  imps2$contemp_imps[[i]] <- compute_pomp(imps2$contemp_imps[[i]], KMTOT_vars, 
-                                          KMTOT_n_items, KMTOT_min, KMTOT_max)
+  imps2$contemp_imps[[i]] <- 
+    compute_pomp(imps2$contemp_imps[[i]], drtotl_vars,
+                 scale_defs$drtotl_n_items, scale_defs$drtotl_min, scale_defs$drtotl_max)
+  imps2$contemp_imps[[i]] <- 
+    compute_pomp(imps2$contemp_imps[[i]], meanDSS_vars, 
+                 scale_defs$meanDSS_n_items, scale_defs$meanDSS_min, scale_defs$meanDSS_max)
+  imps2$contemp_imps[[i]] <- 
+    compute_pomp(imps2$contemp_imps[[i]], cnDoSS_vars, 
+                 scale_defs$cnDoSS_n_items, scale_defs$cnDoSS_min, scale_defs$cnDoSS_max)
+  imps2$contemp_imps[[i]] <- 
+    compute_pomp(imps2$contemp_imps[[i]], KMTOT_vars, 
+                 scale_defs$KMTOT_n_items, scale_defs$KMTOT_min, scale_defs$KMTOT_max)
 }
 
 for (i in 1:length(imps2$lagged_imps)) {
-  imps2$lagged_imps[[i]] <- compute_pomp(imps2$lagged_imps[[i]], drtotl_vars, 
-                                    drtotl_n_items, drtotl_min, drtotl_max)
-  imps2$lagged_imps[[i]] <- compute_pomp(imps2$lagged_imps[[i]], lmeanDSS_vars, 
-                                    meanDSS_n_items, meanDSS_min, meanDSS_max)
-  imps2$lagged_imps[[i]] <- compute_pomp(imps2$lagged_imps[[i]], lcnDoSS_vars, 
-                                    cnDoSS_n_items, cnDoSS_min, cnDoSS_max)
-  imps2$lagged_imps[[i]] <- compute_pomp(imps2$lagged_imps[[i]], lKMTOT_vars, 
-                                    KMTOT_n_items, KMTOT_min, KMTOT_max)
+  imps2$lagged_imps[[i]] <- 
+    compute_pomp(imps2$lagged_imps[[i]], drtotl_vars, 
+                 scale_defs$drtotl_n_items, scale_defs$drtotl_min, scale_defs$drtotl_max)
+  imps2$lagged_imps[[i]] <- 
+    compute_pomp(imps2$lagged_imps[[i]], lmeanDSS_vars, 
+                 scale_defs$meanDSS_n_items, scale_defs$meanDSS_min, scale_defs$meanDSS_max)
+  imps2$lagged_imps[[i]] <- 
+    compute_pomp(imps2$lagged_imps[[i]], lcnDoSS_vars, 
+                 scale_defs$cnDoSS_n_items, scale_defs$cnDoSS_min, scale_defs$cnDoSS_max)
+  imps2$lagged_imps[[i]] <- 
+    compute_pomp(imps2$lagged_imps[[i]], lKMTOT_vars, 
+                 scale_defs$KMTOT_n_items, scale_defs$KMTOT_min, scale_defs$KMTOT_max)
 }
 
 # ---------------------------------------------------------------------------- #
 # Export final data ----
 # ---------------------------------------------------------------------------- #
 
+# TODO: Do not overwrite "imps2" until imputation models are rerun with "prDoSS"
+# and "cond0rev" now added to "contemp_aux.csv". Instead, save imputed data based
+# on this new "contemp_aux.csv" separately for now.
+
+
+
+
+
 dir.create("./data/final")
-save(imps2, file = "./data/final/imps2.RData")
+# save(imps2, file = "./data/final/imps2.RData")
+
+max_contemp_w_prDoSS_imps <- imps2$contemp_imps$max_contemp_w_prDoSS_imps
+max_lagged_w_prDoSS_imps <-  imps2$lagged_imps$max_lagged_w_prDoSS_imps
+
+save(max_contemp_w_prDoSS_imps, file = "./data/final/max_contemp_w_prDoSS_imps.RData")
+save(max_lagged_w_prDoSS_imps, file = "./data/final/max_lagged_w_prDoSS_imps.RData")
