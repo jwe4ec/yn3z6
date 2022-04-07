@@ -337,22 +337,18 @@ save(ordered_miss_anal_thres, file = "./results/aux_vars/ordered_miss_anal_thres
 save(factor_miss_anal_thres, file = "./results/aux_vars/factor_miss_anal_thres.RData")
 
 # ---------------------------------------------------------------------------- #
-# Prepare and export data and create directories for Blimp ----
+# Collapse sparse factor levels of auxiliary variables ----
 # ---------------------------------------------------------------------------- #
 
 # Restrict columns
 
 data5$contemp_aux <- 
-  data4$contemp_aux[, c("ResearchID", "time0", "Condition", "AIN", "Period", 
-                        "meanDSS", "meanDSS_btw", "meanDSS_wth", 
-                        "drtotl_m_imp", "drtotl_m_imp_btw", "drtotl_m_imp_wth",
-                        "cnDoSS", "cnDoSS_btw", "cnDoSS_wth", 
-                        "KMTOT", "KMTOT_btw", "KMTOT_wth", 
+  data5$contemp_aux[, c("ResearchID", "time0", "Condition", "AIN", "Period", 
+                        "meanDSS", "meanDSS_ind", "meanDSS_btw", "meanDSS_wth", 
+                        "drtotl_m_imp", "drtotl_m_imp_ind", "drtotl_m_imp_btw", "drtotl_m_imp_wth",
+                        "cnDoSS", "cnDoSS_ind", "cnDoSS_btw", "cnDoSS_wth", 
+                        "KMTOT", "KMTOT_ind", "KMTOT_btw", "KMTOT_wth", 
                         "DDS14_factor", "DDS17a2_factor", "prDoSS")]
-
-# Note: "prDoSS" is not completely observed so cannot go on FIXED line in Blimp
-
-sum(is.na(data5$contemp_aux$prDoSS))
 
 # Collapse sparse levels of DDS17a2_factor, as imputation model does not
 # converge after burn-in period with 100,000 iterations
@@ -389,6 +385,117 @@ levels(data5$contemp_aux$DDS17a2_factor_collapsed2)[levels(data5$contemp_aux$DDS
 levels(data5$contemp_aux$DDS17a2_factor_collapsed2)[levels(data5$contemp_aux$DDS17a2_factor_collapsed2) %in%
                                                       nonworking] <- "Nonworking"
 
+# Create contingency table for the factors. Sparse cells can contribute to slow
+# convergence in the imputation model, but once the factors were added to the
+# FIXED line in Blimp (because they are complete), the model converged without
+# needing to resolve the sparse cells.
+
+table(data5$contemp_aux$DDS14_factor,
+      data5$contemp_aux$DDS17a2_factor_collapsed2,
+      dnn = c("DDS14_factor", "DDS17a2_factor_collapsed2"))
+
+# ---------------------------------------------------------------------------- #
+# Report missingness per level of marital status and occupation ----
+# ---------------------------------------------------------------------------- #
+
+# Define function to compute proportion of missing assessments across time points
+# based on a given measure's binary missing data indicator
+
+compute_prop_miss_assess <- function(df, scale_ind) {
+  tmp_ag <- aggregate(formula(paste0(scale_ind, " ~ ResearchID")), df, FUN = sum)
+  
+  scale_ind_sum_name <- paste0(scale_ind, "_sum")
+  scale_ind_prop_name <- paste0(scale_ind, "_prop")
+  
+  names(tmp_ag)[names(tmp_ag) == scale_ind] <- scale_ind_sum_name
+
+  tmp_ag[, scale_ind_prop_name] <- tmp_ag[, scale_ind_sum_name] / 4
+  
+  df <- merge(df, tmp_ag, by = "ResearchID", all.x = TRUE)
+}
+
+# Run function for each analysis variable
+
+data5$contemp_aux <- compute_prop_miss_assess(data5$contemp_aux, "meanDSS_ind")
+data5$contemp_aux <- compute_prop_miss_assess(data5$contemp_aux, "drtotl_m_imp_ind")
+data5$contemp_aux <- compute_prop_miss_assess(data5$contemp_aux, "cnDoSS_ind")
+data5$contemp_aux <- compute_prop_miss_assess(data5$contemp_aux, "KMTOT_ind")
+
+# Restrict data to selected time-invariant variables
+
+contemp_aux_iv <- data5$contemp_aux[, c("ResearchID", "Condition", "AIN",
+                                        "DDS14_factor", "DDS17a2_factor",
+                                        "DDS17a2_factor_collapsed", 
+                                        "DDS17a2_factor_collapsed2",
+                                        "meanDSS_ind_sum", "meanDSS_ind_prop",
+                                        "drtotl_m_imp_ind_sum", "drtotl_m_imp_ind_prop",
+                                        "cnDoSS_ind_sum", "cnDoSS_ind_prop",
+                                        "KMTOT_ind_sum", "KMTOT_ind_prop")]
+
+contemp_aux_iv <- unique(contemp_aux_iv)
+
+# Define function to compute mean proportion of missing assessments for a given
+# measure across time points within each level of auxiliary variables
+
+compute_desc_by_level_for_scale <- function(df, scale_ind) {
+  scale_ind_prop_name <- paste0(scale_ind, "_prop")
+  
+  aux_vars <- c("DDS14_factor", 
+                "DDS17a2_factor", "DDS17a2_factor_collapsed", 
+                "DDS17a2_factor_collapsed2")
+  aux_var_labels <- c("Marital Status", 
+                      "Occupation", "Occupation (Collapsed)", 
+                      "Occupation (Collapsed into Employment Status)")
+  
+  res <- data.frame()
+  
+  for (i in 1:length(aux_vars)) {
+    # Compute count, mean, and standard deviation
+    
+    tbl <-     table(df[, aux_vars[i]])
+    ag_mean <- aggregate(formula(paste0(scale_ind_prop_name, " ~ ", aux_vars[i])), 
+                         df, FUN = mean, drop = FALSE)
+    ag_sd <-   aggregate(formula(paste0(scale_ind_prop_name, " ~ ", aux_vars[i])), 
+                         df, FUN = sd, drop = FALSE)
+    
+    var_res <- rbind(data.frame(label = aux_var_labels[i],
+                                n     = NA,
+                                M_SD  = NA),
+                     data.frame(label = names(tbl),
+                                n     = as.numeric(tbl),
+                                M_SD  = paste0(round(ag_mean[, scale_ind_prop_name], 2), " (",
+                                               round(ag_sd[, scale_ind_prop_name], 2), ")")))
+    
+    res <- rbind(res, var_res)
+  }
+  
+  return(res)
+}
+
+# Run function for each analysis variable, combine results into table, and export table
+
+res_meanDSS      <- compute_desc_by_level_for_scale(contemp_aux_iv, "meanDSS_ind")
+res_drtotl_m_imp <- compute_desc_by_level_for_scale(contemp_aux_iv, "drtotl_m_imp_ind")
+res_cnDoSS       <- compute_desc_by_level_for_scale(contemp_aux_iv, "cnDoSS_ind")
+res_KMTOT        <- compute_desc_by_level_for_scale(contemp_aux_iv, "KMTOT_ind")
+
+all_res <- cbind(res_drtotl_m_imp, 
+                 res_meanDSS[, names(res_meanDSS) != "label"], 
+                 res_cnDoSS[, names(res_cnDoSS) != "label"],
+                 res_KMTOT[, names(res_KMTOT) != "label"])
+
+write.csv(all_res,
+          file = "./results/table_s5.csv",
+          row.names = FALSE)
+
+# ---------------------------------------------------------------------------- #
+# Prepare and export data for Blimp ----
+# ---------------------------------------------------------------------------- #
+
+# Note: "prDoSS" is not completely observed so cannot go on FIXED line in Blimp
+
+sum(is.na(data5$contemp_aux$prDoSS))
+
 # Define "cond0rev" so DBT-ST is coded 1 and ASG is coded 0. Note: This coding was
 # used in simple mediation model of Neacsiu et al. (2018; https://doi.org/gdkhfn) 
 # because PROCESS macro is based on regression. By contrast, Neacsiu et al. (2014; 
@@ -408,15 +515,6 @@ data5$contemp_aux$DDS17a2_factor_collapsed <-
   as.numeric(data5$contemp_aux$DDS17a2_factor_collapsed)
 data5$contemp_aux$DDS17a2_factor_collapsed2 <- 
   as.numeric(data5$contemp_aux$DDS17a2_factor_collapsed2)
-
-# Create contingency table for the factors. Sparse cells can contribute to slow
-# convergence in the imputation model, but once the factors were added to the
-# FIXED line in Blimp (because they are complete), the model converged without
-# needing to resolve the sparse cells.
-
-table(data5$contemp_aux$DDS14_factor,
-      data5$contemp_aux$DDS17a2_factor_collapsed2,
-      dnn = c("DDS14_factor", "DDS17a2_factor_collapsed2"))
 
 # Remove columns for between-person and within-person effects. Although we
 # initially included these in the imputation model instead of the raw scores,
@@ -470,6 +568,10 @@ write.table(data5$contemp_aux_med,
             row.names = FALSE,
             col.names = FALSE,
             sep = ",")
+
+# ---------------------------------------------------------------------------- #
+# Create directories for Blimp ----
+# ---------------------------------------------------------------------------- #
 
 # Create directories for Blimp sensitivity analyses
 
