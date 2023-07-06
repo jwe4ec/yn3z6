@@ -529,6 +529,15 @@ exclude_cols <- c("meanDSS_btw", "meanDSS_wth",
 
 data5$contemp_aux[, exclude_cols] <- NULL
 
+# Remove missing data indicators and sum and proportion of missing assessments
+
+exclude_ind_cols <- c("meanDSS_ind", "meanDSS_ind_sum", "meanDSS_ind_prop",
+                      "drtotl_m_imp_ind", "drtotl_m_imp_ind_sum", "drtotl_m_imp_ind_prop",
+                      "cnDoSS_ind", "cnDoSS_ind_sum", "cnDoSS_ind_prop",
+                      "KMTOT_ind", "KMTOT_ind_sum", "KMTOT_ind_prop")
+
+data5$contemp_aux[, exclude_ind_cols] <- NULL
+
 # Compute POMP scores for mediation dataset only (given that Bayesian results will
 # be interpreted for mediation model instead of reanalyzing imputed data). POMP scores 
 # for models of within-person relations are computed after multiple imputation.
@@ -547,6 +556,19 @@ data5$contemp_aux_med <-
 data5$contemp_aux_med <- 
   compute_pomp(data5$contemp_aux_med, "KMTOT",
                scale_defs$KMTOT_n_items, scale_defs$KMTOT_min, scale_defs$KMTOT_max)
+
+# Confirm column names are those named in Blimp syntax
+
+contemp_aux_blimp_names <- 
+  c("ResearchID", "time0", "Condition", "AIN", "Period", "meanDSS", "drtotl_m_imp", 
+    "cnDoSS", "KMTOT", "DDS14_factor", "DDS17a2_factor", "prDoSS",
+    "DDS17a2_factor_collapsed", "DDS17a2_factor_collapsed2", "cond0rev")
+contemp_aux_med_blimp_names <- 
+  c(contemp_aux_blimp_names,
+    "drtotl_m_imp_pomp", "meanDSS_pomp", "cnDoSS_pomp", "KMTOT_pomp")
+
+all(names(data5$contemp_aux) == contemp_aux_blimp_names)
+all(names(data5$contemp_aux_med) == contemp_aux_med_blimp_names)
 
 # Code NA as 999, which will be specified as the missing code for Blimp
 
